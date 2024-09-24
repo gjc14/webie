@@ -40,15 +40,15 @@ const replaceKeys = (str?: string, isMac: boolean = false) => {
 
 interface ToggleButtonProps extends ButtonProps {
 	tooltip?: string
-	tooltipShortcut?: string
+	shortcut?: string
 }
 
 export const ToggleButton = React.forwardRef<
 	HTMLButtonElement,
 	ToggleButtonProps
->(({ className, tooltip, tooltipShortcut, ...props }, ref) => {
+>(({ className, tooltip, shortcut, ...props }, ref) => {
 	const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform)
-	const processedTooltip = replaceKeys(tooltipShortcut, true)
+	const processedTooltip = replaceKeys(shortcut, true)
 
 	return (
 		<TooltipProvider delayDuration={300}>

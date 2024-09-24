@@ -1,41 +1,11 @@
 import 'highlight.js/styles/base16/atelier-dune.min.css'
 import './styles.scss'
 
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { Color } from '@tiptap/extension-color'
-import Highlight from '@tiptap/extension-highlight'
-import Placeholder from '@tiptap/extension-placeholder'
-import Subscript from '@tiptap/extension-subscript'
-import Superscript from '@tiptap/extension-superscript'
-import TextAlign from '@tiptap/extension-text-align'
-import TextStyle from '@tiptap/extension-text-style'
-import Underline from '@tiptap/extension-underline'
 import { EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import { common, createLowlight } from 'lowlight'
-// import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
+import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
 import { DefaultFloatingMenu } from '../components/menus/floating-menu'
 import { MenuBar } from '../components/menus/menu-bar'
-
-export const extensions = [
-	StarterKit.configure({
-		heading: {
-			levels: [2, 3, 4, 5],
-		},
-		codeBlock: false,
-	}),
-	Underline,
-	Highlight.configure({
-		multicolor: true,
-	}),
-	Color,
-	Superscript,
-	Subscript,
-	TextAlign.configure({ types: ['heading', 'paragraph'] }),
-	Placeholder.configure({ placeholder: 'Write something amazing...' }),
-	CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
-	TextStyle.configure({}),
-]
+import ExtensionKit from '../extensions/extension-kit'
 
 export default (props: {
 	content?: string
@@ -45,7 +15,7 @@ export default (props: {
 }) => {
 	const editor = useEditor({
 		immediatelyRender: false,
-		extensions,
+		extensions: [...ExtensionKit()],
 		content: props.content ? JSON.parse(props.content) : undefined,
 		onFocus: () => {
 			props.onFocus && props.onFocus()
@@ -66,7 +36,7 @@ export default (props: {
 	return (
 		<>
 			{editor && <MenuBar editor={editor} />}
-			{/* {editor && <DefaultBubbleMenu editor={editor} />} */}
+			{editor && <DefaultBubbleMenu editor={editor} />}
 			{editor && <DefaultFloatingMenu editor={editor} />}
 			<EditorContent editor={editor} />
 		</>

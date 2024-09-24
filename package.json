@@ -45,6 +45,7 @@
 		"bson": "^4.7.2",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
+		"cmdk": "^1.0.0",
 		"crypto-js": "^4.2.0",
 		"framer-motion": "^11.5.4",
 		"isbot": "^4.1.0",

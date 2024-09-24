@@ -11,6 +11,8 @@ export default {
 					css: {
 						'code::before': { content: 'none' },
 						'code::after': { content: 'none' },
+						'blockquote p::before': { content: 'none' },
+						'blockquote p::after': { content: 'none' },
 					},
 				},
 			},
