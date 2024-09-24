@@ -3,7 +3,7 @@ import AES from 'crypto-js/aes'
 import Base64 from 'crypto-js/enc-base64'
 import Utf8 from 'crypto-js/enc-utf8'
 import { CreateEmailResponseSuccess, Resend } from 'resend'
-import MagicLinkEmail from '~/components/email/MagicLink'
+// import MagicLinkEmail from '~/components/email/MagicLink'
 import { getUserById } from './user.server'
 
 let COOKIE_SECRET = process.env.COOKIE_SECRET
@@ -34,31 +34,31 @@ export const getToken = async (id: string, email: string) => {
 	return base64Token
 }
 
-export const sendMagicLink = async (
-	token: string,
-	email: string,
-	origin: string,
-	options?: {
-		searchParams?: Record<string, string>
-	}
-): Promise<CreateEmailResponseSuccess | null> => {
-	const magicLink = `${origin}/admin/magic?token=${token}${
-		options?.searchParams ? '&' + new URLSearchParams(options?.searchParams).toString() : ''
-	}`
+// export const sendMagicLink = async (
+// 	token: string,
+// 	email: string,
+// 	origin: string,
+// 	options?: {
+// 		searchParams?: Record<string, string>
+// 	}
+// ): Promise<CreateEmailResponseSuccess | null> => {
+// 	const magicLink = `${origin}/admin/magic?token=${token}${
+// 		options?.searchParams ? '&' + new URLSearchParams(options?.searchParams).toString() : ''
+// 	}`
 
-	const resend = new Resend(process.env.EMIAL_API_KEY)
-	const { data, error } = await resend.emails.send({
-		from: `${process.env.BASE_URL ? `Webie <email@${process.env.BASE_URL}>` : 'Acme <onboarding@resend.dev>'}`,
-		to: [email],
-		subject: 'Your magic link',
-		react: MagicLinkEmail({ magicLink }),
-	})
-	if (error) {
-		console.error(error)
-		throw new Error('Failed to send email')
-	}
-	return data
-}
+// 	const resend = new Resend(process.env.EMIAL_API_KEY)
+// 	const { data, error } = await resend.emails.send({
+// 		from: `${process.env.BASE_URL ? `Webie <email@${process.env.BASE_URL}>` : 'Acme <onboarding@resend.dev>'}`,
+// 		to: [email],
+// 		subject: 'Your magic link',
+// 		react: MagicLinkEmail({ magicLink }),
+// 	})
+// 	if (error) {
+// 		console.error(error)
+// 		throw new Error('Failed to send email')
+// 	}
+// 	return data
+// }
 
 class TokenExpiredError extends Error {
 	constructor(message: string) {
