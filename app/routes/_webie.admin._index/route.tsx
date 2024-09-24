@@ -1,4 +1,4 @@
-import { AdminSectionWrapper } from '~/components/admin/AdminWrapper'
+import { AdminSectionWrapper } from '~/components/admin/admin-wrapper'
 
 export default function AdminIndex() {
 	return (

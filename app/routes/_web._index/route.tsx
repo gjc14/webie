@@ -1,6 +1,6 @@
 import { json, LoaderFunctionArgs, type MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { Nav } from '~/components/web/Nav'
+import { Nav } from '~/components/web/nav'
 import { Footer } from '~/components/web/Footer'
 import { LatestPosts } from '~/components/web/blog/Posts'
 import { CTA } from '~/components/web/CTA'

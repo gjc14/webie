@@ -1,6 +1,6 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { Outlet, useLoaderData } from '@remix-run/react'
-import { Nav } from '~/components/web/Nav'
+import { Nav } from '~/components/web/nav'
 import { Footer } from '~/components/web/Footer'
 import { CTA } from '~/components/web/CTA'
 import { getSEO } from '~/lib/db/seo.server'

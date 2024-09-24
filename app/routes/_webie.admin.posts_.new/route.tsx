@@ -2,8 +2,8 @@ import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, useFetcher } from '@remix-run/react'
 import { Loader2, PlusCircle, Trash } from 'lucide-react'
 import { z } from 'zod'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/AdminWrapper'
-import { PostContent } from '~/components/admin/PostContent'
+import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
+import { PostContent } from '~/components/admin/post-content'
 import {
 	AlertDialog,
 	AlertDialogAction,

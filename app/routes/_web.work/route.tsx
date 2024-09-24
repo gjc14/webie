@@ -1,7 +1,7 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { UnderConstruction } from '~/components/UnderConstruction'
-import { Nav } from '~/components/web/Nav'
+import { Nav } from '~/components/web/nav'
 import { Footer } from '~/components/web/Footer'
 import { getSEO } from '~/lib/db/seo.server'
 

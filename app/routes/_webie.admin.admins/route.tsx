@@ -4,9 +4,9 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Loader2, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/AdminWrapper'
-import { AdminDataTableMoreMenu, DataTable } from '~/components/admin/DataTable'
-import { UserContent } from '~/components/admin/UserContent'
+import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
+import { AdminDataTableMoreMenu, DataTable } from '~/components/admin/data-table'
+import { UserContent } from '~/components/admin/user-content'
 import { Button } from '~/components/ui/button'
 import {
 	Dialog,
