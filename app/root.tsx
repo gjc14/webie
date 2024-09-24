@@ -14,11 +14,17 @@ import {
 import { parse } from 'cookie'
 import { useEffect, useRef } from 'react'
 import { toast, Toaster } from 'sonner'
-import { customThemeCookieName, getCustomTheme, ThemeProvider, useTheme } from './lib/hooks/theme-provider'
+import {
+	customThemeCookieName,
+	getCustomTheme,
+	ThemeProvider,
+	useTheme,
+} from './lib/hooks/theme-provider'
 import { ClientHintCheck, getHints } from './lib/client-hints/client-hints'
 import { subscribeToSchemeChange } from './lib/client-hints/color-schema'
 import { useCookieTheme } from './lib/hooks/use-cookie-theme'
 import { commitFlashSession, getFlashSession } from './lib/sessions.server'
+import { GlobalLoading } from './components/global-loading'
 
 export function Layout({ children }: { children: React.ReactNode }) {
 	const theme = useCookieTheme()
@@ -27,12 +33,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 		<html lang="en" className={theme}>
 			<head>
 				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta
+					name="viewport"
+					content="width=device-width, initial-scale=1"
+				/>
 				<Meta />
 				<Links />
 				<ClientHintCheck />
 			</head>
 			<body>
+				<GlobalLoading />
 				<ThemeProvider cookieTheme={theme}>
 					{/* children will be the root Component, ErrorBoundary, or HydrateFallback */}
 					{children}
@@ -98,12 +108,16 @@ export default function App() {
 			)
 
 			// Convention: actions return json({ data?, msg?, err? }) refer to README.md
-			const actionResponses = fetchers.filter(fetcher => fetcher.state === 'loading' && fetcher.data)
+			const actionResponses = fetchers.filter(
+				fetcher => fetcher.state === 'loading' && fetcher.data
+			)
 
 			const successResponses = actionResponses.filter(
 				fetcher => fetcher.data.msg && !cleanedKeys.has(fetcher.key)
 			)
-			const errorResponses = actionResponses.filter(fetcher => fetcher.data.err && !cleanedKeys.has(fetcher.key))
+			const errorResponses = actionResponses.filter(
+				fetcher => fetcher.data.err && !cleanedKeys.has(fetcher.key)
+			)
 
 			successResponses.forEach(fetcher => {
 				toast.success(fetcher.data.msg)
@@ -134,7 +148,8 @@ export default function App() {
 		subscribeToSchemeChange(theme => {
 			// Do not set theme if custom theme is set
 			const cookieHeader = document.cookie
-			const parsedCustomTheme = cookieHeader && parse(cookieHeader)[customThemeCookieName]
+			const parsedCustomTheme =
+				cookieHeader && parse(cookieHeader)[customThemeCookieName]
 			if (parsedCustomTheme) return revalidate()
 
 			// Set theme to system theme
@@ -185,7 +200,10 @@ export function ErrorBoundary() {
 				<div className="flex flex-1 flex-col justify-center text-primary">
 					<h1 className="text-center font-mono">500</h1>
 					<p>Internal Server Error</p>
-					<a href="mailto:your@ema.il" className="text-center inline-block underline">
+					<a
+						href="mailto:your@ema.il"
+						className="text-center inline-block underline"
+					>
 						Report this error
 					</a>
 				</div>
@@ -197,7 +215,10 @@ export function ErrorBoundary() {
 		<main className="w-screen h-screen flex flex-col items-center justify-center">
 			<div className="flex flex-1 flex-col justify-center text-primary">
 				<h1 className="text-center font-mono">Unknown Error</h1>
-				<a href="mailto:your@ema.il" className="text-center inline-block underline">
+				<a
+					href="mailto:your@ema.il"
+					className="text-center inline-block underline"
+				>
 					Report this error
 				</a>
 			</div>
