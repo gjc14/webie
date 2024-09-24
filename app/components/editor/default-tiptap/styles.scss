@@ -1,13 +1,16 @@
 /* Basic editor styles */
 .tiptap {
-  outline: none;
-  padding: 0 5px 0 5px;
+  // Code area
+  pre {
+    @apply border border-transparent bg-zinc-950 dark:bg-zinc-900 dark:border-border
+  }
+
+  p code {
+    @apply bg-muted rounded-lg py-1 px-2
+  }
 
   p.is-editor-empty:first-child::before {
-    color: #adb5bd;
+    @apply h-0 float-left text-muted-foreground pointer-events-none;
     content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
   }
 }

@@ -104,3 +104,25 @@
 		@apply py-20;
 	}
 }
+
+/* tailwind typographt */
+@layer base {
+	article {
+		@apply prose tracking-wide leading-loose dark:prose-invert;
+	}
+
+	article pre {
+		@apply border border-transparent bg-zinc-950 dark:bg-zinc-900 dark:border-border;
+	}
+
+	/* article {
+		code::before,
+		code::after {
+			content: none;
+		}
+	} */
+
+	article p code {
+		@apply bg-muted rounded-lg py-1 px-2;
+	}
+}

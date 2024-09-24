@@ -44,7 +44,7 @@ export const PostContent = ({
 				</div>
 				<div className="w-full">
 					<Label htmlFor="content">Content</Label>
-					<article ref={contentWrapperRef} className="max-w-full p-3 border border-border rounded-md">
+					<div ref={contentWrapperRef} className="max-w-full p-3 border border-border rounded-md">
 						<input id="content" type="hidden" name="content" defaultValue={content} />
 						<DefaultTipTap
 							content={content}
@@ -59,7 +59,7 @@ export const PostContent = ({
 								contentWrapperRef.current?.classList.remove('border-primary')
 							}}
 						/>
-					</article>
+					</div>
 				</div>
 			</section>
 
