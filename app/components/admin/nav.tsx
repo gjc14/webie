@@ -11,8 +11,8 @@ import {
 	UserRoundCog,
 } from 'lucide-react'
 import { useState } from 'react'
-import { FullScreenLoading } from '~/components/Loading'
-import { ThemeToggle } from '~/components/ThemeToggle'
+import { FullScreenLoading } from '~/components/loading'
+import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '~/components/ui/sheet'

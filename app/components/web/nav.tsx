@@ -1,6 +1,6 @@
 import { NavLink } from '@remix-run/react'
 import { motion } from 'framer-motion'
-import { ThemeToggle } from '~/components/ThemeToggle'
+import { ThemeToggle } from '~/components/theme-toggle'
 
 export const Nav = () => {
 	return (

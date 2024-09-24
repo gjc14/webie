@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
 import { z } from 'zod'
-import { TurnstileSiteVerify } from '~/components/web/Turnstile'
+import { TurnstileSiteVerify } from '~/components/web/turnstile'
 import { createUser } from '~/lib/db/user.server'
 import { UserRole, UserStatus } from '~/schema/database'
 

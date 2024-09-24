@@ -15,7 +15,7 @@ import { toast, Toaster } from 'sonner'
 import { customThemeCookieName, getCustomTheme, ThemeProvider, useTheme } from './lib/hooks/theme-provider'
 import { ClientHintCheck, getHints } from './lib/client-hints/client-hints'
 import { subscribeToSchemeChange } from './lib/client-hints/color-schema'
-import { useCookieTheme } from './lib/hooks/useCookieTheme'
+import { useCookieTheme } from './lib/hooks/use-cookie-theme'
 import { commitFlashSession, getFlashSession } from './lib/sessions.server'
 
 export function Layout({ children }: { children: React.ReactNode }) {

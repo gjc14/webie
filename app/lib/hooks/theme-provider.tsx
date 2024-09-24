@@ -1,6 +1,6 @@
 import { useRevalidator } from '@remix-run/react'
 import { createContext, useContext } from 'react'
-import { Theme } from '~/lib/hooks/useCookieTheme'
+import { Theme } from '~/lib/hooks/use-cookie-theme'
 
 type ThemeProviderState = {
 	theme: Theme

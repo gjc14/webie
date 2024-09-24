@@ -3,7 +3,7 @@ import AES from 'crypto-js/aes'
 import Base64 from 'crypto-js/enc-base64'
 import Utf8 from 'crypto-js/enc-utf8'
 import { CreateEmailResponseSuccess, Resend } from 'resend'
-// import MagicLinkEmail from '~/components/email/MagicLink'
+import MagicLinkEmail from '~/components/email/magic-link'
 import { getUserById } from './user.server'
 
 let COOKIE_SECRET = process.env.COOKIE_SECRET
@@ -51,12 +51,7 @@ export const sendMagicLink = async (
 		from: `${process.env.BASE_URL ? `Webie <email@${process.env.BASE_URL}>` : 'Acme <onboarding@resend.dev>'}`,
 		to: [email],
 		subject: 'Your magic link',
-		// react: MagicLinkEmail({ magicLink }),
-		html: `
-<p>Click <a href="${magicLink}">here</a> to sign in.</p>
-<p>If you didn't request this, please ignore this email.</p>
-<p>If this link doesn't work, ${magicLink}</p>
-		`,
+		react: MagicLinkEmail({ magicLink }),
 	})
 	if (error) {
 		console.error(error)

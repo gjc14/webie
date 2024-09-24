@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node'
-import { SignInForm } from './Auth'
+import { SignInForm } from './auth'
 import { authCookie, getToken, sendMagicLink } from '~/lib/db/auth.server'
 import { getUser, getUserById } from '~/lib/db/user.server'
 
