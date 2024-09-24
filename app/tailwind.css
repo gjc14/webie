@@ -63,7 +63,7 @@
 		@apply scroll-smooth;
 	}
 	body {
-		@apply w-screen min-h-screen absolute bg-background text-foreground antialiased transition-colors duration-300;
+		@apply relative w-full min-h-screen bg-background text-foreground antialiased transition-colors duration-300;
 	}
 
 	/* From Apple.com home page h1 */
@@ -114,13 +114,6 @@
 	article pre {
 		@apply border border-transparent bg-zinc-950 dark:bg-zinc-900 dark:border-border;
 	}
-
-	/* article {
-		code::before,
-		code::after {
-			content: none;
-		}
-	} */
 
 	article p code {
 		@apply bg-muted rounded-lg py-1 px-2;

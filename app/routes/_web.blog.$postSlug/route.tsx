@@ -50,20 +50,31 @@ export default function BlogPost() {
 	}, [html])
 
 	return (
-		<div className="relative px-8 pt-28 md:px-12 md:pt-32">
-			<ArrowLeft size={20} className="absolute -mt-9 cursor-pointer" onClick={() => navigate(-1)} />
+		<article className="w-full px-5 pt-32 md:px-0">
+			<div className="not-prose">
+				<ArrowLeft
+					size={20}
+					className="absolute -mt-9 cursor-pointer not-prose"
+					onClick={() => navigate(-1)}
+				/>
 
-			<FeaturedImage
-				src={post.featuredImage || 'https://placehold.co/600x400'}
-				alt={post.title + ' image'}
-				description={post.title + ' image'}
+				<FeaturedImage
+					src={post.featuredImage || 'https://placehold.co/600x400'}
+					alt={post.title + ' image'}
+					description={post.title + ' image'}
+				/>
+
+				<PostMeta post={post} />
+			</div>
+
+			<div
+				className="w-full mx-auto"
+				dangerouslySetInnerHTML={{ __html: html }}
 			/>
 
-			<PostMeta post={post} />
-
-			<article dangerouslySetInnerHTML={{ __html: html }} />
-
-			<PostFooter post={post} next={next} prev={prev} />
-		</div>
+			<div className="not-prose">
+				<PostFooter post={post} next={next} prev={prev} />
+			</div>
+		</article>
 	)
 }
