@@ -32,8 +32,8 @@ export function ErrorBoundary() {
 				</div>
 			</main>
 		)
-		// throw new Error('message')
 	} else if (error instanceof Error) {
+		// throw new Error('message')
 		return (
 			<main className="w-full min-h-screen h-auto flex flex-col items-center justify-center gap-9">
 				<div>

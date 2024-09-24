@@ -1,5 +1,6 @@
 import { json, LoaderFunctionArgs } from '@remix-run/node'
 import {
+	isRouteErrorResponse,
 	Links,
 	Meta,
 	Outlet,
@@ -8,6 +9,7 @@ import {
 	useFetchers,
 	useLoaderData,
 	useRevalidator,
+	useRouteError,
 } from '@remix-run/react'
 import { parse } from 'cookie'
 import { useEffect, useRef } from 'react'
@@ -154,5 +156,51 @@ export default function App() {
 			<div className=" bg-blend-difference"></div>
 			<Outlet />
 		</>
+	)
+}
+
+export function ErrorBoundary() {
+	const error = useRouteError()
+
+	// throw new Response()
+	if (isRouteErrorResponse(error)) {
+		console.error('Error response:', error.data)
+		return (
+			<main className="w-screen h-screen flex flex-col items-center justify-center">
+				<div className="flex flex-1 flex-col justify-center text-primary">
+					<h1 className="text-center font-mono">{error.status}</h1>
+					<a
+						className="text-center inline-block underline"
+						href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${error.status}`}
+					>
+						why this error?
+					</a>
+				</div>
+			</main>
+		)
+	} else if (error instanceof Error) {
+		// throw new Error('message')
+		return (
+			<main className="w-screen h-screen flex flex-col items-center justify-center">
+				<div className="flex flex-1 flex-col justify-center text-primary">
+					<h1 className="text-center font-mono">500</h1>
+					<p>Internal Server Error</p>
+					<a href="mailto:your@ema.il" className="text-center inline-block underline">
+						Report this error
+					</a>
+				</div>
+			</main>
+		)
+	}
+
+	return (
+		<main className="w-screen h-screen flex flex-col items-center justify-center">
+			<div className="flex flex-1 flex-col justify-center text-primary">
+				<h1 className="text-center font-mono">Unknown Error</h1>
+				<a href="mailto:your@ema.il" className="text-center inline-block underline">
+					Report this error
+				</a>
+			</div>
+		</main>
 	)
 }
