@@ -1,13 +1,14 @@
 import 'highlight.js/styles/base16/atelier-dune.min.css'
 
 import { json, LoaderFunctionArgs } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useNavigate } from '@remix-run/react'
 import { generateHTML } from '@tiptap/react'
 import { common, createLowlight } from 'lowlight'
 import { useEffect, useState } from 'react'
 import { extensions } from '~/components/editor/default-tiptap'
 import { getPostBySlug } from '~/lib/db/post.server'
 import { hilightInnerHTML } from './highlight-inner-html'
+import { ArrowLeft } from 'lucide-react'
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	if (!params.postSlug) {
@@ -27,6 +28,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 }
 
 export default function BlogPost() {
+	const navigate = useNavigate()
 	const { post } = useLoaderData<typeof loader>()
 	const [html, setHtml] = useState('')
 	const lowlight = createLowlight(common)
@@ -43,7 +45,8 @@ export default function BlogPost() {
 	}, [html])
 
 	return (
-		<div className="px-8 pt-28 md:px-12 md:pt-32">
+		<div className="relative px-8 pt-28 md:px-12 md:pt-32">
+			<ArrowLeft size={20} className="absolute -mt-9 cursor-pointer" onClick={() => navigate(-1)} />
 			<div className="w-full flex flex-col mb-12">
 				<img src={post.featuredImage || 'https://placehold.co/600x400'} alt={post.title + ' image'} />
 				<p className="text-center text-muted-foreground py-1">{post.title + ' image'}</p>

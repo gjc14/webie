@@ -4,13 +4,24 @@ import { PostStatus } from '~/schema/database'
 export const getPosts = async (props?: {
 	n?: number
 	status?: PostStatus
+	categoryFilter?: string[]
+	subCategoryFilter?: string[]
+	tagFilter?: string[]
 }): Promise<{
 	posts: typeof posts
 }> => {
-	const { n, status } = props || {}
+	const { n, status, categoryFilter, subCategoryFilter, tagFilter } = props || {}
+	const whereCategory = { categories: { some: { name: { in: categoryFilter } } } }
+	const whereSubCategory = { subCategories: { some: { name: { in: subCategoryFilter } } } }
+	const whereTag = { tags: { some: { name: { in: tagFilter } } } }
 
 	const posts = await prisma.post.findMany({
-		where: { status },
+		where: {
+			status,
+			...(Array.isArray(categoryFilter) && categoryFilter.length > 0 && whereCategory),
+			...(Array.isArray(subCategoryFilter) && subCategoryFilter.length > 0 && whereSubCategory),
+			...(Array.isArray(tagFilter) && tagFilter.length > 0 && whereTag),
+		},
 		take: n,
 		orderBy: { createdAt: 'desc' },
 		include: {

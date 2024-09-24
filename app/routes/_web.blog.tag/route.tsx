@@ -1,6 +1,8 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { Footer } from '~/components/web/footer'
+import { SectionWrapper } from '~/components/web/blog/max-width-wrapper'
+import { PostCollection } from '~/components/web/blog/posts'
+import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -9,27 +11,33 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const { seo } = await getSEO(new URL(request.url).pathname)
+	let { searchParams } = new URL(request.url)
+	let query = searchParams.getAll('q')
+	query = query.filter(q => q !== '')
 
 	try {
-		return json({ seo })
+		const { posts } = await getPosts({ status: 'PUBLISHED', tagFilter: query })
+		return json({ seo, posts, query })
 	} catch (error) {
 		console.error(error)
-		return json({ seo })
+		return json({ seo, posts: [], query })
 	}
 }
 
 export default function Tag() {
-	const { seo } = useLoaderData<typeof loader>()
+	const { seo, posts, query } = useLoaderData<typeof loader>()
 
 	return (
-		<section className="w-full h-full flex flex-col">
-			<div className="flex flex-col items-center justify-center grow">
-				<h1 className="visually-hidden">{seo?.title}</h1>
-				<img src="/placeholders/20101.svg" alt="busy working on the page" className="mb-4" />
-				<h3>Under construction</h3>
-				<p>This is tag page</p>
-			</div>
-			<Footer />
-		</section>
+		<>
+			<h1 className="visually-hidden">{seo?.title}</h1>
+			<SectionWrapper className="mt-28">
+				<PostCollection
+					title={`Looking for ${query.length === 0 ? 'all posts' : query.join(', ')}`}
+					posts={posts.map(post => {
+						return { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
+					})}
+				/>
+			</SectionWrapper>
+		</>
 	)
 }
