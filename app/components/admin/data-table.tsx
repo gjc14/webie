@@ -166,11 +166,12 @@ export const AdminDataTableMoreMenu = ({
 }) => {
 	const fetcher = useFetcher()
 	const isSubmitting = fetcher.state === 'submitting'
+	const isDeleting = fetcher.state !== 'idle'
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" size={'icon'}>
+				<Button variant="ghost" size={'icon'} disabled={isDeleting}>
 					<span className="sr-only">Open menu</span>
 					{isSubmitting ? <Loader2 className="animate-spin" /> : <MoreHorizontal />}
 				</Button>

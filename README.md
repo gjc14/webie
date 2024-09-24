@@ -70,7 +70,7 @@ mv .env.sample .env
 5. `COOKIE_SECRET`: Used to make your cookies secure. Run
    `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to get one
 6. `RESEND_API_KEY`: Send emails via Resend.
-7. `BASE_URL`: This is the domain where you're hosting your Webie.
+7. `BASE_URL`: This is the domain where you're hosting your Webie. e.g. `BASE_URL=webie.dev`
 
 <!-- prettier-ignore -->
 > [!WARNING]

@@ -47,8 +47,18 @@ export const sendMagicLink = async (
 	}`
 
 	const resend = new Resend(process.env.EMIAL_API_KEY)
+	let from
+	if (!process.env.BASE_URL) {
+		console.warn(
+			'BASE_URL is not set, using default email Acme <onboarding@resend.dev>, you could only send to your account'
+		)
+		from = 'Acme <onboarding@resend.dev>'
+	} else {
+		from = `Webie <email@${process.env.BASE_URL}>`
+	}
+
 	const { data, error } = await resend.emails.send({
-		from: `${process.env.BASE_URL ? `Webie <email@${process.env.BASE_URL}>` : 'Acme <onboarding@resend.dev>'}`,
+		from,
 		to: [email],
 		subject: 'Your magic link',
 		react: MagicLinkEmail({ magicLink }),
