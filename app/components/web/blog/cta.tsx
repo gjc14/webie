@@ -3,7 +3,7 @@ import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Loading } from '~/components/loading'
-import { TurnstileWidget } from '~/components/web/turnstile'
+import { TurnstileWidget } from '~/components/web/captchas/turnstile'
 
 export const CTA = ({ subscribeRoute = '/blog/action/subscribe' }: { subscribeRoute?: string }) => {
 	const fetcher = useFetcher()
@@ -26,6 +26,9 @@ export const CTA = ({ subscribeRoute = '/blog/action/subscribe' }: { subscribeRo
 							<Loading size={16} className={`absolute ${isSubmitting ? 'opacity-100' : 'opacity-0'}`} />
 							<span className={`${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>Subscribe</span>
 						</Button>
+
+						{/* Chose your CAPTCHA */}
+						{/* <input type="hidden" name="captcha" value="turnstile" /> */}
 						{/* <TurnstileWidget /> */}
 					</fetcher.Form>
 				</CardContent>
