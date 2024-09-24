@@ -9,7 +9,7 @@ import { getUserById } from './user.server'
 let COOKIE_SECRET = process.env.COOKIE_SECRET
 if (!COOKIE_SECRET) {
 	console.warn('COOKIE_SECRET is not set')
-	COOKIE_SECRET = 'ad759243b523dcf41eecfcdf5126048807977d3686143ff2f69fc737edf7fb05'
+	COOKIE_SECRET = 'default-cookie-s3cr3t'
 }
 
 export const authCookie = createCookie('auth', {
