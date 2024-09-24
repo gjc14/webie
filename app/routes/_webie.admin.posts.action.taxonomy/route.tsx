@@ -49,10 +49,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const formObject = Object.fromEntries(formData)
 
 	switch (data) {
-		default: {
-			throw new Response('Invalid argument', { status: 400 })
-		}
-
 		case 'category': {
 			const deleteMesage = (name: string) => {
 				return '類別 ' + name + ' 已刪除'
@@ -142,10 +138,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 				})
 			}
 		}
+
+		default: {
+			throw new Response('Invalid argument', { status: 400 })
+		}
 	}
-	return 'hi'
 }
 
 export const loader = () => {
 	return redirect('/admin/posts')
+}
+
+export default function AdminPostsActionTaxonomy() {
+	return null
 }
