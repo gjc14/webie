@@ -97,7 +97,7 @@ export function DataTable<TData, TValue>({ columns, data, children, hideColumnFi
 						<TableRow key={headerGroup.id} className="border-primary">
 							{headerGroup.headers.map(header => {
 								return (
-									<TableHead key={header.id}>
+									<TableHead key={header.id} colSpan={header.colSpan}>
 										{header.isPlaceholder
 											? null
 											: flexRender(header.column.columnDef.header, header.getContext())}

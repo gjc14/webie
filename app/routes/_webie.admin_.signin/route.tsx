@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node'
-import { Auth } from '~/components/admin/Auth'
+import { SignInForm } from './Auth'
 import { authCookie, getToken, sendMagicLink } from '~/lib/db/auth.server'
 import { getUser, getUserById } from '~/lib/db/user.server'
 
@@ -38,7 +38,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function AdminAuth() {
 	return (
 		<main className="w-full h-full min-h-screen flex flex-col items-center justify-center">
-			<Auth />
+			<SignInForm />
 		</main>
 	)
 }

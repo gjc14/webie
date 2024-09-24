@@ -5,7 +5,6 @@ import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/AdminWrapper'
 import { DataTable } from '~/components/admin/DataTable'
-import { SeoContent } from '~/components/admin/SeoContent'
 import { TaxonomyDialog } from '~/components/admin/Taxonomy'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
@@ -78,7 +77,7 @@ const DeleteTaxonomy = ({ id, actionRoute, intent }: { id: string; actionRoute: 
 	const fetcher = useFetcher()
 
 	return (
-		<fetcher.Form method="DELETE" action={actionRoute}>
+		<fetcher.Form method="DELETE" action={actionRoute} className="ml-auto">
 			<input type="hidden" name="id" value={id} />
 			<input type="hidden" name="intent" value={intent} />
 			<Button variant={'destructive'}>Delete</Button>
@@ -101,9 +100,11 @@ export const tagColumns: ColumnDef<SerializedTaxonomies['tags'][number]>[] = [
 	},
 	{
 		accessorKey: 'id',
-		header: 'Action',
+		header: () => <div className="w-full text-right">Action</div>,
 		cell: ({ row }) => (
-			<DeleteTaxonomy id={row.original.id} actionRoute={'/admin/posts/action/taxonomy'} intent={'tag'} />
+			<div className="w-full flex">
+				<DeleteTaxonomy id={row.original.id} actionRoute={'/admin/posts/action/taxonomy'} intent={'tag'} />
+			</div>
 		),
 	},
 ]
@@ -131,13 +132,11 @@ export const categoryColumns: ColumnDef<SerializedTaxonomies['categories'][numbe
 	},
 	{
 		accessorKey: 'id',
-		header: 'Action',
+		header: () => <div className="w-full text-right">Action</div>,
 		cell: ({ row }) => (
-			<DeleteTaxonomy id={row.original.id} actionRoute={'/admin/posts/action/taxonomy'} intent={'category'} />
+			<div className="w-full flex">
+				<DeleteTaxonomy id={row.original.id} actionRoute={'/admin/posts/action/taxonomy'} intent={'category'} />
+			</div>
 		),
-		meta: {
-			// Define your own meta and use it in <DataTable>
-			className: 'ml-auth',
-		},
 	},
 ]

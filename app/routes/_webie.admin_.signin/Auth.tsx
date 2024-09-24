@@ -6,7 +6,7 @@ import { Label } from '~/components/ui/label'
 import { Loading } from '~/components/Loading'
 export const description = "A simple login form with email and password. The submit button says 'Sign in'."
 
-export const Auth = () => {
+export const SignInForm = () => {
 	const navigation = useNavigation()
 
 	const isSubmitting = navigation.formAction === '/admin/signin'
