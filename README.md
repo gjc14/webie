@@ -36,6 +36,11 @@ You should:
 2. Have a [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) (MongoDB's cloud service) account to host your database,
    every project has up to 1 free 512MB M0 cluster.
 3. Have a [Resend](https://resend.com/) account to send email.
+
+<!-- prettier-ignore -->
+> [!INFO]
+> You should allow all IPs, or all posible IPs, to connect to your MongoDB Atlas project when deploy, because deploying services often run various IPs. Go to your project in MongoDB Atlas **Network Access > Actions > EDIT > Allow access from anywhere**.
+
 4. Have either Cloudflare Turnstile, [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
    [hCaptcha](https://www.hcaptcha.com/) (upcoming...) to secure your subscribe form.
 5. Chose where to deploy your Webie application.
@@ -65,6 +70,7 @@ mv .env.sample .env
 5. `COOKIE_SECRET`: Used to make your cookies secure. Run
    `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to get one
 6. `RESEND_API_KEY`: Send emails via Resend.
+7. `BASE_URL`: This is the domain where you're hosting your Webie.
 
 <!-- prettier-ignore -->
 > [!WARNING]

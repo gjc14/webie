@@ -48,7 +48,7 @@ export const sendMagicLink = async (
 
 	const resend = new Resend(process.env.EMIAL_API_KEY)
 	const { data, error } = await resend.emails.send({
-		from: 'Yin <email@yinc.me>',
+		from: `${process.env.BASE_URL ? `Webie <email@${process.env.BASE_URL}>` : 'Acme <onboarding@resend.dev>'}`,
 		to: [email],
 		subject: 'Your magic link',
 		react: MagicLinkEmail({ magicLink }),
