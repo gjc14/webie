@@ -1,11 +1,9 @@
 import { setCustomTheme, useTheme } from '~/lib/hooks/theme-provider'
 
 export function ThemeToggle({
-	variant,
 	size,
 	className,
 }: {
-	variant?: 'fancy' | 'normal'
 	size?: 'sm'
 	className?: string
 }) {
@@ -19,7 +17,12 @@ export function ThemeToggle({
 // NormalDarkModeToggle
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 import { cn } from '~/lib/utils'
 
 const NormalDarkModeToggle = ({ size }: { size?: 'sm' }) => {
@@ -28,7 +31,11 @@ const NormalDarkModeToggle = ({ size }: { size?: 'sm' }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon" className={`${size === 'sm' ? 'h-6 w-6' : 'h-9 w-9'} p-1`}>
+				<Button
+					variant="outline"
+					size="icon"
+					className={`${size === 'sm' ? 'h-6 w-6' : 'h-9 w-9'} p-1`}
+				>
 					<Sun
 						className={`${
 							size === 'sm' ? 'scale-[.7]' : 'scale-90'
