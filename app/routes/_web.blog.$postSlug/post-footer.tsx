@@ -1,11 +1,19 @@
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons'
 import { useNavigate } from '@remix-run/react'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { SerializedLoader } from './route'
 
-export const PostFooter = ({ post }: { post: SerializedLoader['post'] }) => {
+export const PostFooter = ({
+	post,
+	prev,
+	next,
+}: {
+	post: SerializedLoader['post']
+	prev: { title: string; slug: string } | null
+	next: { title: string; slug: string } | null
+}) => {
 	const navigate = useNavigate()
 
 	return (
@@ -29,25 +37,27 @@ export const PostFooter = ({ post }: { post: SerializedLoader['post'] }) => {
 			<Separator />
 
 			{/* Navigation area */}
-			{/* <div className="flex justify-between items-center my-6">
+			<div className="flex justify-between items-center my-6">
 				<Button
-					onClick={() => alert('not implemented')}
-					variant={'ghost'}
+					onClick={() => navigate(`/blog/${prev?.slug}`)}
+					variant={'link'}
 					className="flex items-center gap-1.5"
+					disabled={!prev}
 				>
-					<ArrowLeft size={16} />
-					last post
+					<ArrowLeftIcon />
+					{prev ? prev.title : 'previous post'}
 				</Button>
 
 				<Button
-					onClick={() => alert('not implemented')}
-					variant={'ghost'}
+					onClick={() => navigate(`/blog/${next?.slug}`)}
+					variant={'link'}
 					className="flex items-center gap-1.5"
+					disabled={!next}
 				>
-					next post
-					<ArrowRight size={16} />
+					{next ? next.title : 'next post'}
+					<ArrowRightIcon />
 				</Button>
-			</div> */}
+			</div>
 		</footer>
 	)
 }

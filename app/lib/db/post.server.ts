@@ -57,6 +57,8 @@ export const getPostBySlug = async (
 	slug: string
 ): Promise<{
 	post: typeof post
+	prev: { title: string; slug: string } | null
+	next: { title: string; slug: string } | null
 }> => {
 	const post = await prisma.post.findFirst({
 		where: { slug },
@@ -75,7 +77,23 @@ export const getPostBySlug = async (
 		},
 	})
 
-	return { post }
+	if (!post) {
+		return { post: null, prev: null, next: null }
+	}
+
+	const prev = await prisma.post.findFirst({
+		where: { createdAt: { lt: post.createdAt } },
+		select: { slug: true, title: true },
+		orderBy: { createdAt: 'desc' },
+	})
+
+	const next = await prisma.post.findFirst({
+		where: { createdAt: { gt: post.createdAt } },
+		select: { slug: true, title: true },
+		orderBy: { createdAt: 'asc' },
+	})
+
+	return { post, prev, next }
 }
 
 interface CreatePostProps {

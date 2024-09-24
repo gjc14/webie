@@ -19,11 +19,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	}
 
 	try {
-		const { post } = await getPostBySlug(params.postSlug)
+		const { post, prev, next } = await getPostBySlug(params.postSlug)
 		if (!post) {
 			throw new Response('Post not found', { status: 404 })
 		}
-		return json({ post })
+		return json({ post, prev, next })
 	} catch (error) {
 		console.error(error)
 		throw new Response('Post not found', { status: 404 })
@@ -34,7 +34,7 @@ export type SerializedLoader = SerializeFrom<typeof loader>
 
 export default function BlogPost() {
 	const navigate = useNavigate()
-	const { post } = useLoaderData<typeof loader>()
+	const { post, prev, next } = useLoaderData<typeof loader>()
 	const [html, setHtml] = useState('')
 	const lowlight = createLowlight(common)
 	const languages = lowlight.listLanguages()
@@ -63,7 +63,7 @@ export default function BlogPost() {
 
 			<article dangerouslySetInnerHTML={{ __html: html }} />
 
-			<PostFooter post={post} />
+			<PostFooter post={post} next={next} prev={prev} />
 		</div>
 	)
 }
