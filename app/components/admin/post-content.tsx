@@ -11,6 +11,7 @@ import { PostStatus } from '~/schema/database'
 
 export const PostContent = ({
 	post,
+	onInputChange,
 }: {
 	post?: Post & {
 		seo: {
@@ -18,6 +19,7 @@ export const PostContent = ({
 			description: Seo['description']
 		}
 	}
+	onInputChange?: () => void
 }) => {
 	const titleRef = useRef<HTMLInputElement>(null)
 	const slugRef = useRef<HTMLInputElement>(null)
@@ -37,6 +39,7 @@ export const PostContent = ({
 						type="text"
 						placeholder="What is your post title?"
 						defaultValue={post?.title}
+						onChange={onInputChange}
 					/>
 				</div>
 				<div className="w-full">
@@ -47,6 +50,7 @@ export const PostContent = ({
 							content={content}
 							onUpdate={updateContent => {
 								setContent(updateContent)
+								onInputChange?.()
 							}}
 							onFocus={() => {
 								contentWrapperRef.current?.classList.add('border-primary')
@@ -62,7 +66,7 @@ export const PostContent = ({
 			<section className="grow flex flex-col gap-5">
 				<div>
 					<Label htmlFor="status">Status</Label>
-					<Select defaultValue={post?.status || 'DRAFT'} name="status">
+					<Select defaultValue={post?.status || 'DRAFT'} name="status" onValueChange={onInputChange}>
 						<SelectTrigger id="status" className="w-[180px]">
 							<SelectValue placeholder="Status" />
 						</SelectTrigger>
@@ -86,6 +90,7 @@ export const PostContent = ({
 							type="text"
 							placeholder="How to display your post in the URL?"
 							defaultValue={post?.slug}
+							onChange={onInputChange}
 						/>
 						<Button
 							type="button"
@@ -116,6 +121,7 @@ export const PostContent = ({
 						rows={3}
 						placeholder="If empty, the first 50 caracteres of the content will be used."
 						defaultValue={post?.excerpt}
+						onChange={onInputChange}
 					/>
 				</div>
 
@@ -131,6 +137,7 @@ export const PostContent = ({
 							type="text"
 							placeholder="Meta tilte should match Title (H1) for SEO."
 							defaultValue={post?.seo.title ?? undefined}
+							onChange={onInputChange}
 						/>
 						<Button
 							type="button"
@@ -153,6 +160,7 @@ export const PostContent = ({
 						rows={3}
 						placeholder="Short description about your post..."
 						defaultValue={post?.seo.description ?? undefined}
+						onChange={onInputChange}
 					/>
 				</div>
 			</section>

@@ -1,8 +1,62 @@
-import { ReactNode } from 'react'
+import { useNavigate } from '@remix-run/react'
+import { ArrowLeftCircle } from 'lucide-react'
+import { ReactNode, useState } from 'react'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '~/components/ui/alert-dialog'
 import { cn } from '~/lib/utils'
 
-const AdminSectionWrapper = ({ children, className }: { children?: ReactNode; className?: string }) => {
-	return <section className={cn('flex flex-col p-10 w-full gap-5', className)}>{children}</section>
+const AdminSectionWrapper = ({
+	children,
+	className,
+	shouldConfirm,
+	promptMessage = 'Are you sure you want to discard changes?',
+	promptTitle = 'Discard changes?',
+	hideReturnButton = false,
+}: {
+	children?: ReactNode
+	className?: string
+	shouldConfirm?: boolean
+	promptMessage?: string
+	promptTitle?: string
+	hideReturnButton?: boolean
+}) => {
+	const navigate = useNavigate()
+	const [open, setOpen] = useState(false)
+
+	return (
+		<section className={cn('relative flex flex-col p-10 mt-2.5 w-full gap-5', className)}>
+			{!hideReturnButton && (
+				<ArrowLeftCircle
+					size={16}
+					className="absolute top-3.5 cursor-pointer"
+					onClick={() => (shouldConfirm ? setOpen(true) : navigate(-1))}
+					aria-label="return to last page"
+				/>
+			)}
+			{children}
+
+			<AlertDialog open={open} onOpenChange={setOpen}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>{promptTitle}</AlertDialogTitle>
+						<AlertDialogDescription>{promptMessage}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction onClick={() => navigate(-1)}>Discard</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</section>
+	)
 }
 
 const AdminHeader = ({ children, className }: { children?: ReactNode; className?: string }) => {

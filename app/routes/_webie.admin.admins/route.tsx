@@ -81,7 +81,7 @@ export default function AdminAdminUsers() {
 	const isSubmitting = fetcher.formAction === '/admin/admins/invite'
 
 	return (
-		<AdminSectionWrapper>
+		<AdminSectionWrapper hideReturnButton>
 			<AdminHeader>
 				<AdminTitle>Admins</AdminTitle>
 				<AdminActions>

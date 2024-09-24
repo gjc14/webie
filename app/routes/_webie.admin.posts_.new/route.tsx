@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, useFetcher } from '@remix-run/react'
 import { Loader2, PlusCircle, Trash } from 'lucide-react'
+import { useState } from 'react'
 import { z } from 'zod'
 import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
 import { PostContent } from '~/components/admin/post-content'
@@ -86,10 +87,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AdminPost() {
 	const fetcher = useFetcher()
+	const [isDirty, setIsDirty] = useState(false)
 	const isSubmitting = fetcher.state === 'submitting'
 
+	const handleInputChange = () => {
+		setIsDirty(true)
+	}
+
 	return (
-		<AdminSectionWrapper>
+		<AdminSectionWrapper
+			promptTitle="Discard Post"
+			promptMessage="You have unsaved changes. Are you sure you want to leave?"
+			shouldConfirm={isDirty}
+		>
 			<AdminHeader>
 				<AdminTitle>New Post</AdminTitle>
 				<AdminActions>
@@ -128,9 +138,10 @@ export default function AdminPost() {
 				onSubmit={e => {
 					e.preventDefault()
 					fetcher.submit(e.currentTarget, { method: 'POST' })
+					setIsDirty(false)
 				}}
 			>
-				<PostContent />
+				<PostContent onInputChange={handleInputChange} />
 			</Form>
 		</AdminSectionWrapper>
 	)

@@ -29,7 +29,7 @@ export default function AdminPost() {
 	const { posts, tags, categories } = useLoaderData<typeof loader>()
 
 	return (
-		<AdminSectionWrapper>
+		<AdminSectionWrapper hideReturnButton>
 			<AdminHeader>
 				<AdminTitle>Posts</AdminTitle>
 				<AdminActions>
