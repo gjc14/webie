@@ -11,6 +11,7 @@
 -   **ORM**: [Prisma](https://www.prisma.io/)
 -   **Style**: [tailwindcss](https://tailwindcss.com/)
 -   **UI LIbrary**: [shadcn/ui](https://ui.shadcn.com/)
+-   **Email SDK**: [Resend](https://resend.com/)
 
 ## Why use Webie?
 
@@ -19,6 +20,7 @@
 3. Fully modulized, take what you want and build with _Typescript_, _HTML_, _JSX_, and _inline class_ (tailwindcss)
 4. Built-in blog system with WYSIWYG text editor.
 5. Optimized for performance, start with **score 100**, tested by [PageSpeed](https://pagespeed.web.dev/).
+6. Authenticate with **Email Magic Link**.
 
 ---
 
@@ -30,12 +32,13 @@
 
 You should:
 
-1. Have an useful IDE. (e.g. [Visual Studio Code](https://code.visualstudio.com/))
-2. Have an [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) (MongoDB's cloud service) account to host your database,
+1. Have a useful IDE. (e.g. [Visual Studio Code](https://code.visualstudio.com/))
+2. Have a [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) (MongoDB's cloud service) account to host your database,
    every project has up to 1 free 512MB M0 cluster.
-3. Have either Cloudflare Turnstile, [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
+3. Have a [Resend](https://resend.com/) account to send email.
+4. Have either Cloudflare Turnstile, [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
    [hCaptcha](https://www.hcaptcha.com/) (upcoming...) to secure your subscribe form.
-4. Chose where to deploy your Webie application.
+5. Chose where to deploy your Webie application.
 
 ## Usage
 
@@ -57,6 +60,11 @@ mv .env.sample .env
 3. (optional) `TURNSTILE_SECRET_KEY`: Used to
    [verify Turnstile token](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/) get in the
    frontend in the backend
+4. `AED_SECRET`: Used to encrypt your magic link for authentication flow. Run
+   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` to get one.
+5. `COOKIE_SECRET`: Used to make your cookies secure. Run
+   `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to get one
+6. `RESEND_API_KEY`: Send emails via Resend.
 
 <!-- prettier-ignore -->
 > [!WARNING]
@@ -75,6 +83,33 @@ npm i && npx prisma generate && npx prisma db push
 
 Run this in `/` shell to start in dev mode, press `q` to exit application, `r` to restart.
 
+> For first time ever, you should pass in your email to set as admin, after verify, you will see `role : "ADMIN"` in the
+> database **User** table.
+
+```sh
+npm run dev --email=your@ema.il
+```
+
+If you have already created admin:
+
 ```sh
 npm run dev
+```
+
+4. Sign in at route `/admin`
+
+# Documents
+
+## Action
+
+### Conventional Return
+
+```ts
+interface ActionResponse {
+	data?: {}
+	msg?: string
+	err?: string
+}
+
+return json<ActionResponse>({ msg: 'Action success 🎉' })
 ```

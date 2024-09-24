@@ -2,7 +2,7 @@ import { useFetcher } from '@remix-run/react'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { Loading } from '../Loading'
+import { Loading } from '~/components/Loading'
 import { TurnstileWidget } from './Turnstile'
 
 export const CTA = ({ subscribeRoute = '/blog/action/subscribe' }: { subscribeRoute?: string }) => {

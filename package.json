@@ -4,8 +4,8 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"build": "remix vite:build",
-		"dev": "remix vite:dev",
+		"build": "EMAIL=$npm_config_email node scripts/checkAdmin.js && remix vite:build",
+		"dev": "EMAIL=$npm_config_email node scripts/checkAdmin.js && remix vite:dev",
 		"lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
 		"start": "remix-serve ./build/server/index.js",
 		"typecheck": "tsc"
@@ -36,6 +36,7 @@
 		"@tiptap/pm": "^2.7.2",
 		"@tiptap/react": "^2.7.2",
 		"@tiptap/starter-kit": "^2.7.2",
+		"bson": "^4.7.2",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"crypto-js": "^4.2.0",

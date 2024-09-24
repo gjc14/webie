@@ -3,7 +3,7 @@ import { Body, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, 
 export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 	<Html>
 		<Head />
-		<Preview>Log in with this magic link.</Preview>
+		<Preview>Sign in with this magic link.</Preview>
 		<Body style={main}>
 			<Container style={container}>
 				<Heading style={heading}>🪄 Your magic link</Heading>
@@ -15,7 +15,13 @@ export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 					</Text>
 					<Text style={paragraph}>If you didn't request this, please ignore this email.</Text>
 				</Section>
-				<Text style={paragraph}>Wish you best!</Text>
+				<Text style={paragraph}>
+					Best, <br />- Webie Team {'<3'}
+				</Text>
+				<Hr style={hr} />
+				<Text style={footer}>
+					Build with <Link href="https://webie.dev">webie.dev</Link>
+				</Text>
 			</Container>
 		</Body>
 	</Html>
@@ -32,7 +38,6 @@ const main = {
 const container = {
 	margin: '0 auto',
 	padding: '20px 25px 48px',
-	backgroundImage: 'url("/assets/raycast-bg.png")',
 	backgroundPosition: 'bottom',
 	backgroundRepeat: 'no-repeat, no-repeat',
 }
@@ -53,7 +58,7 @@ const paragraph = {
 }
 
 const link = {
-	color: '#FF6363',
+	color: '#ffcc00',
 }
 
 const hr = {

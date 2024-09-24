@@ -17,19 +17,7 @@ export const getUser = async (email: string): Promise<{ user: User | null }> => 
 	return { user }
 }
 
-export const testDatabaseConnection = async (): Promise<void> => {
-	try {
-		await prisma.$connect()
-		console.log('Database connection successful')
-	} catch (error) {
-		console.error('Database connection failed', error)
-	} finally {
-		await prisma.$disconnect()
-	}
-}
-
 export const getUserById = async (id: string): Promise<{ user: User | null }> => {
-	testDatabaseConnection()
 	const user = await prisma.user.findFirst({ where: { id } })
 	return { user }
 }
