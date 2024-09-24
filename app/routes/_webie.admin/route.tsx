@@ -1,6 +1,6 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
-import { NavBar } from '~/components/admin/NavBar'
+import { Nav } from '~/components/admin/Nav'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { decodedAdminToken } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
@@ -20,7 +20,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Admin() {
 	return (
 		<div className="flex flex-col sm:flex-row">
-			<NavBar />
+			<Nav />
 
 			<main className="grow w-full max-w-full h-auto flex flex-col items-center sm:h-screen sm:overflow-scroll">
 				<ScrollArea className="w-full overflow-x-auto">

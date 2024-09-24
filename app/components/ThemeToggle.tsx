@@ -1,8 +1,16 @@
 import { setCustomTheme, useTheme } from '~/lib/hooks/theme-provider'
 
-export function ThemeToggle({ variant, size }: { variant?: 'fancy' | 'normal'; size?: 'sm' }) {
+export function ThemeToggle({
+	variant,
+	size,
+	className,
+}: {
+	variant?: 'fancy' | 'normal'
+	size?: 'sm'
+	className?: string
+}) {
 	return (
-		<div className="flex items-center justify-center">
+		<div className={cn('flex items-center justify-center', className)}>
 			<NormalDarkModeToggle size={size} />
 		</div>
 	)
@@ -12,6 +20,7 @@ export function ThemeToggle({ variant, size }: { variant?: 'fancy' | 'normal'; s
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
+import { cn } from '~/lib/utils'
 
 const NormalDarkModeToggle = ({ size }: { size?: 'sm' }) => {
 	const { setTheme } = useTheme()

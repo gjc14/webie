@@ -18,7 +18,7 @@ import { Separator } from '~/components/ui/separator'
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '~/components/ui/sheet'
 import { cn } from '~/lib/utils'
 
-export const NavBar = () => {
+export const Nav = () => {
 	const [open, setOpen] = useState(false)
 
 	return (
@@ -60,11 +60,11 @@ const NavContent = ({
 		<nav className={cn('w-52', className)}>
 			{isSubmitting && <FullScreenLoading />}
 			<aside className="h-screen w-full flex flex-col top-0 left-0 z-10 py-5 px-3 border-r">
-				<div className="mx-2.5 flex justify-between items-center">
+				<div className="ml-2.5 flex justify-between items-center">
 					<NavLink to="/admin" className="w-fit">
 						<LayoutDashboard />
 					</NavLink>
-					<ThemeToggle />
+					<ThemeToggle className="mr-5 sm:mr-0" />
 				</div>
 
 				<ul className="space-y-3 my-6">
