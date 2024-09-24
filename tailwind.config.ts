@@ -5,6 +5,15 @@ export default {
 	content: ['./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}'],
 	theme: {
 		extend: {
+			typography: {
+				DEFAULT: {
+					// Remove inline code "`" from the default styles
+					css: {
+						'code::before': { content: 'none' },
+						'code::after': { content: 'none' },
+					},
+				},
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -54,5 +63,8 @@ export default {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+	plugins: [
+		require('tailwindcss-animate'),
+		require('@tailwindcss/typography'),
+	],
 } satisfies Config

@@ -1,9 +1,14 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
 import { Form, Link, useFetcher, useLoaderData } from '@remix-run/react'
-import { Loader2, Save, Trash } from 'lucide-react'
+import { ExternalLink, Loader2, Save, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
+import {
+	AdminActions,
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
 import { PostContent } from '~/components/admin/post-content'
 import {
 	AlertDialog,
@@ -55,7 +60,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	if (!zResult.success || !zResult.data) {
 		console.log('updatePostData', zResult.error.issues)
-		const message = zResult.error.issues.map(issue => `${issue.message} ${issue.path[0]}`).join(' & ')
+		const message = zResult.error.issues
+			.map(issue => `${issue.message} ${issue.path[0]}`)
+			.join(' & ')
 		return json({ data: null, err: message }, { status: 400 })
 	}
 
@@ -115,21 +122,32 @@ export default function AdminPost() {
 			promptMessage="You have unsaved changes. Are you sure you want to leave?"
 		>
 			<AdminHeader>
-				<AdminTitle description={'Post id: ' + post.id}>Edit Post</AdminTitle>
+				<AdminTitle description={'Post id: ' + post.id}>
+					Edit Post
+				</AdminTitle>
 				<AdminActions>
-					<Button variant={'link'} onClick={() => (window.location.href = `/blog/${post.slug}`)}>
-						See post
-					</Button>
+					<Link to={`/blog/${post.slug}`} target="_blank">
+						<Button variant={'link'}>
+							See post
+							<ExternalLink size={12} className="ml-1" />
+						</Button>
+					</Link>
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
-							<Button className="space-x-1.5" size={'sm'} variant={'destructive'}>
+							<Button
+								className="space-x-1.5"
+								size={'sm'}
+								variant={'destructive'}
+							>
 								<Trash height={16} width={16} />
 								<p className="text-xs">Discard</p>
 							</Button>
 						</AlertDialogTrigger>
 						<AlertDialogContent>
 							<AlertDialogHeader>
-								<AlertDialogTitle>Discard Post</AlertDialogTitle>
+								<AlertDialogTitle>
+									Discard Post
+								</AlertDialogTitle>
 								<AlertDialogDescription>
 									Are you sure you want to discard this post
 								</AlertDialogDescription>
@@ -137,14 +155,24 @@ export default function AdminPost() {
 							<AlertDialogFooter>
 								<AlertDialogCancel>Cancel</AlertDialogCancel>
 								<Link to="/admin/posts">
-									<AlertDialogAction>Discard</AlertDialogAction>
+									<AlertDialogAction>
+										Discard
+									</AlertDialogAction>
 								</Link>
 							</AlertDialogFooter>
 						</AlertDialogContent>
 					</AlertDialog>
 
-					<Button form="update-post" className="space-x-1.5" size={'sm'}>
-						{isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+					<Button
+						form="update-post"
+						className="space-x-1.5"
+						size={'sm'}
+					>
+						{isSubmitting ? (
+							<Loader2 size={16} className="animate-spin" />
+						) : (
+							<Save size={16} />
+						)}
 						<p className="text-xs">Save</p>
 					</Button>
 				</AdminActions>
@@ -162,7 +190,11 @@ export default function AdminPost() {
 				<PostContent
 					post={
 						post
-							? { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
+							? {
+									...post,
+									createdAt: new Date(post.createdAt),
+									updatedAt: new Date(post.updatedAt),
+							  }
 							: undefined
 					}
 					onInputChange={handleInputChange}

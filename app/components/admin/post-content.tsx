@@ -4,7 +4,13 @@ import DefaultTipTap from '~/components/editor/default-tiptap'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '~/components/ui/select'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { PostStatus } from '~/schema/database'
@@ -44,8 +50,16 @@ export const PostContent = ({
 				</div>
 				<div className="w-full">
 					<Label htmlFor="content">Content</Label>
-					<div ref={contentWrapperRef} className="max-w-full p-3 border border-border rounded-md">
-						<input id="content" type="hidden" name="content" defaultValue={content} />
+					<div
+						ref={contentWrapperRef}
+						className="max-w-full p-3 border border-border rounded-md"
+					>
+						<input
+							id="content"
+							type="hidden"
+							name="content"
+							defaultValue={content}
+						/>
 						<DefaultTipTap
 							content={content}
 							onUpdate={updateContent => {
@@ -53,10 +67,14 @@ export const PostContent = ({
 								onInputChange?.()
 							}}
 							onFocus={() => {
-								contentWrapperRef.current?.classList.add('border-primary')
+								contentWrapperRef.current?.classList.add(
+									'border-primary'
+								)
 							}}
 							onBlur={() => {
-								contentWrapperRef.current?.classList.remove('border-primary')
+								contentWrapperRef.current?.classList.remove(
+									'border-primary'
+								)
 							}}
 						/>
 					</div>
@@ -66,7 +84,11 @@ export const PostContent = ({
 			<section className="grow flex flex-col gap-5">
 				<div>
 					<Label htmlFor="status">Status</Label>
-					<Select defaultValue={post?.status || 'DRAFT'} name="status" onValueChange={onInputChange}>
+					<Select
+						defaultValue={post?.status || 'DRAFT'}
+						name="status"
+						onValueChange={onInputChange}
+					>
 						<SelectTrigger id="status" className="w-[180px]">
 							<SelectValue placeholder="Status" />
 						</SelectTrigger>
@@ -144,7 +166,8 @@ export const PostContent = ({
 							variant={'outline'}
 							onClick={() => {
 								if (titleRef.current && seoTitleRef.current) {
-									seoTitleRef.current.value = titleRef.current.value
+									seoTitleRef.current.value =
+										titleRef.current.value
 								}
 							}}
 						>
