@@ -4,16 +4,18 @@ import './styles.scss'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { Color } from '@tiptap/extension-color'
 import Highlight from '@tiptap/extension-highlight'
-import Superscript from '@tiptap/extension-superscript'
-import Subscript from '@tiptap/extension-subscript'
 import Placeholder from '@tiptap/extension-placeholder'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
 import Underline from '@tiptap/extension-underline'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { common, createLowlight } from 'lowlight'
-import { MenuBar } from './menu-bar'
+// import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
+import { DefaultFloatingMenu } from '../components/menus/floating-menu'
+import { MenuBar } from '../components/menus/menu-bar'
 
 export const extensions = [
 	StarterKit.configure({
@@ -63,7 +65,9 @@ export default (props: {
 
 	return (
 		<>
-			<MenuBar editor={editor} />
+			{editor && <MenuBar editor={editor} />}
+			{/* {editor && <DefaultBubbleMenu editor={editor} />} */}
+			{editor && <DefaultFloatingMenu editor={editor} />}
 			<EditorContent editor={editor} />
 		</>
 	)

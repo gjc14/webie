@@ -1,5 +1,3 @@
-import 'highlight.js/styles/base16/atelier-dune.min.css'
-
 import { Editor } from '@tiptap/react'
 import {
 	AlignCenter,
@@ -8,7 +6,6 @@ import {
 	Bold,
 	Braces,
 	Code,
-	Command,
 	CornerDownRight,
 	Heading2,
 	Heading3,
@@ -19,7 +16,6 @@ import {
 	List,
 	ListOrdered,
 	Minus,
-	Option,
 	Pilcrow,
 	Quote,
 	Redo,
@@ -30,15 +26,8 @@ import {
 	Underline as UnderlineIcon,
 	Undo,
 } from 'lucide-react'
-import React from 'react'
-import { Button, ButtonProps } from '~/components/ui/button'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '~/components/ui/tooltip'
-import { cn } from '~/lib/utils'
+import { Separator } from '~/components/ui/separator'
+import { ToggleButton } from '../ToggleButton'
 
 export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 	if (!editor) {
@@ -47,7 +36,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 
 	return (
 		<div id="menu-bar" className="my-3 py-1.5 border-y">
-			<div id="buttons" className="flex flex-wrap gap-1 p-1">
+			<div id="buttons" className="flex flex-wrap items-center gap-1 p-1">
 				{/* Formatting */}
 				<ToggleButton
 					onClick={() => editor.chain().focus().toggleBold().run()}
@@ -57,13 +46,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ B
-						</span>
-					}
+					tooltipShortcut={'Ctrl + B'}
+					tooltip="Bold"
 				>
 					<Bold size={14} />
 				</ToggleButton>
@@ -77,13 +61,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ I
-						</span>
-					}
+					tooltipShortcut={'Ctrl + I'}
+					tooltip="Italic"
 				>
 					<Italic size={14} />
 				</ToggleButton>
@@ -99,13 +78,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ U
-						</span>
-					}
+					tooltipShortcut={'Ctrl + U'}
+					tooltip="Underline"
 				>
 					<UnderlineIcon size={14} />
 				</ToggleButton>
@@ -119,13 +93,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + S
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + S'}
+					tooltip="Strikethrough"
 				>
 					<Strikethrough size={14} />
 				</ToggleButton>
@@ -141,13 +110,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + H
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + H'}
+					tooltip="Highlight"
 				>
 					<Highlighter size={14} />
 				</ToggleButton>
@@ -163,13 +127,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ .
-						</span>
-					}
+					tooltipShortcut={'Ctrl + .'}
+					tooltip="Superscript"
 				>
 					<Superscript size={14} />
 				</ToggleButton>
@@ -185,13 +144,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ ,
-						</span>
-					}
+					tooltipShortcut={'Ctrl + ,'}
+					tooltip="Subscript"
 				>
 					<Subscript size={14} />
 				</ToggleButton>
@@ -203,22 +157,22 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ E
-						</span>
-					}
+					tooltipShortcut={'Ctrl + E'}
+					tooltip="Code"
 				>
 					<Code size={14} />
 				</ToggleButton>
 				<ToggleButton
 					onClick={() => editor.chain().focus().unsetAllMarks().run()}
+					tooltip="Remove Formatting"
 				>
 					<RemoveFormatting size={14} />
 				</ToggleButton>
 
+				<Separator
+					orientation="vertical"
+					className="h-full min-h-[1.5rem]"
+				/>
 				{/* Paragraph */}
 				<ToggleButton
 					onClick={() => editor.chain().focus().setParagraph().run()}
@@ -227,14 +181,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl + Alt + 0&nbsp;/&nbsp;
-							<Command size={12} />
-							&nbsp;+&nbsp;
-							<Option size={12} /> + 0
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Alt + 0'}
+					tooltip="Paragraph"
 				>
 					<Pilcrow size={14} />
 				</ToggleButton>
@@ -247,14 +195,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl + Alt + 2&nbsp;/&nbsp;
-							<Command size={12} />
-							&nbsp;+&nbsp;
-							<Option size={12} /> + 2
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Alt + 2'}
+					tooltip="Heading 2"
 				>
 					<Heading2 size={14} />
 				</ToggleButton>
@@ -267,14 +209,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl + Alt + 3&nbsp;/&nbsp;
-							<Command size={12} />
-							&nbsp;+&nbsp;
-							<Option size={12} /> + 3
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Alt + 3'}
+					tooltip="Heading 3"
 				>
 					<Heading3 size={14} />
 				</ToggleButton>
@@ -287,14 +223,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl + Alt + 4&nbsp;/&nbsp;
-							<Command size={12} />
-							&nbsp;+&nbsp;
-							<Option size={12} /> + 4
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Alt + 4'}
+					tooltip="Heading 4"
 				>
 					<Heading4 size={14} />
 				</ToggleButton>
@@ -307,18 +237,16 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl + Alt + 5&nbsp;/&nbsp;
-							<Command size={12} />
-							&nbsp;+&nbsp;
-							<Option size={12} /> + 5
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Alt + 5'}
+					tooltip="Heading 5"
 				>
 					<Heading5 size={14} />
 				</ToggleButton>
 
+				<Separator
+					orientation="vertical"
+					className="h-full min-h-[1.5rem]"
+				/>
 				<ToggleButton
 					onClick={() =>
 						editor.chain().focus().toggleOrderedList().run()
@@ -328,13 +256,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + 7
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + 7'}
+					tooltip="Ordered List"
 				>
 					<ListOrdered size={14} />
 				</ToggleButton>
@@ -347,13 +270,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + 8
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + 8'}
+					tooltip="Bullet List"
 				>
 					<List size={14} />
 				</ToggleButton>
@@ -366,14 +284,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl + Alt + C&nbsp;/&nbsp;
-							<Command size={12} />
-							&nbsp;+&nbsp;
-							<Option size={12} /> + C
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Alt + C'}
+					tooltip="Code Block"
 				>
 					<Braces size={14} />
 				</ToggleButton>
@@ -386,16 +298,16 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + B
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + B'}
+					tooltip="Blockquote"
 				>
 					<Quote size={14} />
 				</ToggleButton>
+
+				<Separator
+					orientation="vertical"
+					className="h-full min-h-[1.5rem]"
+				/>
 				<ToggleButton
 					onClick={() =>
 						editor.chain().focus().setTextAlign('left').run()
@@ -405,13 +317,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + L
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + L'}
+					tooltip="Align Left"
 				>
 					<AlignLeft size={14} />
 				</ToggleButton>
@@ -424,13 +331,8 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + E
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + E'}
+					tooltip="Align Center"
 				>
 					<AlignCenter size={14} />
 				</ToggleButton>
@@ -443,61 +345,50 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 							? 'bg-accent text-bg-accent-foreground'
 							: ''
 					}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + R
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + R'}
+					tooltip="Align Right"
 				>
 					<AlignRight size={14} />
 				</ToggleButton>
 
+				<Separator
+					orientation="vertical"
+					className="h-full min-h-[1.5rem]"
+				/>
 				<ToggleButton
 					onClick={() =>
 						editor.chain().focus().setHorizontalRule().run()
 					}
+					tooltip="Separator"
 				>
 					<Minus size={14} />
 				</ToggleButton>
 				<ToggleButton
 					onClick={() => editor.chain().focus().setHardBreak().run()}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Enter
-						</span>
-					}
+					tooltipShortcut={'Ctrl / Shift + Enter'}
+					tooltip="Hard Break"
 				>
 					<CornerDownRight size={14} />
 				</ToggleButton>
 
+				<Separator
+					orientation="vertical"
+					className="h-full min-h-[1.5rem]"
+				/>
 				{/* Undo/Redo */}
 				<ToggleButton
 					onClick={() => editor.chain().focus().undo().run()}
 					disabled={!editor.can().chain().focus().undo().run()}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Z
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Z'}
+					tooltip="Undo"
 				>
 					<Undo size={14} />
 				</ToggleButton>
 				<ToggleButton
 					onClick={() => editor.chain().focus().redo().run()}
 					disabled={!editor.can().chain().focus().redo().run()}
-					tooltip={
-						<span className="flex items-center">
-							Ctrl/
-							<Command size={12} />
-							&nbsp;+ Shift + Z
-						</span>
-					}
+					tooltipShortcut={'Ctrl + Shift + Z'}
+					tooltip="Redo"
 				>
 					<Redo size={14} />
 				</ToggleButton>
@@ -505,42 +396,3 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
 		</div>
 	)
 }
-
-interface ToggleButtonProps extends ButtonProps {
-	tooltip?: React.ReactNode
-}
-
-const ToggleButton = React.forwardRef<HTMLButtonElement, ToggleButtonProps>(
-	({ className, tooltip, ...props }, ref) => {
-		if (!tooltip) {
-			return (
-				<Button
-					type="button"
-					variant={'ghost'}
-					className={cn('px-2 py-1 h-7', className)}
-					ref={ref}
-					{...props}
-				/>
-			)
-		} else {
-			return (
-				<TooltipProvider delayDuration={300}>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								type="button"
-								variant={'ghost'}
-								className={cn('px-2 py-1 h-7', className)}
-								ref={ref}
-								{...props}
-							/>
-						</TooltipTrigger>
-						<TooltipContent className="px-2 py-1">
-							{tooltip}
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)
-		}
-	}
-)
