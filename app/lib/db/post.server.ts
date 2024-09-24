@@ -1,5 +1,5 @@
-import { prisma } from './_db.server'
 import { PostStatus } from '~/schema/database'
+import { prisma } from './_db.server'
 
 export const getPosts = async (props?: {
 	n?: number
@@ -70,6 +70,8 @@ export const getPostBySlug = async (
 					imageUri: true,
 				},
 			},
+			categories: true,
+			tags: true,
 		},
 	})
 

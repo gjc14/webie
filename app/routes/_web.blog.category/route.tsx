@@ -38,7 +38,7 @@ export default function Category() {
 			<h1 className="visually-hidden">{seo?.title}</h1>
 			<SectionWrapper className="mt-28">
 				<PostCollection
-					title={`Looking for ${
+					title={`Listing ${
 						query.length !== 0
 							? (subCatequery.length !== 0 ? `${subCatequery} in` : '') + ' ' + query.join(', ')
 							: subCatequery.length !== 0

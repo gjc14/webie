@@ -88,6 +88,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 	try {
 		const { post } = await getPost(postId)
+		if (!post) {
+			throw new Error('Post not found')
+		}
 		return json({ post })
 	} catch (error) {
 		console.error(error)
@@ -112,8 +115,11 @@ export default function AdminPost() {
 			promptMessage="You have unsaved changes. Are you sure you want to leave?"
 		>
 			<AdminHeader>
-				<AdminTitle description={'Post id: ' + post?.id}>Edit Post</AdminTitle>
+				<AdminTitle description={'Post id: ' + post.id}>Edit Post</AdminTitle>
 				<AdminActions>
+					<Button variant={'link'} onClick={() => (window.location.href = `/blog/${post.slug}`)}>
+						See post
+					</Button>
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
 							<Button className="space-x-1.5" size={'sm'} variant={'destructive'}>
@@ -125,7 +131,7 @@ export default function AdminPost() {
 							<AlertDialogHeader>
 								<AlertDialogTitle>Discard Post</AlertDialogTitle>
 								<AlertDialogDescription>
-									Are you sure you want to discard this post?
+									Are you sure you want to discard this post
 								</AlertDialogDescription>
 							</AlertDialogHeader>
 							<AlertDialogFooter>
@@ -152,11 +158,11 @@ export default function AdminPost() {
 					setIsDirty(false)
 				}}
 			>
-				<input hidden name="id" defaultValue={post?.id} />
+				<input hidden name="id" defaultValue={post.id} />
 				<PostContent
 					post={
 						post
-							? { ...post, createdAt: new Date(post?.createdAt), updatedAt: new Date(post.updatedAt) }
+							? { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
 							: undefined
 					}
 					onInputChange={handleInputChange}

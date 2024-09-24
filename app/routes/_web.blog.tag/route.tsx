@@ -32,7 +32,7 @@ export default function Tag() {
 			<h1 className="visually-hidden">{seo?.title}</h1>
 			<SectionWrapper className="mt-28">
 				<PostCollection
-					title={`Looking for ${query.length === 0 ? 'all posts' : query.join(', ')}`}
+					title={`Listing ${query.length === 0 ? 'all posts' : query.join(', ')}`}
 					posts={posts.map(post => {
 						return { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
 					})}
