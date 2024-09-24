@@ -5,7 +5,7 @@ import { Input } from '~/components/ui/input'
 import { Loading } from '../Loading'
 import { TurnstileWidget } from './Turnstile'
 
-export const CTA = ({ subscribeRoute = '/blog/subscribe' }: { subscribeRoute?: string }) => {
+export const CTA = ({ subscribeRoute = '/blog/action/subscribe' }: { subscribeRoute?: string }) => {
 	const fetcher = useFetcher()
 	const isSubmitting = fetcher.formAction === subscribeRoute
 
