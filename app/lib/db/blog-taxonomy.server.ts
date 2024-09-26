@@ -25,7 +25,9 @@ export const getCategories = async (): Promise<{
 	return { categories }
 }
 
-export const deleteCategory = async (id: string): Promise<{ category: typeof category }> => {
+export const deleteCategory = async (
+	id: string
+): Promise<{ category: typeof category }> => {
 	const category = await prisma.category.delete({
 		where: { id },
 	})
@@ -48,12 +50,16 @@ export const createSubcategory = async (props: {
 	return { subcategory }
 }
 
-export const getSubcategories = async (): Promise<{ subcategories: typeof subcategories }> => {
+export const getSubcategories = async (): Promise<{
+	subcategories: typeof subcategories
+}> => {
 	const subcategories = await prisma.subCategory.findMany()
 	return { subcategories }
 }
 
-export const deleteSubcategory = async (id: string): Promise<{ subcategory: typeof subcategory }> => {
+export const deleteSubcategory = async (
+	id: string
+): Promise<{ subcategory: typeof subcategory }> => {
 	const subcategory = await prisma.subCategory.delete({
 		where: { id },
 	})
@@ -61,7 +67,13 @@ export const deleteSubcategory = async (id: string): Promise<{ subcategory: type
 }
 
 // Tag functions
-export const createTag = async ({ id, name }: { id: string; name: string }): Promise<{ tag: typeof tag }> => {
+export const createTag = async ({
+	id,
+	name,
+}: {
+	id: string
+	name: string
+}): Promise<{ tag: typeof tag }> => {
 	const tag = await prisma.tag.create({
 		data: { id, name },
 	})

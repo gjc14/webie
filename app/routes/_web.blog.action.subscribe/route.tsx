@@ -19,7 +19,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const zCaptchaResult = captchaSchema.safeParse(captcha)
 
 	if (!zCaptchaResult.success) {
-		return json({ msg: 'Invalid arguments, missing captcha' }, { status: 400 })
+		return json(
+			{ msg: 'Invalid arguments, missing captcha' },
+			{ status: 400 }
+		)
 	}
 
 	switch (zCaptchaResult.data) {
@@ -31,9 +34,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 				return json({ msg: 'Invalid arguments' }, { status: 400 })
 			}
 
-			const passed = await TurnstileSiteVerify(zTurnstileResult.data, process.env.TURNSTILE_SECRET_KEY ?? '')
+			const passed = await TurnstileSiteVerify(
+				zTurnstileResult.data,
+				process.env.TURNSTILE_SECRET_KEY ?? ''
+			)
 			if (!passed) {
-				return json({ msg: 'CAPTCHA Failed! Please try again' }, { status: 400 })
+				return json(
+					{ msg: 'CAPTCHA Failed! Please try again' },
+					{ status: 400 }
+				)
 			}
 			break
 		}
@@ -52,7 +61,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		return json({ msg: 'Invalid arguments' }, { status: 400 })
 	}
 
-	const { role, status } = { role: 'SUBSCRIBER', status: 'ACTIVE' } satisfies { role: UserRole; status: UserStatus }
+	const { role, status } = {
+		role: 'SUBSCRIBER',
+		status: 'ACTIVE',
+	} satisfies { role: UserRole; status: UserStatus }
 	try {
 		const { user } = await createUser(zResult.data, role, status)
 

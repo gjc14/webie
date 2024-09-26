@@ -6,7 +6,12 @@ import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return data?.seo ? [{ title: data.seo.title }, { name: 'description', content: data.seo.description }] : []
+	return data?.seo
+		? [
+				{ title: data.seo.title },
+				{ name: 'description', content: data.seo.description },
+		  ]
+		: []
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -31,7 +36,11 @@ export default function Index() {
 				<PostCollection
 					title="All posts"
 					posts={posts.map(post => {
-						return { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
+						return {
+							...post,
+							createdAt: new Date(post.createdAt),
+							updatedAt: new Date(post.updatedAt),
+						}
 					})}
 				/>
 			</SectionWrapper>

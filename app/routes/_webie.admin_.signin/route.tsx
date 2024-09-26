@@ -1,4 +1,8 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node'
+import {
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
+	redirect,
+} from '@remix-run/node'
 import { SignInForm } from './auth'
 import { authCookie, getToken, sendMagicLink } from '~/lib/db/auth.server'
 import { getUser, getUserById } from '~/lib/db/user.server'
@@ -13,7 +17,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	const { user: existingUser } = await getUser(email)
 
-	if (!existingUser || existingUser.role !== 'ADMIN' || existingUser.status !== 'ACTIVE') {
+	if (
+		!existingUser ||
+		existingUser.role !== 'ADMIN' ||
+		existingUser.status !== 'ACTIVE'
+	) {
 		throw new Response('Unauthorized', { status: 401 })
 	}
 

@@ -1,7 +1,13 @@
 import { Loader2 } from 'lucide-react'
 import { cn } from '~/lib/utils'
 
-export const Loading = ({ className, size = 16 }: { className?: string; size?: number }) => {
+export const Loading = ({
+	className,
+	size = 16,
+}: {
+	className?: string
+	size?: number
+}) => {
 	return <Loader2 size={size} className={cn('animate-spin', className)} />
 }
 
@@ -13,7 +19,13 @@ export const FullScreenLoading = () => {
 	)
 }
 
-export const SymmetrySpinner = ({ className, white }: { className?: string; white?: boolean }) => {
+export const SymmetrySpinner = ({
+	className,
+	white,
+}: {
+	className?: string
+	white?: boolean
+}) => {
 	return (
 		<div
 			className={cn(

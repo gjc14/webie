@@ -4,8 +4,16 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Loader2, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
-import { AdminDataTableMoreMenu, DataTable } from '~/components/admin/data-table'
+import {
+	AdminActions,
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
+import {
+	AdminDataTableMoreMenu,
+	DataTable,
+} from '~/components/admin/data-table'
 import { UserContent } from '~/components/admin/user-content'
 import { Button } from '~/components/ui/button'
 import {
@@ -45,8 +53,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	if (!zResult.success || !zResult.data) {
 		console.log('updateUserData', zResult.error.issues)
-		const message = zResult.error.issues.map(issue => `${issue.message} ${issue.path[0]}`).join(' & ')
-		return json({ data: zResult.error.issues, err: message }, { status: 400 })
+		const message = zResult.error.issues
+			.map(issue => `${issue.message} ${issue.path[0]}`)
+			.join(' & ')
+		return json(
+			{ data: zResult.error.issues, err: message },
+			{ status: 400 }
+		)
 	}
 
 	try {
@@ -63,7 +76,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		return json({ msg: 'Success update ' + (user.name || user.email) })
 	} catch (error) {
 		console.error(error)
-		return json({ data: null, err: 'Failed to update user' }, { status: 400 })
+		return json(
+			{ data: null, err: 'Failed to update user' },
+			{ status: 400 }
+		)
 	}
 }
 
@@ -89,7 +105,10 @@ export default function AdminAdminUsers() {
 						<DialogTrigger asChild>
 							<Button className="space-x-1.5" size={'sm'}>
 								{isSubmitting ? (
-									<Loader2 size={16} className="animate-spin" />
+									<Loader2
+										size={16}
+										className="animate-spin"
+									/>
 								) : (
 									<PlusCircle size={16} />
 								)}
@@ -100,11 +119,20 @@ export default function AdminAdminUsers() {
 							<DialogHeader>
 								<DialogTitle>Invite admin</DialogTitle>
 								<DialogDescription>
-									We'll send an invitation link to email address provided.
+									We'll send an invitation link to email
+									address provided.
 								</DialogDescription>
 							</DialogHeader>
-							<fetcher.Form className="flex gap-1.5" method="POST" action="/admin/admins/invite">
-								<Input placeholder="Email" type="email" name="email" />
+							<fetcher.Form
+								className="flex gap-1.5"
+								method="POST"
+								action="/admin/admins/invite"
+							>
+								<Input
+									placeholder="Email"
+									type="email"
+									name="email"
+								/>
 								<DialogClose asChild>
 									<Button type="submit">{'Invite'}</Button>
 								</DialogClose>
@@ -117,8 +145,16 @@ export default function AdminAdminUsers() {
 				{table => (
 					<Input
 						placeholder="Filter email..."
-						value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('email')?.setFilterValue(event.target.value)}
+						value={
+							(table
+								.getColumn('email')
+								?.getFilterValue() as string) ?? ''
+						}
+						onChange={event =>
+							table
+								.getColumn('email')
+								?.setFilterValue(event.target.value)
+						}
 						className="max-w-sm"
 					/>
 				)}
@@ -159,12 +195,17 @@ export const columns: ColumnDef<SerializedUser>[] = [
 			return (
 				<>
 					<AdminDataTableMoreMenu route="admins" id={id}>
-						<DropdownMenuItem onClick={() => setOpen(true)}>Edit</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => setOpen(true)}>
+							Edit
+						</DropdownMenuItem>
 					</AdminDataTableMoreMenu>
 					<UserContent
 						method="PUT"
 						action={`/admin/admins`}
-						user={{ ...row.original, updatedAt: new Date(row.original.updatedAt) }}
+						user={{
+							...row.original,
+							updatedAt: new Date(row.original.updatedAt),
+						}}
 						open={open}
 						setOpen={setOpen}
 					/>

@@ -24,7 +24,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '~/components/ui/table'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -33,10 +40,17 @@ interface DataTableProps<TData, TValue> {
 	hideColumnFilter?: boolean
 }
 
-export function DataTable<TData, TValue>({ columns, data, children, hideColumnFilter }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+	children,
+	hideColumnFilter,
+}: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	)
 	const [rowSelection, setRowSelection] = useState({})
 
 	const table = useReactTable({
@@ -80,7 +94,9 @@ export function DataTable<TData, TValue>({ columns, data, children, hideColumnFi
 											key={column.id}
 											className="capitalize"
 											checked={column.getIsVisible()}
-											onCheckedChange={value => column.toggleVisibility(!!value)}
+											onCheckedChange={value =>
+												column.toggleVisibility(!!value)
+											}
 											onSelect={e => e.preventDefault()}
 										>
 											{column.id}
@@ -94,13 +110,23 @@ export function DataTable<TData, TValue>({ columns, data, children, hideColumnFi
 			<Table aria-label="table">
 				<TableHeader aria-label="table-header">
 					{table.getHeaderGroups().map(headerGroup => (
-						<TableRow key={headerGroup.id} className="border-primary">
+						<TableRow
+							key={headerGroup.id}
+							className="border-primary"
+						>
 							{headerGroup.headers.map(header => {
 								return (
-									<TableHead key={header.id} colSpan={header.colSpan}>
+									<TableHead
+										key={header.id}
+										colSpan={header.colSpan}
+									>
 										{header.isPlaceholder
 											? null
-											: flexRender(header.column.columnDef.header, header.getContext())}
+											: flexRender(
+													header.column.columnDef
+														.header,
+													header.getContext()
+											  )}
 									</TableHead>
 								)
 							})}
@@ -118,14 +144,20 @@ export function DataTable<TData, TValue>({ columns, data, children, hideColumnFi
 							>
 								{row.getVisibleCells().map(cell => (
 									<TableCell key={cell.id}>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+										{flexRender(
+											cell.column.columnDef.cell,
+											cell.getContext()
+										)}
 									</TableCell>
 								))}
 							</TableRow>
 						))
 					) : (
 						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
+							<TableCell
+								colSpan={columns.length}
+								className="h-24 text-center"
+							>
 								No results.
 							</TableCell>
 						</TableRow>
@@ -134,8 +166,8 @@ export function DataTable<TData, TValue>({ columns, data, children, hideColumnFi
 			</Table>
 			<div className="flex items-center justify-end space-x-2 pt-4">
 				<div className="flex-1 text-sm text-muted-foreground pl-2.5">
-					{table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length}{' '}
-					row(s) selected.
+					{table.getFilteredSelectedRowModel().rows.length} of{' '}
+					{table.getFilteredRowModel().rows.length} row(s) selected.
 				</div>
 				<Button
 					variant="outline"
@@ -145,7 +177,12 @@ export function DataTable<TData, TValue>({ columns, data, children, hideColumnFi
 				>
 					Previous
 				</Button>
-				<Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => table.nextPage()}
+					disabled={!table.getCanNextPage()}
+				>
 					Next
 				</Button>
 			</div>
@@ -173,7 +210,11 @@ export const AdminDataTableMoreMenu = ({
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" size={'icon'} disabled={isDeleting}>
 					<span className="sr-only">Open menu</span>
-					{isSubmitting ? <Loader2 className="animate-spin" /> : <MoreHorizontal />}
+					{isSubmitting ? (
+						<Loader2 className="animate-spin" />
+					) : (
+						<MoreHorizontal />
+					)}
 				</Button>
 			</DropdownMenuTrigger>
 

@@ -29,7 +29,10 @@ interface MagicLinkPayload {
 
 export const getToken = async (id: string, email: string) => {
 	const exp = Date.now() + 1000 * 60 * 10 // 10 minutes
-	const encryptedData = AES.encrypt(JSON.stringify({ id, email, exp }), process.env.AES_SECRET ?? '').toString()
+	const encryptedData = AES.encrypt(
+		JSON.stringify({ id, email, exp }),
+		process.env.AES_SECRET ?? ''
+	).toString()
 	const base64Token = Base64.stringify(Utf8.parse(encryptedData))
 	return base64Token
 }
@@ -43,7 +46,9 @@ export const sendMagicLink = async (
 	}
 ): Promise<CreateEmailResponseSuccess | null> => {
 	const magicLink = `${origin}/admin/magic?token=${token}${
-		options?.searchParams ? '&' + new URLSearchParams(options?.searchParams).toString() : ''
+		options?.searchParams
+			? '&' + new URLSearchParams(options?.searchParams).toString()
+			: ''
 	}`
 
 	const resend = new Resend(process.env.EMIAL_API_KEY)
@@ -77,10 +82,15 @@ class TokenExpiredError extends Error {
 	}
 }
 
-export const verifyMagicLink = async (token: string): Promise<{ id: string; email: string } | null> => {
+export const verifyMagicLink = async (
+	token: string
+): Promise<{ id: string; email: string } | null> => {
 	try {
 		const encryptedData = Utf8.stringify(Base64.parse(token))
-		const decryptedData = AES.decrypt(encryptedData, process.env.AES_SECRET ?? '').toString(Utf8)
+		const decryptedData = AES.decrypt(
+			encryptedData,
+			process.env.AES_SECRET ?? ''
+		).toString(Utf8)
 		const data = JSON.parse(decryptedData) as MagicLinkPayload
 		if (data.exp < Date.now()) throw new TokenExpiredError('Token expired')
 		return data
@@ -90,7 +100,9 @@ export const verifyMagicLink = async (token: string): Promise<{ id: string; emai
 	}
 }
 
-export const decodedAdminToken = async (cookieString: string | null): Promise<{ id: string }> => {
+export const decodedAdminToken = async (
+	cookieString: string | null
+): Promise<{ id: string }> => {
 	if (!cookieString) throw redirect('/admin/signin')
 
 	// cookie are set in /admin/magic

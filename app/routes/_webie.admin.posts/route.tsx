@@ -2,8 +2,16 @@ import { json, SerializeFrom } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, PlusCircle } from 'lucide-react'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
-import { AdminDataTableMoreMenu, DataTable } from '~/components/admin/data-table'
+import {
+	AdminActions,
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
+import {
+	AdminDataTableMoreMenu,
+	DataTable,
+} from '~/components/admin/data-table'
 import { TaxonomyDialog } from '~/components/admin/taxonomy'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
@@ -46,8 +54,16 @@ export default function AdminPost() {
 				{table => (
 					<Input
 						placeholder="Filter title..."
-						value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('title')?.setFilterValue(event.target.value)}
+						value={
+							(table
+								.getColumn('title')
+								?.getFilterValue() as string) ?? ''
+						}
+						onChange={event =>
+							table
+								.getColumn('title')
+								?.setFilterValue(event.target.value)
+						}
 						className="max-w-sm"
 					/>
 				)}
@@ -78,7 +94,12 @@ export const columns: ColumnDef<SerializedPost>[] = [
 		accessorKey: 'updatedAt',
 		header: ({ column }) => {
 			return (
-				<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+				<Button
+					variant="ghost"
+					onClick={() =>
+						column.toggleSorting(column.getIsSorted() === 'asc')
+					}
+				>
 					Last Update
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>

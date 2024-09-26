@@ -17,7 +17,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 	try {
 		const { seo } = await deleteSEO(id)
-		return json({ msg: `SEO for ${seo.route || seo.title || 'unknown'} delete` })
+		return json({
+			msg: `SEO for ${seo.route || seo.title || 'unknown'} delete`,
+		})
 	} catch (error) {
 		console.error(error)
 		return json({ err: 'Failed to delete SEO' }, { status: 500 })

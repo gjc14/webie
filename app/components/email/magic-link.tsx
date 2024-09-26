@@ -1,4 +1,16 @@
-import { Body, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Text } from '@react-email/components'
+import {
+	Body,
+	Container,
+	Head,
+	Heading,
+	Hr,
+	Html,
+	Img,
+	Link,
+	Preview,
+	Section,
+	Text,
+} from '@react-email/components'
 
 export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 	<Html>
@@ -13,7 +25,9 @@ export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 							👉 Click here to sign in 👈
 						</Link>
 					</Text>
-					<Text style={paragraph}>If you didn't request this, please ignore this email.</Text>
+					<Text style={paragraph}>
+						If you didn't request this, please ignore this email.
+					</Text>
 				</Section>
 				<Text style={paragraph}>
 					Best, <br />- Webie Team {'<3'}

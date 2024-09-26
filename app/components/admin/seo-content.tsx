@@ -33,7 +33,10 @@ export const SeoContent = ({
 	const isSubmitting = fetcher.formAction === action
 
 	useEffect(() => {
-		if (fetcher.state === 'loading' && isConventionalSuccess(fetcher.data)) {
+		if (
+			fetcher.state === 'loading' &&
+			isConventionalSuccess(fetcher.data)
+		) {
 			setOpen(false)
 		}
 	}, [fetcher])
@@ -44,8 +47,12 @@ export const SeoContent = ({
 				<DialogHeader>
 					<DialogTitle>{seo ? 'Edit' : 'Create'} seo</DialogTitle>
 					<DialogDescription>
-						{seo ? 'Make changes of' : 'Create'} your route or post seo here. You could edit in route or
-						post as well. {seo && `Last updated on ${new Date(seo.updatedAt).toLocaleString('zh-TW')}`}
+						{seo ? 'Make changes of' : 'Create'} your route or post
+						seo here. You could edit in route or post as well.{' '}
+						{seo &&
+							`Last updated on ${new Date(
+								seo.updatedAt
+							).toLocaleString('zh-TW')}`}
 					</DialogDescription>
 				</DialogHeader>
 				<Form
@@ -66,7 +73,12 @@ export const SeoContent = ({
 							<Label htmlFor="route" className="text-right">
 								Route
 							</Label>
-							<Input id="route" name="route" className="col-span-3" placeholder="What's your route?" />
+							<Input
+								id="route"
+								name="route"
+								className="col-span-3"
+								placeholder="What's your route?"
+							/>
 						</div>
 					)}
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -98,7 +110,10 @@ export const SeoContent = ({
 				<DialogFooter>
 					<Button form="seo-content">
 						{isSubmitting ? (
-							<Loader2 size={16} className="mr-1.5 animate-spin" />
+							<Loader2
+								size={16}
+								className="mr-1.5 animate-spin"
+							/>
 						) : (
 							<Save size={16} className="mr-1.5" />
 						)}

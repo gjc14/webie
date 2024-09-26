@@ -6,7 +6,12 @@ import { CTA } from '~/components/web/blog/cta'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return data?.seo ? [{ title: data.seo.title }, { name: 'description', content: data.seo.description }] : []
+	return data?.seo
+		? [
+				{ title: data.seo.title },
+				{ name: 'description', content: data.seo.description },
+		  ]
+		: []
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

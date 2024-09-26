@@ -17,9 +17,11 @@
 
 1. Totally free without branding logos.
 2. You own the codebase.
-3. Fully modulized, take what you want and build with _Typescript_, _HTML_, _JSX_, and _inline class_ (tailwindcss)
+3. Fully modulized, take what you want and build with _Typescript_, _HTML_,
+   _JSX_, and _inline class_ (tailwindcss)
 4. Built-in blog system with WYSIWYG text editor.
-5. Optimized for performance, start with **score 100**, tested by [PageSpeed](https://pagespeed.web.dev/).
+5. Optimized for performance, start with **score 100**, tested by
+   [PageSpeed](https://pagespeed.web.dev/).
 6. Authenticate with **Email Magic Link**.
 
 ---
@@ -32,17 +34,21 @@
 
 You should:
 
-1. Have a useful IDE. (e.g. [Visual Studio Code](https://code.visualstudio.com/))
-2. Have a [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) (MongoDB's cloud service) account to host your database,
-   every project has up to 1 free 512MB M0 cluster.
+1. Have a useful IDE. (e.g.
+   [Visual Studio Code](https://code.visualstudio.com/))
+2. Have a [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) (MongoDB's cloud
+   service) account to host your database, every project has up to 1 free 512MB
+   M0 cluster.
 3. Have a [Resend](https://resend.com/) account to send email.
 
 <!-- prettier-ignore -->
 > [!INFO]
 > You should allow all IPs, or all posible IPs, to connect to your MongoDB Atlas project when deploy, because deploying services often run various IPs. Go to your project in MongoDB Atlas **Network Access > Actions > EDIT > Allow access from anywhere**.
 
-4. Have either Cloudflare Turnstile, [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
-   [hCaptcha](https://www.hcaptcha.com/) (upcoming...) to secure your subscribe form.
+4. Have either Cloudflare Turnstile,
+   [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
+   [hCaptcha](https://www.hcaptcha.com/) (upcoming...) to secure your subscribe
+   form.
 5. Chose where to deploy your Webie application.
 
 ## Usage
@@ -57,20 +63,25 @@ Run this in `/` shell.
 mv .env.sample .env
 ```
 
-1. `DATABASE_URL`: We are using MongoDB, please replace your Username, Password, and name your Database Name.
+1. `DATABASE_URL`: We are using MongoDB, please replace your Username, Password,
+   and name your Database Name.
 2. (optional) `VITE_TURNSTILE_SITE_KEY`: This key is used to
-   [get Turnstile token](https://developers.cloudflare.com/turnstile/get-started/) in client, if you use
-   [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) as captcha, so should be exposed in the
-   frontend with _VITE_\_ prefix.
+   [get Turnstile token](https://developers.cloudflare.com/turnstile/get-started/)
+   in client, if you use
+   [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) as
+   captcha, so should be exposed in the frontend with _VITE_\_ prefix.
 3. (optional) `TURNSTILE_SECRET_KEY`: Used to
-   [verify Turnstile token](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/) get in the
-   frontend in the backend
+   [verify Turnstile token](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/)
+   get in the frontend in the backend
 4. `AED_SECRET`: Used to encrypt your magic link for authentication flow. Run
-   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` to get one.
+   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` to
+   get one.
 5. `COOKIE_SECRET`: Used to make your cookies secure. Run
-   `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to get one
+   `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to
+   get one
 6. `RESEND_API_KEY`: Send emails via Resend.
-7. `BASE_URL`: This is the domain where you're hosting your Webie. e.g. `BASE_URL=webie.dev`
+7. `BASE_URL`: This is the domain where you're hosting your Webie. e.g.
+   `BASE_URL=webie.dev`
 
 <!-- prettier-ignore -->
 > [!WARNING]
@@ -87,10 +98,11 @@ npm i && npx prisma generate && npx prisma db push
 
 ### 3. Start in dev mode
 
-Run this in `/` shell to start in dev mode, press `q` to exit application, `r` to restart.
+Run this in `/` shell to start in dev mode, press `q` to exit application, `r`
+to restart.
 
-> For first time ever, you should pass in your email to set as admin, after verify, you will see `role : "ADMIN"` in the
-> database **User** table.
+> For first time ever, you should pass in your email to set as admin, after
+> verify, you will see `role : "ADMIN"` in the database **User** table.
 
 ```sh
 npm run dev --email=your@ema.il

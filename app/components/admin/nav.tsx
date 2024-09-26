@@ -15,7 +15,13 @@ import { FullScreenLoading } from '~/components/loading'
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '~/components/ui/sheet'
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetTitle,
+	SheetTrigger,
+} from '~/components/ui/sheet'
 import { cn } from '~/lib/utils'
 
 export const Nav = () => {
@@ -34,7 +40,10 @@ export const Nav = () => {
 							<Menu />
 						</Button>
 					</SheetTrigger>
-					<SheetContent side={'left'} className="w-full p-0 m-0 border-0 sm:hidden">
+					<SheetContent
+						side={'left'}
+						className="w-full p-0 m-0 border-0 sm:hidden"
+					>
 						<SheetTitle></SheetTitle>
 						<SheetDescription></SheetDescription>
 						<NavContent className="w-full" setOpen={setOpen} />
@@ -87,7 +96,9 @@ const NavContent = ({
 							to="/admin/posts"
 							className={({ isActive }) =>
 								'flex h-fit w-full items-center justify-start px-2.5 py-2.5 gap-2 rounded-lg transition-colors hover:text-foreground sm:py-1.5 ' +
-								(isActive ? 'bg-accent text-foreground ' : 'text-muted-foreground')
+								(isActive
+									? 'bg-accent text-foreground '
+									: 'text-muted-foreground')
 							}
 						>
 							<PenBoxIcon size={18} />
@@ -100,7 +111,9 @@ const NavContent = ({
 							to="/admin/users"
 							className={({ isActive }) =>
 								'flex h-fit w-full items-center justify-start px-2.5 py-2.5 gap-2 rounded-lg transition-colors hover:text-foreground sm:py-1.5 ' +
-								(isActive ? 'bg-accent text-foreground ' : 'text-muted-foreground')
+								(isActive
+									? 'bg-accent text-foreground '
+									: 'text-muted-foreground')
 							}
 						>
 							<User2 size={18} />
@@ -113,7 +126,9 @@ const NavContent = ({
 							to="/admin/seo"
 							className={({ isActive }) =>
 								'flex h-fit w-full items-center justify-start px-2.5 py-2.5 gap-2 rounded-lg transition-colors hover:text-foreground sm:py-1.5 ' +
-								(isActive ? 'bg-accent text-foreground ' : 'text-muted-foreground')
+								(isActive
+									? 'bg-accent text-foreground '
+									: 'text-muted-foreground')
 							}
 						>
 							<TextSearch size={18} />
@@ -126,7 +141,9 @@ const NavContent = ({
 							to="/admin/admins"
 							className={({ isActive }) =>
 								'flex h-fit w-full items-center justify-start px-2.5 py-2.5 gap-2 rounded-lg transition-colors hover:text-foreground sm:py-1.5 ' +
-								(isActive ? 'bg-accent text-foreground ' : 'text-muted-foreground')
+								(isActive
+									? 'bg-accent text-foreground '
+									: 'text-muted-foreground')
 							}
 						>
 							<UserRoundCog size={18} />
@@ -139,7 +156,9 @@ const NavContent = ({
 							to="/admin/taxonomy"
 							className={({ isActive }) =>
 								'flex h-fit w-full items-center justify-start px-2.5 py-2.5 gap-2 rounded-lg transition-colors hover:text-foreground sm:py-1.5 ' +
-								(isActive ? 'bg-accent text-foreground ' : 'text-muted-foreground')
+								(isActive
+									? 'bg-accent text-foreground '
+									: 'text-muted-foreground')
 							}
 						>
 							<Tag size={18} />
@@ -147,10 +166,16 @@ const NavContent = ({
 						</NavLink>
 					</li>
 					<Separator />
-					<li className="p-1 text-xs text-muted-foreground">You have no plugins</li>
+					<li className="p-1 text-xs text-muted-foreground">
+						You have no plugins
+					</li>
 				</ul>
 
-				<Form action="/admin/signout" method="POST" className="mt-auto mx-2 flex flex-col items-start gap-5">
+				<Form
+					action="/admin/signout"
+					method="POST"
+					className="mt-auto mx-2 flex flex-col items-start gap-5"
+				>
 					<button className="flex items-center gap-1.5">
 						<LogOut size={16} />
 						<p className="text-sm">Sign Out</p>

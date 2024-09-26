@@ -6,10 +6,16 @@
 
 import highlight from 'highlight.js'
 
-function parseNodes(nodes: any[], className: string[] = []): { text: string; classes: string[] }[] {
+function parseNodes(
+	nodes: any[],
+	className: string[] = []
+): { text: string; classes: string[] }[] {
 	return nodes
 		.map(node => {
-			const classes = [...className, ...(node.properties ? node.properties.className : [])]
+			const classes = [
+				...className,
+				...(node.properties ? node.properties.className : []),
+			]
 
 			if (node.children) {
 				return parseNodes(node.children, classes)
@@ -27,9 +33,19 @@ function isFunction(param: Function) {
 	return typeof param === 'function'
 }
 
-export function hilightInnerHTML(block: Element, lowlight: any, languages: string[] = []) {
-	if (!['highlight', 'highlightAuto', 'listLanguages'].every(api => isFunction(lowlight[api]))) {
-		throw Error('You should provide an instance of lowlight to use the code-block-lowlight extension')
+export function hilightInnerHTML(
+	block: Element,
+	lowlight: any,
+	languages: string[] = []
+) {
+	if (
+		!['highlight', 'highlightAuto', 'listLanguages'].every(api =>
+			isFunction(lowlight[api])
+		)
+	) {
+		throw Error(
+			'You should provide an instance of lowlight to use the code-block-lowlight extension'
+		)
 	}
 
 	const language = block.className.replace('language-', '')
@@ -40,7 +56,9 @@ export function hilightInnerHTML(block: Element, lowlight: any, languages: strin
 	let result
 	if (
 		language &&
-		(languages.includes(language) || Boolean(highlight.getLanguage(language)) || lowlight.registered?.(language))
+		(languages.includes(language) ||
+			Boolean(highlight.getLanguage(language)) ||
+			lowlight.registered?.(language))
 	) {
 		result = lowlight.highlight(language, content)
 	} else {

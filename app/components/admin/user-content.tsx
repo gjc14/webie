@@ -12,7 +12,13 @@ import {
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '~/components/ui/select'
 import { UserRole, UserStatus } from '~/schema/database'
 
 export const UserContent = ({
@@ -37,7 +43,8 @@ export const UserContent = ({
 				<DialogHeader>
 					<DialogTitle>Edit profile</DialogTitle>
 					<DialogDescription>
-						Make changes to your profile here. Click save when you're done. Last updated on{' '}
+						Make changes to your profile here. Click save when
+						you're done. Last updated on{' '}
 						{user.updatedAt.toLocaleString('zh-TW')}
 					</DialogDescription>
 				</DialogHeader>
@@ -83,7 +90,10 @@ export const UserContent = ({
 						</Label>
 						<Select name="role" defaultValue={user.role}>
 							<SelectTrigger className="col-span-3">
-								<SelectValue id="role" placeholder="what's your role?" />
+								<SelectValue
+									id="role"
+									placeholder="what's your role?"
+								/>
 							</SelectTrigger>
 							<SelectContent>
 								{Object.values(UserRole.enum).map(role => (
@@ -100,7 +110,10 @@ export const UserContent = ({
 						</Label>
 						<Select name="status" defaultValue={user.status}>
 							<SelectTrigger className="col-span-3">
-								<SelectValue id="status" placeholder="what's your status?" />
+								<SelectValue
+									id="status"
+									placeholder="what's your status?"
+								/>
 							</SelectTrigger>
 							<SelectContent>
 								{Object.values(UserStatus.enum).map(status => (
@@ -115,7 +128,10 @@ export const UserContent = ({
 				<DialogFooter>
 					<Button form="user-content">
 						{isSubmitting ? (
-							<Loader2 size={16} className="mr-1.5 animate-spin" />
+							<Loader2
+								size={16}
+								className="mr-1.5 animate-spin"
+							/>
 						) : (
 							<Save size={16} className="mr-1.5" />
 						)}

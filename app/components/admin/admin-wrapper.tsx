@@ -32,12 +32,19 @@ const AdminSectionWrapper = ({
 	const [open, setOpen] = useState(false)
 
 	return (
-		<section className={cn('relative flex flex-col p-10 mt-2.5 w-full gap-5', className)}>
+		<section
+			className={cn(
+				'relative flex flex-col p-10 mt-2.5 w-full gap-5',
+				className
+			)}
+		>
 			{!hideReturnButton && (
 				<ArrowLeftCircle
 					size={16}
 					className="absolute top-3.5 cursor-pointer"
-					onClick={() => (shouldConfirm ? setOpen(true) : navigate(-1))}
+					onClick={() =>
+						shouldConfirm ? setOpen(true) : navigate(-1)
+					}
 					aria-label="return to last page"
 				/>
 			)}
@@ -47,11 +54,15 @@ const AdminSectionWrapper = ({
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>{promptTitle}</AlertDialogTitle>
-						<AlertDialogDescription>{promptMessage}</AlertDialogDescription>
+						<AlertDialogDescription>
+							{promptMessage}
+						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={() => navigate(-1)}>Discard</AlertDialogAction>
+						<AlertDialogAction onClick={() => navigate(-1)}>
+							Discard
+						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
@@ -59,9 +70,20 @@ const AdminSectionWrapper = ({
 	)
 }
 
-const AdminHeader = ({ children, className }: { children?: ReactNode; className?: string }) => {
+const AdminHeader = ({
+	children,
+	className,
+}: {
+	children?: ReactNode
+	className?: string
+}) => {
 	return (
-		<div className={cn('flex justify-between items-center flex-wrap-reverse gap-3', className)}>
+		<div
+			className={cn(
+				'flex justify-between items-center flex-wrap-reverse gap-3',
+				className
+			)}
+		>
 			<>{children}</>
 		</div>
 	)
@@ -82,15 +104,37 @@ const AdminTitle = ({
 		return (
 			<div className="space-y-2">
 				<h2 className={className}>{children}</h2>
-				<p className={cn('text-sm text-muted-foreground', descriptionClassName)}>{description}</p>
+				<p
+					className={cn(
+						'text-sm text-muted-foreground',
+						descriptionClassName
+					)}
+				>
+					{description}
+				</p>
 			</div>
 		)
 	}
 	return <h2 className={className}>{children}</h2>
 }
 
-const AdminActions = ({ children, className }: { children?: ReactNode; className?: string }) => {
-	return <div className={cn('flex flex-nowrap space-x-1.5 sm:space-x-3', className)}>{children}</div>
+const AdminActions = ({
+	children,
+	className,
+}: {
+	children?: ReactNode
+	className?: string
+}) => {
+	return (
+		<div
+			className={cn(
+				'flex flex-nowrap space-x-1.5 sm:space-x-3',
+				className
+			)}
+		>
+			{children}
+		</div>
+	)
 }
 
 export { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle }

@@ -86,7 +86,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 			try {
 				if (request.method === 'POST') {
-					const { id, name, parentId } = subTaxonomySchema.parse(formObject)
+					const { id, name, parentId } =
+						subTaxonomySchema.parse(formObject)
 					await createSubcategory({ id, name, categoryId: parentId })
 					return null
 				} else if (request.method === 'DELETE') {

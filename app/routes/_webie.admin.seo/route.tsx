@@ -4,8 +4,16 @@ import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
-import { AdminDataTableMoreMenu, DataTable } from '~/components/admin/data-table'
+import {
+	AdminActions,
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
+import {
+	AdminDataTableMoreMenu,
+	DataTable,
+} from '~/components/admin/data-table'
 import { SeoContent } from '~/components/admin/seo-content'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
@@ -32,7 +40,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const zResult = SeoUpdateSchmea.safeParse(updateSeoData)
 
 	if (!zResult.success || !zResult.data) {
-		const message = zResult.error.issues.map(issue => `${issue.message} ${issue.path[0]}`).join(' & ')
+		const message = zResult.error.issues
+			.map(issue => `${issue.message} ${issue.path[0]}`)
+			.join(' & ')
 		return json({ err: message }, { status: 400 })
 	}
 
@@ -42,7 +52,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			title: zResult.data.title,
 			description: zResult.data.description,
 		})
-		return json({ msg: `SEO for ${seo.route || seo.title || 'unknown'} updated` })
+		return json({
+			msg: `SEO for ${seo.route || seo.title || 'unknown'} updated`,
+		})
 	} catch (error) {
 		console.error(error)
 		return json({ err: 'Failed to update SEO' }, { status: 500 })
@@ -68,19 +80,36 @@ export default function AdminSEO() {
 					SEO
 				</AdminTitle>
 				<AdminActions>
-					<Button className="space-x-1.5" size={'sm'} onClick={() => setOpen(true)}>
+					<Button
+						className="space-x-1.5"
+						size={'sm'}
+						onClick={() => setOpen(true)}
+					>
 						<PlusCircle size={16} />
 						<p className="text-xs">Create seo</p>
 					</Button>
-					<SeoContent method="POST" action={`/admin/seo/create`} open={open} setOpen={setOpen} />
+					<SeoContent
+						method="POST"
+						action={`/admin/seo/create`}
+						open={open}
+						setOpen={setOpen}
+					/>
 				</AdminActions>
 			</AdminHeader>
 			<DataTable columns={columns} data={seo}>
 				{table => (
 					<Input
 						placeholder="Filter route..."
-						value={(table.getColumn('route')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('route')?.setFilterValue(event.target.value)}
+						value={
+							(table
+								.getColumn('route')
+								?.getFilterValue() as string) ?? ''
+						}
+						onChange={event =>
+							table
+								.getColumn('route')
+								?.setFilterValue(event.target.value)
+						}
 						className="max-w-sm"
 					/>
 				)}
@@ -103,7 +132,11 @@ export const columns: ColumnDef<SerializedSeo>[] = [
 		accessorKey: 'description',
 		header: 'Description',
 		cell: ({ row }) => {
-			return <span className="block w-28 md:w-60 truncate">{row.original.description}</span>
+			return (
+				<span className="block w-28 md:w-60 truncate">
+					{row.original.description}
+				</span>
+			)
 		},
 	},
 	{
@@ -131,9 +164,17 @@ export const columns: ColumnDef<SerializedSeo>[] = [
 			return (
 				<>
 					<AdminDataTableMoreMenu route="seo" id={id}>
-						<DropdownMenuItem onClick={() => setOpen(true)}>Edit</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => setOpen(true)}>
+							Edit
+						</DropdownMenuItem>
 					</AdminDataTableMoreMenu>
-					<SeoContent method="PUT" action={`/admin/seo`} seo={row.original} open={open} setOpen={setOpen} />
+					<SeoContent
+						method="PUT"
+						action={`/admin/seo`}
+						seo={row.original}
+						open={open}
+						setOpen={setOpen}
+					/>
 				</>
 			)
 		},

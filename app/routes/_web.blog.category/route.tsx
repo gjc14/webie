@@ -6,7 +6,12 @@ import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return data?.seo ? [{ title: data.seo.title }, { name: 'description', content: data.seo.description }] : []
+	return data?.seo
+		? [
+				{ title: data.seo.title },
+				{ name: 'description', content: data.seo.description },
+		  ]
+		: []
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -40,13 +45,21 @@ export default function Category() {
 				<PostCollection
 					title={`Listing ${
 						query.length !== 0
-							? (subCatequery.length !== 0 ? `${subCatequery} in` : '') + ' ' + query.join(', ')
+							? (subCatequery.length !== 0
+									? `${subCatequery} in`
+									: '') +
+							  ' ' +
+							  query.join(', ')
 							: subCatequery.length !== 0
 							? subCatequery.join(', ')
 							: 'all posts'
 					}`}
 					posts={posts.map(post => {
-						return { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
+						return {
+							...post,
+							createdAt: new Date(post.createdAt),
+							updatedAt: new Date(post.updatedAt),
+						}
 					})}
 				/>
 			</SectionWrapper>

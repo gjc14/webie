@@ -2,11 +2,17 @@ import { ClientHint, ClientHintsValue } from './utils'
 
 export type { ClientHint }
 
-export function getHintUtils<Hints extends Record<string, ClientHint<any>>>(hints: Hints) {
+export function getHintUtils<Hints extends Record<string, ClientHint<any>>>(
+	hints: Hints
+) {
 	function getCookieValue(cookieString: string, name: string) {
 		const hint = hints[name]
 		if (!hint) {
-			throw new Error(`Unknown client hint: ${typeof name === 'string' ? name : 'Unknown'}`)
+			throw new Error(
+				`Unknown client hint: ${
+					typeof name === 'string' ? name : 'Unknown'
+				}`
+			)
 		}
 		const value = cookieString
 			.split(';')
@@ -29,10 +35,13 @@ export function getHintUtils<Hints extends Record<string, ClientHint<any>>>(hint
 			const hintName = name
 			if ('transform' in hint) {
 				// @ts-expect-error - this is fine (PRs welcome though)
-				acc[hintName] = hint.transform(getCookieValue(cookieString, hintName) ?? hint.fallback)
+				acc[hintName] = hint.transform(
+					getCookieValue(cookieString, hintName) ?? hint.fallback
+				)
 			} else {
 				// @ts-expect-error - this is fine (PRs welcome though)
-				acc[hintName] = getCookieValue(cookieString, hintName) ?? hint.fallback
+				acc[hintName] =
+					getCookieValue(cookieString, hintName) ?? hint.fallback
 			}
 			return acc
 		}, {} as ClientHintsValue<Hints>)

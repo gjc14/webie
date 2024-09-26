@@ -6,7 +6,9 @@ export type ClientHint<Value> = {
 }
 
 export type ClientHintsValue<ClientHintsRecord> = {
-	[K in keyof ClientHintsRecord]: ClientHintsRecord[K] extends ClientHint<infer Value>
+	[K in keyof ClientHintsRecord]: ClientHintsRecord[K] extends ClientHint<
+		infer Value
+	>
 		? ClientHintsRecord[K]['transform'] extends (value: string) => Value
 			? ReturnType<ClientHintsRecord[K]['transform']>
 			: ClientHintsRecord[K]['fallback']

@@ -6,13 +6,18 @@ import { ExternalLink } from 'lucide-react'
 import { DataTable } from '~/components/web/blog/post-data-table'
 import { Input } from '~/components/ui/input'
 
-export type DisplayPost = Post & { author: { email: string; name: string | null } } & {
+export type DisplayPost = Post & {
+	author: { email: string; name: string | null }
+} & {
 	seo: { title: string | null; description: string | null }
 }
 
 export const LatestPosts = ({ posts }: { posts: DisplayPost[] }) => {
 	return (
-		<div id="latest-post" className="mx-auto max-w-5xl px-5 py-8 text-primary md:px-9">
+		<div
+			id="latest-post"
+			className="mx-auto max-w-5xl px-5 py-8 text-primary md:px-9"
+		>
 			<div className="flex flex-wrap justify-between items-end mb-12 gap-5">
 				<motion.h2
 					initial={{ y: 48, opacity: 0 }}
@@ -40,9 +45,18 @@ export const LatestPosts = ({ posts }: { posts: DisplayPost[] }) => {
 	)
 }
 
-export const PostCollection = ({ title, posts }: { title: string; posts: DisplayPost[] }) => {
+export const PostCollection = ({
+	title,
+	posts,
+}: {
+	title: string
+	posts: DisplayPost[]
+}) => {
 	return (
-		<div id="category-post" className="mx-auto max-w-5xl px-5 py-8 text-primary md:px-9">
+		<div
+			id="category-post"
+			className="mx-auto max-w-5xl px-5 py-8 text-primary md:px-9"
+		>
 			<div className="flex flex-wrap justify-between items-end mb-12 gap-5">
 				<motion.h2
 					initial={{ y: 48, opacity: 0 }}
@@ -70,14 +84,26 @@ const Posts = ({
 }) => {
 	return (
 		<>
-			<DataTable columns={columns} data={posts} hidePagination={hidePagination}>
+			<DataTable
+				columns={columns}
+				data={posts}
+				hidePagination={hidePagination}
+			>
 				{table => (
 					<>
 						{!hideSearch && (
 							<Input
 								placeholder="I'm looking for..."
-								value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-								onChange={event => table.getColumn('title')?.setFilterValue(event.target.value)}
+								value={
+									(table
+										.getColumn('title')
+										?.getFilterValue() as string) ?? ''
+								}
+								onChange={event =>
+									table
+										.getColumn('title')
+										?.setFilterValue(event.target.value)
+								}
 								className="max-w-sm"
 								aria-label="search for post"
 							/>
@@ -115,10 +141,12 @@ export const columns: ColumnDef<DisplayPost>[] = [
 			return (
 				<div className="text-end space-y-1">
 					<p className="text-xs">
-						<span className="font-semibold">Written by</span> {author}
+						<span className="font-semibold">Written by</span>{' '}
+						{author}
 					</p>
 					<p className="text-xs">
-						<span className="font-semibold">Date</span> {updatedAt.toLocaleDateString('zh-TW')}
+						<span className="font-semibold">Date</span>{' '}
+						{updatedAt.toLocaleDateString('zh-TW')}
 					</p>
 				</div>
 			)

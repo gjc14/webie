@@ -12,6 +12,7 @@ const flashSession = createCookieSessionStorage({
 	},
 })
 
-const { commitSession: commitFlashSession, getSession: getFlashSession } = flashSession
+const { commitSession: commitFlashSession, getSession: getFlashSession } =
+	flashSession
 
 export { commitFlashSession, getFlashSession }

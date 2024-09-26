@@ -3,7 +3,12 @@ import { Form, Link, useFetcher } from '@remix-run/react'
 import { Loader2, PlusCircle, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
+import {
+	AdminActions,
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
 import { PostContent } from '~/components/admin/post-content'
 import {
 	AlertDialog,
@@ -53,7 +58,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	if (!zResult.success || !zResult.data) {
 		console.log('createPostData', zResult.error.issues)
-		const message = zResult.error.issues.map(issue => `${issue.message} ${issue.path[0]}`).join(' & ')
+		const message = zResult.error.issues
+			.map(issue => `${issue.message} ${issue.path[0]}`)
+			.join(' & ')
 		return json({ data: null, err: message }, { status: 400 })
 	}
 
@@ -72,7 +79,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		})
 
 		const flashSession = await getFlashSession()
-		flashSession.flash('success', [`Post "${post.title}" created successfully`])
+		flashSession.flash('success', [
+			`Post "${post.title}" created successfully`,
+		])
 
 		return redirect(`/admin/posts/${post.id}`, {
 			headers: {
@@ -105,14 +114,20 @@ export default function AdminPost() {
 				<AdminActions>
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
-							<Button className="space-x-1.5" size={'sm'} variant={'destructive'}>
+							<Button
+								className="space-x-1.5"
+								size={'sm'}
+								variant={'destructive'}
+							>
 								<Trash height={16} width={16} />
 								<p className="text-xs">Discard</p>
 							</Button>
 						</AlertDialogTrigger>
 						<AlertDialogContent>
 							<AlertDialogHeader>
-								<AlertDialogTitle>Discard Post</AlertDialogTitle>
+								<AlertDialogTitle>
+									Discard Post
+								</AlertDialogTitle>
 								<AlertDialogDescription>
 									Are you sure you want to discard this post?
 								</AlertDialogDescription>
@@ -120,14 +135,20 @@ export default function AdminPost() {
 							<AlertDialogFooter>
 								<AlertDialogCancel>Cancel</AlertDialogCancel>
 								<Link to="/admin/posts">
-									<AlertDialogAction>Discard</AlertDialogAction>
+									<AlertDialogAction>
+										Discard
+									</AlertDialogAction>
 								</Link>
 							</AlertDialogFooter>
 						</AlertDialogContent>
 					</AlertDialog>
 
 					<Button form="new-post" className="space-x-1.5" size={'sm'}>
-						{isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <PlusCircle size={16} />}
+						{isSubmitting ? (
+							<Loader2 size={16} className="animate-spin" />
+						) : (
+							<PlusCircle size={16} />
+						)}
 						<p className="text-xs">Save</p>
 					</Button>
 				</AdminActions>

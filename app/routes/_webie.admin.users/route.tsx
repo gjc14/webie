@@ -2,8 +2,15 @@ import { json, SerializeFrom } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { useState } from 'react'
-import { AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
-import { AdminDataTableMoreMenu, DataTable } from '~/components/admin/data-table'
+import {
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
+import {
+	AdminDataTableMoreMenu,
+	DataTable,
+} from '~/components/admin/data-table'
 import { UserContent } from '~/components/admin/user-content'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
@@ -31,8 +38,16 @@ export default function AdminAllUsers() {
 				{table => (
 					<Input
 						placeholder="Filter email..."
-						value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('email')?.setFilterValue(event.target.value)}
+						value={
+							(table
+								.getColumn('email')
+								?.getFilterValue() as string) ?? ''
+						}
+						onChange={event =>
+							table
+								.getColumn('email')
+								?.setFilterValue(event.target.value)
+						}
 						className="max-w-sm"
 					/>
 				)}
@@ -73,12 +88,17 @@ export const columns: ColumnDef<SerializedUser>[] = [
 			return (
 				<>
 					<AdminDataTableMoreMenu route="admins" id={id}>
-						<DropdownMenuItem onClick={() => setOpen(true)}>Edit</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => setOpen(true)}>
+							Edit
+						</DropdownMenuItem>
 					</AdminDataTableMoreMenu>
 					<UserContent
 						method="PUT"
 						action={`/admin/users`}
-						user={{ ...row.original, updatedAt: new Date(row.original.updatedAt) }}
+						user={{
+							...row.original,
+							updatedAt: new Date(row.original.updatedAt),
+						}}
 						open={open}
 						setOpen={setOpen}
 					/>

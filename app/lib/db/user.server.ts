@@ -12,17 +12,25 @@ export const getAdminUsers = async (): Promise<{ users: User[] }> => {
 	return { users }
 }
 
-export const getUser = async (email: string): Promise<{ user: User | null }> => {
+export const getUser = async (
+	email: string
+): Promise<{ user: User | null }> => {
 	const user = await prisma.user.findFirst({ where: { email } })
 	return { user }
 }
 
-export const getUserById = async (id: string): Promise<{ user: User | null }> => {
+export const getUserById = async (
+	id: string
+): Promise<{ user: User | null }> => {
 	const user = await prisma.user.findFirst({ where: { id } })
 	return { user }
 }
 
-export const createUser = async (email: string, role: UserRole, status: UserStatus): Promise<{ user: User }> => {
+export const createUser = async (
+	email: string,
+	role: UserRole,
+	status: UserStatus
+): Promise<{ user: User }> => {
 	const user = await prisma.user.create({
 		data: {
 			email,
@@ -51,7 +59,9 @@ export const updateUser = async (props: {
 	return { user }
 }
 
-export const deleteUser = async (id: Prisma.UserWhereUniqueInput): Promise<{ user: User }> => {
+export const deleteUser = async (
+	id: Prisma.UserWhereUniqueInput
+): Promise<{ user: User }> => {
 	const user = await prisma.user.delete({
 		where: id,
 	})

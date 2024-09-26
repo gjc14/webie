@@ -21,7 +21,14 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '~/components/ui/table'
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -30,10 +37,17 @@ interface DataTableProps<TData, TValue> {
 	hidePagination?: boolean
 }
 
-export function DataTable<TData, TValue>({ columns, data, children, hidePagination }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+	children,
+	hidePagination,
+}: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	)
 	const [rowSelection, setRowSelection] = useState({})
 
 	const table = useReactTable({
@@ -97,7 +111,11 @@ export function DataTable<TData, TValue>({ columns, data, children, hidePaginati
 									<TableHead key={header.id}>
 										{header.isPlaceholder
 											? null
-											: flexRender(header.column.columnDef.header, header.getContext())}
+											: flexRender(
+													header.column.columnDef
+														.header,
+													header.getContext()
+											  )}
 									</TableHead>
 								)
 							})}
@@ -114,15 +132,24 @@ export function DataTable<TData, TValue>({ columns, data, children, hidePaginati
 								className="border-0"
 							>
 								{row.getVisibleCells().map(cell => (
-									<TableCell key={cell.id} aria-label="table-cell">
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									<TableCell
+										key={cell.id}
+										aria-label="table-cell"
+									>
+										{flexRender(
+											cell.column.columnDef.cell,
+											cell.getContext()
+										)}
 									</TableCell>
 								))}
 							</TableRow>
 						))
 					) : (
 						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
+							<TableCell
+								colSpan={columns.length}
+								className="h-24 text-center"
+							>
 								No results.
 							</TableCell>
 						</TableRow>

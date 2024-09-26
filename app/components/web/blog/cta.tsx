@@ -1,11 +1,21 @@
 import { useFetcher } from '@remix-run/react'
 import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Loading } from '~/components/loading'
 import { TurnstileWidget } from '~/components/web/captchas/turnstile'
 
-export const CTA = ({ subscribeRoute = '/blog/action/subscribe' }: { subscribeRoute?: string }) => {
+export const CTA = ({
+	subscribeRoute = '/blog/action/subscribe',
+}: {
+	subscribeRoute?: string
+}) => {
 	const fetcher = useFetcher()
 	const isSubmitting = fetcher.formAction === subscribeRoute
 
@@ -15,16 +25,32 @@ export const CTA = ({ subscribeRoute = '/blog/action/subscribe' }: { subscribeRo
 				<CardHeader>
 					<CardTitle>Subscribe to new posts!</CardTitle>
 					<CardDescription>
-						If you like topics like <span>Tech, Software Development, or Travel</span>. Welcome to subscribe
-						for free to get some fresh ideas!
+						If you like topics like{' '}
+						<span>Tech, Software Development, or Travel</span>.
+						Welcome to subscribe for free to get some fresh ideas!
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<fetcher.Form className="w-full flex items-center gap-3" method="POST" action={subscribeRoute}>
+					<fetcher.Form
+						className="w-full flex items-center gap-3"
+						method="POST"
+						action={subscribeRoute}
+					>
 						<Input placeholder="your@ema.il" name="email" />
 						<Button size={'sm'}>
-							<Loading size={16} className={`absolute ${isSubmitting ? 'opacity-100' : 'opacity-0'}`} />
-							<span className={`${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>Subscribe</span>
+							<Loading
+								size={16}
+								className={`absolute ${
+									isSubmitting ? 'opacity-100' : 'opacity-0'
+								}`}
+							/>
+							<span
+								className={`${
+									isSubmitting ? 'opacity-0' : 'opacity-100'
+								}`}
+							>
+								Subscribe
+							</span>
 						</Button>
 
 						{/* Chose your CAPTCHA */}

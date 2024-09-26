@@ -14,7 +14,14 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
-export function ThemeProvider({ children, cookieTheme, ...props }: { children: React.ReactNode; cookieTheme: Theme }) {
+export function ThemeProvider({
+	children,
+	cookieTheme,
+	...props
+}: {
+	children: React.ReactNode
+	cookieTheme: Theme
+}) {
 	const { revalidate } = useRevalidator()
 
 	// You could use { setTheme } = useTheme() somewhere in the children
@@ -29,7 +36,11 @@ export function ThemeProvider({ children, cookieTheme, ...props }: { children: R
 				document.documentElement.classList.add(theme)
 			} else {
 				// When remove custom theme, set system theme
-				const systemThem = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+				const systemThem = window.matchMedia(
+					'(prefers-color-scheme: dark)'
+				).matches
+					? 'dark'
+					: 'light'
 				document.documentElement.classList.add(systemThem)
 			}
 
@@ -48,7 +59,8 @@ export function ThemeProvider({ children, cookieTheme, ...props }: { children: R
 export const useTheme = () => {
 	const context = useContext(ThemeProviderContext)
 
-	if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
+	if (context === undefined)
+		throw new Error('useTheme must be used within a ThemeProvider')
 
 	return context
 }

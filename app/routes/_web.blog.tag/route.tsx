@@ -6,7 +6,12 @@ import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return data?.seo ? [{ title: data.seo.title }, { name: 'description', content: data.seo.description }] : []
+	return data?.seo
+		? [
+				{ title: data.seo.title },
+				{ name: 'description', content: data.seo.description },
+		  ]
+		: []
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -16,7 +21,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	query = query.filter(q => q !== '')
 
 	try {
-		const { posts } = await getPosts({ status: 'PUBLISHED', tagFilter: query })
+		const { posts } = await getPosts({
+			status: 'PUBLISHED',
+			tagFilter: query,
+		})
 		return json({ seo, posts, query })
 	} catch (error) {
 		console.error(error)
@@ -32,9 +40,15 @@ export default function Tag() {
 			<h1 className="visually-hidden">{seo?.title}</h1>
 			<SectionWrapper className="mt-28">
 				<PostCollection
-					title={`Listing ${query.length === 0 ? 'all posts' : query.join(', ')}`}
+					title={`Listing ${
+						query.length === 0 ? 'all posts' : query.join(', ')
+					}`}
 					posts={posts.map(post => {
-						return { ...post, createdAt: new Date(post.createdAt), updatedAt: new Date(post.updatedAt) }
+						return {
+							...post,
+							createdAt: new Date(post.createdAt),
+							updatedAt: new Date(post.updatedAt),
+						}
 					})}
 				/>
 			</SectionWrapper>

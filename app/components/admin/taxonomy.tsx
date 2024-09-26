@@ -43,7 +43,9 @@ export const TaxonomyDialog = (props: {
 				) : (
 					<Button variant="outline" className="space-x-1.5">
 						<Tags size={16} />
-						<span className="sr-only md:not-sr-only xs:whitespace-nowrap">Edit Tags and Categories</span>
+						<span className="sr-only md:not-sr-only xs:whitespace-nowrap">
+							Edit Tags and Categories
+						</span>
 					</Button>
 				)}
 			</DialogTrigger>
@@ -73,7 +75,9 @@ const Taxonomy = (props: {
 	)
 }
 
-const usePendingCategories = (): (Category & { subCategories: SubCategory[] })[] => {
+const usePendingCategories = (): (Category & {
+	subCategories: SubCategory[]
+})[] => {
 	const matchedFetchers = useFetchers().filter(fetcher => {
 		if (!fetcher.formData) return false
 		return fetcher.formData.get('intent') === 'category'
@@ -88,7 +92,9 @@ const usePendingCategories = (): (Category & { subCategories: SubCategory[] })[]
 	})
 }
 
-const CategoryPart = (props: { categories: (Category & { subCategories: SubCategory[] })[] | null }) => {
+const CategoryPart = (props: {
+	categories: (Category & { subCategories: SubCategory[] })[] | null
+}) => {
 	const submit = useSubmit()
 
 	// Optimistic
@@ -126,8 +132,16 @@ const CategoryPart = (props: { categories: (Category & { subCategories: SubCateg
 								})
 							}}
 						>
-							<input type="hidden" name="intent" value="category" />
-							<Input type="text" placeholder="Category name" name="name" />
+							<input
+								type="hidden"
+								name="intent"
+								value="category"
+							/>
+							<Input
+								type="text"
+								placeholder="Category name"
+								name="name"
+							/>
 							<Close asChild>
 								<Button type="submit" className="mt-2 w-full">
 									Save
@@ -137,14 +151,18 @@ const CategoryPart = (props: { categories: (Category & { subCategories: SubCateg
 					</PopoverContent>
 				</Popover>
 				{(!props.categories || props.categories.length === 0) && (
-					<p className="text-sm text-muted-foreground mx-3">No category found</p>
+					<p className="text-sm text-muted-foreground mx-3">
+						No category found
+					</p>
 				)}
 			</div>
 
 			<div className="flex flex-wrap items-center gap-1">
 				{props.categories &&
 					props.categories?.length > 0 &&
-					props.categories.map(category => <CategoryItem key={category.id} category={category} />)}
+					props.categories.map(category => (
+						<CategoryItem key={category.id} category={category} />
+					))}
 			</div>
 		</div>
 	)
@@ -155,7 +173,11 @@ const CategoryItem = (props: { category: Category }) => {
 	const isDeleting = fetcher.formData?.get('id') === props.category.id
 
 	return (
-		<div className={`flex gap-0.5 items-center ${isDeleting ? 'hidden' : ''}`}>
+		<div
+			className={`flex gap-0.5 items-center ${
+				isDeleting ? 'hidden' : ''
+			}`}
+		>
 			<Badge>{props.category.name}</Badge>
 			<XCircle
 				className="h-4 w-4 cursor-pointer"
@@ -185,11 +207,14 @@ const usePendingSubCategories = (): SubCategory[] => {
 	})
 }
 
-const SubCategoryPart = (props: { categories: (Category & { subCategories: SubCategory[] })[] | null }) => {
+const SubCategoryPart = (props: {
+	categories: (Category & { subCategories: SubCategory[] })[] | null
+}) => {
 	const { categories } = props
 	const submit = useSubmit()
 	const [selected, setSelected] = useState<string>('')
-	const subCategories = categories?.find(cat => cat.id === selected)?.subCategories || null
+	const subCategories =
+		categories?.find(cat => cat.id === selected)?.subCategories || null
 
 	// Optimistic
 	const pendingItems = usePendingSubCategories()
@@ -208,7 +233,9 @@ const SubCategoryPart = (props: { categories: (Category & { subCategories: SubCa
 	return (
 		<div className="space-y-2">
 			<div className="flex items-center gap-2">
-				<Label className="flex items-center gap-x-1.5">Subcategory</Label>
+				<Label className="flex items-center gap-x-1.5">
+					Subcategory
+				</Label>
 			</div>
 
 			<div className="flex items-center gap-3">
@@ -218,14 +245,21 @@ const SubCategoryPart = (props: { categories: (Category & { subCategories: SubCa
 						setSelected(v)
 					}}
 				>
-					<SelectTrigger disabled={categories === null || categories.length === 0}>
+					<SelectTrigger
+						disabled={
+							categories === null || categories.length === 0
+						}
+					>
 						<SelectValue placeholder="Select subcategory..." />
 					</SelectTrigger>
 					<SelectContent>
 						<SelectGroup>
 							<SelectLabel>Categories</SelectLabel>
 							{categories?.map(category => (
-								<SelectItem key={category.id} value={category.id}>
+								<SelectItem
+									key={category.id}
+									value={category.id}
+								>
 									{category.name}
 								</SelectItem>
 							))}
@@ -233,8 +267,17 @@ const SubCategoryPart = (props: { categories: (Category & { subCategories: SubCa
 					</SelectContent>
 				</Select>
 				<Popover>
-					<PopoverTrigger asChild disabled={categories === null || categories.length === 0 || !selected}>
-						<Button variant={'outline'}>Add a new Subcategory</Button>
+					<PopoverTrigger
+						asChild
+						disabled={
+							categories === null ||
+							categories.length === 0 ||
+							!selected
+						}
+					>
+						<Button variant={'outline'}>
+							Add a new Subcategory
+						</Button>
 					</PopoverTrigger>
 					<PopoverContent>
 						<Form
@@ -252,9 +295,21 @@ const SubCategoryPart = (props: { categories: (Category & { subCategories: SubCa
 								})
 							}}
 						>
-							<input type="hidden" name="intent" value="subcategory" />
-							<input type="hidden" name="parentId" value={selected} />
-							<Input type="text" placeholder="Subcategory name" name="name" />
+							<input
+								type="hidden"
+								name="intent"
+								value="subcategory"
+							/>
+							<input
+								type="hidden"
+								name="parentId"
+								value={selected}
+							/>
+							<Input
+								type="text"
+								placeholder="Subcategory name"
+								name="name"
+							/>
 							<Close asChild>
 								<Button type="submit" className="mt-2 w-full">
 									Save
@@ -269,7 +324,10 @@ const SubCategoryPart = (props: { categories: (Category & { subCategories: SubCa
 				{subCategories && subCategories.length > 0 && (
 					<div className="flex flex-wrap gap-1.5 items-center">
 						{subCategories.map(subcategory => (
-							<SubcategoryItem key={subcategory.id} subcategory={subcategory} />
+							<SubcategoryItem
+								key={subcategory.id}
+								subcategory={subcategory}
+							/>
 						))}
 					</div>
 				)}
@@ -283,7 +341,11 @@ const SubcategoryItem = (props: { subcategory: SubCategory }) => {
 	const isDeleting = fetcher.formData?.get('id') === props.subcategory.id
 
 	return (
-		<div className={`flex gap-0.5 items-center ${isDeleting ? 'hidden' : ''}`}>
+		<div
+			className={`flex gap-0.5 items-center ${
+				isDeleting ? 'hidden' : ''
+			}`}
+		>
 			<Badge>{props.subcategory.name}</Badge>
 			<XCircle
 				className="h-4 w-4 cursor-pointer"
@@ -357,7 +419,9 @@ const TagPart = (props: { tags: Tag[] | null }) => {
 				placeholder="Tag name"
 				onChange={e => setTagValue(e.target.value)}
 				onKeyDown={e => {
-					;(e.key === 'Enter' || e.key === 'Tab') && !isComposing && addTag(tagValue)
+					;(e.key === 'Enter' || e.key === 'Tab') &&
+						!isComposing &&
+						addTag(tagValue)
 				}}
 				onCompositionStart={() => {
 					setIsComposing(true)
@@ -382,12 +446,19 @@ const TagItem = (props: { tag: Tag }) => {
 	const isDeleting = fetcher.formData?.get('id') === props.tag.id
 
 	return (
-		<div className={`flex gap-0.5 items-center ${isDeleting ? 'hidden' : ''}`}>
+		<div
+			className={`flex gap-0.5 items-center ${
+				isDeleting ? 'hidden' : ''
+			}`}
+		>
 			<Badge>{props.tag.name}</Badge>
 			<XCircle
 				className="h-4 w-4 cursor-pointer"
 				onClick={() => {
-					fetcher.submit({ id: props.tag.id, intent: 'tag' }, { method: 'DELETE', action: actionRoute })
+					fetcher.submit(
+						{ id: props.tag.id, intent: 'tag' },
+						{ method: 'DELETE', action: actionRoute }
+					)
 				}}
 			/>
 		</div>

@@ -3,7 +3,12 @@ import { useFetcher, useLoaderData } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
-import { AdminActions, AdminHeader, AdminSectionWrapper, AdminTitle } from '~/components/admin/admin-wrapper'
+import {
+	AdminActions,
+	AdminHeader,
+	AdminSectionWrapper,
+	AdminTitle,
+} from '~/components/admin/admin-wrapper'
 import { DataTable } from '~/components/admin/data-table'
 import { TaxonomyDialog } from '~/components/admin/taxonomy'
 import { Button } from '~/components/ui/button'
@@ -50,8 +55,16 @@ export default function AdminTaxonomy() {
 				{table => (
 					<Input
 						placeholder="Filter tags..."
-						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('name')?.setFilterValue(event.target.value)}
+						value={
+							(table
+								.getColumn('name')
+								?.getFilterValue() as string) ?? ''
+						}
+						onChange={event =>
+							table
+								.getColumn('name')
+								?.setFilterValue(event.target.value)
+						}
 						className="max-w-sm"
 					/>
 				)}
@@ -62,8 +75,16 @@ export default function AdminTaxonomy() {
 				{table => (
 					<Input
 						placeholder="Filter category..."
-						value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-						onChange={event => table.getColumn('name')?.setFilterValue(event.target.value)}
+						value={
+							(table
+								.getColumn('name')
+								?.getFilterValue() as string) ?? ''
+						}
+						onChange={event =>
+							table
+								.getColumn('name')
+								?.setFilterValue(event.target.value)
+						}
 						className="max-w-sm"
 					/>
 				)}
@@ -72,7 +93,15 @@ export default function AdminTaxonomy() {
 	)
 }
 
-const DeleteTaxonomy = ({ id, actionRoute, intent }: { id: string; actionRoute: string; intent: Intents }) => {
+const DeleteTaxonomy = ({
+	id,
+	actionRoute,
+	intent,
+}: {
+	id: string
+	actionRoute: string
+	intent: Intents
+}) => {
 	const fetcher = useFetcher()
 	const isDeleting = fetcher.formData?.get('id') === id
 
@@ -105,13 +134,19 @@ export const tagColumns: ColumnDef<SerializedTaxonomies['tags'][number]>[] = [
 		header: () => <div className="w-full text-right">Action</div>,
 		cell: ({ row }) => (
 			<div className="w-full flex">
-				<DeleteTaxonomy id={row.original.id} actionRoute={'/admin/posts/action/taxonomy'} intent={'tag'} />
+				<DeleteTaxonomy
+					id={row.original.id}
+					actionRoute={'/admin/posts/action/taxonomy'}
+					intent={'tag'}
+				/>
 			</div>
 		),
 	},
 ]
 
-export const categoryColumns: ColumnDef<SerializedTaxonomies['categories'][number]>[] = [
+export const categoryColumns: ColumnDef<
+	SerializedTaxonomies['categories'][number]
+>[] = [
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -137,7 +172,11 @@ export const categoryColumns: ColumnDef<SerializedTaxonomies['categories'][numbe
 		header: () => <div className="w-full text-right">Action</div>,
 		cell: ({ row }) => (
 			<div className="w-full flex">
-				<DeleteTaxonomy id={row.original.id} actionRoute={'/admin/posts/action/taxonomy'} intent={'category'} />
+				<DeleteTaxonomy
+					id={row.original.id}
+					actionRoute={'/admin/posts/action/taxonomy'}
+					intent={'category'}
+				/>
 			</div>
 		),
 	},

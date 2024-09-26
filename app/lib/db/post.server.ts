@@ -10,16 +10,25 @@ export const getPosts = async (props?: {
 }): Promise<{
 	posts: typeof posts
 }> => {
-	const { n, status, categoryFilter, subCategoryFilter, tagFilter } = props || {}
-	const whereCategory = { categories: { some: { name: { in: categoryFilter } } } }
-	const whereSubCategory = { subCategories: { some: { name: { in: subCategoryFilter } } } }
+	const { n, status, categoryFilter, subCategoryFilter, tagFilter } =
+		props || {}
+	const whereCategory = {
+		categories: { some: { name: { in: categoryFilter } } },
+	}
+	const whereSubCategory = {
+		subCategories: { some: { name: { in: subCategoryFilter } } },
+	}
 	const whereTag = { tags: { some: { name: { in: tagFilter } } } }
 
 	const posts = await prisma.post.findMany({
 		where: {
 			status,
-			...(Array.isArray(categoryFilter) && categoryFilter.length > 0 && whereCategory),
-			...(Array.isArray(subCategoryFilter) && subCategoryFilter.length > 0 && whereSubCategory),
+			...(Array.isArray(categoryFilter) &&
+				categoryFilter.length > 0 &&
+				whereCategory),
+			...(Array.isArray(subCategoryFilter) &&
+				subCategoryFilter.length > 0 &&
+				whereSubCategory),
 			...(Array.isArray(tagFilter) && tagFilter.length > 0 && whereTag),
 		},
 		take: n,
@@ -109,7 +118,9 @@ interface CreatePostProps {
 	}
 }
 
-export const createPost = async (props: CreatePostProps): Promise<{ post: typeof post }> => {
+export const createPost = async (
+	props: CreatePostProps
+): Promise<{ post: typeof post }> => {
 	const { title, content, excerpt, status, authorId, seo, slug } = props
 
 	const post = await prisma.$transaction(async tx => {
@@ -149,7 +160,9 @@ interface UpdatePostProps {
 	}
 }
 
-export const updatePost = async (props: UpdatePostProps): Promise<{ post: typeof post }> => {
+export const updatePost = async (
+	props: UpdatePostProps
+): Promise<{ post: typeof post }> => {
 	const { id, title, content, excerpt, status, seo, slug } = props
 
 	const post = await prisma.$transaction(async tx => {
@@ -173,7 +186,9 @@ export const updatePost = async (props: UpdatePostProps): Promise<{ post: typeof
 	return { post }
 }
 
-export const deletePost = async (id: string): Promise<{ post: typeof post }> => {
+export const deletePost = async (
+	id: string
+): Promise<{ post: typeof post }> => {
 	const post = await prisma.post.delete({
 		where: { id },
 	})
