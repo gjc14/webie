@@ -99,7 +99,9 @@ export function DataTable<TData, TValue>({
 											}
 											onSelect={e => e.preventDefault()}
 										>
-											{column.id}
+											{column.columnDef.header
+												? column.columnDef.header.toString()
+												: column.id}
 										</DropdownMenuCheckboxItem>
 									)
 								})}
