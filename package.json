@@ -50,6 +50,7 @@
         "@tiptap/pm": "^2.7.2",
         "@tiptap/react": "^2.7.2",
         "@tiptap/starter-kit": "^2.7.2",
+		"ag-grid-react": "^32.2.0",
         "bson": "^4.7.2",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
