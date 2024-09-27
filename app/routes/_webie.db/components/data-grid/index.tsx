@@ -4,42 +4,43 @@ import 'ag-grid-community/styles/ag-theme-quartz.css'
 import { ColDef } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { useState } from 'react'
-import { webieColumns } from '../lib/utils'
-
-interface RowData {
-	[id: string]: any
-}
+import { webieRowData, webieTableConfig } from '../../schema/table'
 
 export interface webieDataGridProps {
-	columnMeta: webieColumns
-	data: RowData[]
+	tableConfig: webieTableConfig
+	rows: webieRowData[]
 }
 
 export const DataGrid = (props: webieDataGridProps) => {
-	const { columnMeta, data } = props
-	const [rowData, setRowData] = useState<RowData[]>(data)
+	const { tableConfig, rows } = props
+	const [rowData, setRowData] = useState<webieRowData[]>(rows)
 
 	// TODO: Add buttons to CUD rows
 
 	// Column Definitions: Defines the columns to be displayed.
-	const [colDefs, setColDefs] = useState<ColDef<RowData>[]>(
-		columnMeta.map(col => {
-			const [colId, colDef] = Object.entries(col)[0]
+	// keyof webieRowData will map to the field (column ID)
+	const mappedColumns: ColDef<webieRowData>[] = tableConfig.columnMeta.map(
+		column => {
 			return {
-				headerName: colDef.headerName,
-				field: colId,
-				editable: colDef.editable,
-				filter: colDef.filter,
-				sortable: colDef.sortable,
+				headerName: column.headerName,
+				field: column._id,
+				editable: column.editable,
+				filter: column.filter,
+				sortable: column.sortable,
 				onCellValueChanged: e => {
 					const updatedRow = e.data
 					console.log(updatedRow)
+
 					// updatedRow[colId] = e.newValue
 					// setRowData([...rowData])
 				},
 			}
-		})
+		}
 	)
+	const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([
+		...mappedColumns,
+		{ headerName: 'ID', field: '_id' },
+	])
 
 	return (
 		<div className="ag-theme-quartz-auto-dark h-full">

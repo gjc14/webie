@@ -1,50 +1,74 @@
-import { webieDataGridProps } from '../../components/data-grid'
+import {
+	webieColumns,
+	webieRowData,
+	webieTableConfig,
+} from '../../schema/table'
 
-export const getTable = async (table: string): Promise<webieDataGridProps> => {
-	const columnMeta: webieDataGridProps['columnMeta'] = [
+export const getTableConfig = async (
+	table: string
+): Promise<webieTableConfig> => {
+	const columnMeta: webieColumns = [
 		{
-			id1: {
-				type: 'string',
-				headerName: 'Make',
-				editable: true,
-				filter: true,
-				sortable: true,
-			},
+			_id: 'columnId1',
+			type: 'string',
+			headerName: 'Make',
+			editable: true,
+			filter: true,
+			sortable: true,
 		},
 		{
-			id2: {
-				type: 'string',
-				headerName: 'Model',
-				editable: true,
-				filter: true,
-				sortable: true,
-			},
+			_id: 'columnId2',
+			type: 'string',
+			headerName: 'Model',
+			editable: true,
+			filter: true,
+			sortable: true,
 		},
 		{
-			id3: {
-				type: 'number',
-				headerName: 'Price',
-				editable: true,
-				filter: true,
-				sortable: true,
-			},
+			_id: 'columnId3',
+			type: 'number',
+			headerName: 'Price',
+			editable: true,
+			filter: true,
+			sortable: true,
 		},
 		{
-			id4: {
-				type: 'boolean',
-				headerName: 'In Stock',
-				editable: false,
-				filter: true,
-				sortable: true,
-			},
+			_id: 'columnId4',
+			type: 'boolean',
+			headerName: 'In Stock',
+			editable: false,
+			filter: true,
+			sortable: true,
 		},
 	]
 
-	const data: webieDataGridProps['data'] = [
-		{ id1: 'Tesla', id2: 'Model Y', id3: 64950, id4: true },
-		{ id1: 'Ford', id2: 'F-Series', id3: 33850, id4: false },
-		{ id1: 'Toyota', id2: 'Corolla', id3: 29600, id4: false },
+	return { _id: 'tableId', settings: { autoSave: false }, table, columnMeta }
+}
+
+export const getTableData = async (table: string): Promise<webieRowData[]> => {
+	const data: webieRowData[] = [
+		{
+			_id: '211',
+			columnId1: 'Tesla',
+			columnId2: 'Model Y',
+			columnId3: 64950,
+			columnId4: true,
+		},
+		{
+			_id: '213',
+			columnId1: 'Ford',
+			columnId2: 'F-Series',
+			columnId3: 33850,
+			columnId4: false,
+		},
+		{
+			_id: '212',
+			columnId1: 'Toyota',
+			columnId2: 'Corolla',
+			columnId3: 29600,
+			columnId4: false,
+		},
 	]
 
-	return { columnMeta, data }
+	return data
 }
