@@ -38,8 +38,6 @@ export default function DBDashboard() {
 	const fetcher = useFetcher()
 	const isSubmitting = fetcher.state === 'submitting'
 
-	const icon = tables[0].icon
-
 	return (
 		<div>
 			<AdminSectionWrapper hideReturnButton>

@@ -1,51 +1,55 @@
-import { json, LoaderFunctionArgs } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
-import { DataGrid, DataGridProps } from '../_webie.db/components/data-grid'
+import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
+import { useFetcher, useLoaderData } from '@remix-run/react'
+import { DataGrid } from '../_webie.db/components/data-grid'
+import { getTable } from '../_webie.db/lib/db/table.server'
+import { generateSchema, webieColumns } from '../_webie.db/lib/utils'
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const columnMeta: DataGridProps['columnMeta'] = {
-		id1: {
-			headerName: 'Make',
-			editable: true,
-			filter: true,
-			sortable: true,
-		},
-		id2: {
-			headerName: 'Model',
-			editable: true,
-			filter: true,
-			sortable: true,
-		},
-		id3: {
-			headerName: 'Price',
-			editable: true,
-			filter: true,
-			sortable: true,
-		},
-		id4: {
-			headerName: 'In Stock',
-			editable: false,
-			filter: true,
-			sortable: true,
-		},
+export const action = async ({ request }: ActionFunctionArgs) => {
+	const formData = await request.formData()
+
+	const columnMeta = formData.get('columnMeta') as webieColumns | null
+	if (!columnMeta) {
+		throw new Response('Bad Request', { status: 400 })
 	}
 
-	const data = [
-		{ id1: 'Tesla', id2: 'Model Y', id3: 64950, id4: true },
-		{ id1: 'Ford', id2: 'F-Series', id3: 33850, id4: false },
-		{ id1: 'Toyota', id2: 'Corolla', id3: 29600, id4: false },
-	]
+	const dynamicSchema = generateSchema(columnMeta)
+	// Test the schema
+	const inputData = {
+		id1: 'Alice',
+		id2: 'Model S',
+		id3: 30,
+		id4: true,
+	}
+
+	try {
+		dynamicSchema.parse(inputData) // Passes
+		console.log('Validation passed!')
+	} catch (e: any) {
+		console.log('Validation failed:', e.errors)
+	}
+	return null
+}
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+	if (!params.table) {
+		throw new Response('Bad Request', { status: 400 })
+	}
+
+	const { columnMeta, data } = await getTable(params.table)
 
 	return json({ columnMeta, data })
 }
 
 export default function DBTable() {
 	const { columnMeta, data } = useLoaderData<typeof loader>()
+	const fetcher = useFetcher()
 
 	return (
 		<div className="h-full">
 			{/* TODO: page */}
-			<DataGrid columnMeta={columnMeta} data={data} />
+			<fetcher.Form method="POST" className="h-full">
+				<DataGrid columnMeta={columnMeta} data={data} />
+			</fetcher.Form>
 		</div>
 	)
 }
