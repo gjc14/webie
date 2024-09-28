@@ -94,12 +94,13 @@ export default function App() {
 	const { setTheme } = useTheme()
 
 	const toastKeysRef = useRef<Map<string, number>>(new Map())
+	const prevFetchersRef = useRef(fetchers)
 
 	// Action response handler for front-end submit `useSubmit()` (Like the function of session flash but front-end)
 	useEffect(() => {
 		if (fetchers.length > 0) {
 			const currentTimestamp = Date.now()
-			const expiry = 30000
+			const expiry = 600
 
 			const cleanedKeys = new Map(
 				Array.from(toastKeysRef.current.entries()).filter(
@@ -108,9 +109,21 @@ export default function App() {
 			)
 
 			// Convention: actions return json({ data?, msg?, err? }) refer to README.md
-			const actionResponses = fetchers.filter(
-				fetcher => fetcher.state === 'loading' && fetcher.data
-			)
+			const actionResponses = fetchers.filter(fetcher => {
+				return (
+					fetcher.state === 'loading' &&
+					fetcher.data &&
+					!prevFetchersRef.current
+						// If fetcher submitted multiple time in a row,
+						// the filter will treate it as a new fetcher because it wasn't loading previously.
+						// This mainly to prevent multiple toasts for different fetchers in a row.
+						// Which causes one fetcher to be included in multiple fetchers effect,
+						// when other fetcher triggers loading while the one fetcher hasn't finish loading.
+						.filter(fetcher => fetcher.state === 'loading')
+						.map(fetcher => fetcher.key)
+						.includes(fetcher.key)
+				)
+			})
 
 			const successResponses = actionResponses.filter(
 				fetcher => fetcher.data.msg && !cleanedKeys.has(fetcher.key)
@@ -130,6 +143,7 @@ export default function App() {
 			})
 
 			toastKeysRef.current = cleanedKeys
+			prevFetchersRef.current = fetchers
 		}
 	}, [fetchers])
 

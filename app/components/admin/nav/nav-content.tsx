@@ -20,10 +20,10 @@ import { cn } from '~/lib/utils'
 
 const NavOptions: Omit<NavButtonProps, 'desktopShrink'>[] = [
 	{ Icon: <PenBoxIcon size={18} />, label: 'Posts', to: '/admin/posts' },
-	{ Icon: <User2 size={18} />, label: 'Users', to: '/admin/users' },
 	{ Icon: <TextSearch size={18} />, label: 'SEO', to: '/admin/seo' },
-	{ Icon: <UserRoundCog size={18} />, label: 'Admin', to: '/admin/admins' },
 	{ Icon: <Tag size={18} />, label: 'Taxonomies', to: '/admin/taxonomy' },
+	{ Icon: <User2 size={18} />, label: 'Users', to: '/admin/users' },
+	{ Icon: <UserRoundCog size={18} />, label: 'Admin', to: '/admin/admins' },
 ]
 
 export const NavContent = ({
