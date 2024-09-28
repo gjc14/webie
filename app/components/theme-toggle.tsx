@@ -34,7 +34,9 @@ const NormalDarkModeToggle = ({ size }: { size?: 'sm' }) => {
 				<Button
 					variant="outline"
 					size="icon"
-					className={`${size === 'sm' ? 'h-6 w-6' : 'h-9 w-9'} p-1`}
+					className={`${
+						size === 'sm' ? 'h-6 w-6' : 'h-9 w-9'
+					} p-1 relative`}
 				>
 					<Sun
 						className={`${
