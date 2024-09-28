@@ -36,17 +36,17 @@ const NormalDarkModeToggle = ({ size }: { size?: 'sm' }) => {
 					size="icon"
 					className={`${
 						size === 'sm' ? 'h-6 w-6' : 'h-9 w-9'
-					} p-1 relative`}
+					} p-1 relative bg-transparent duration-75`}
 				>
 					<Sun
 						className={`${
 							size === 'sm' ? 'scale-[.7]' : 'scale-90'
-						} absolute rotate-0 w-min h-min  transition-all dark:-rotate-90 dark:scale-0`}
+						} absolute rotate-0 w-min h-min transition-transform dark:-rotate-90 dark:scale-0`}
 					/>
 					<Moon
 						className={`${
 							size === 'sm' ? 'dark:scale-[.7]' : 'dark:scale-90'
-						} absolute w-min h-min rotate-90 scale-0 transition-all dark:rotate-0`}
+						} absolute w-min h-min rotate-90 scale-0 transition-transform dark:rotate-0`}
 					/>
 					<span className="sr-only">Toggle theme</span>
 				</Button>

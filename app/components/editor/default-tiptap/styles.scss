@@ -10,7 +10,7 @@
 	}
 
 	p.is-editor-empty:first-child::before {
-		@apply h-0 float-left text-muted-foreground pointer-events-none;
+		@apply h-0 float-left text-muted-foreground/50 text-base pointer-events-none;
 		content: attr(data-placeholder);
 	}
 }

@@ -50,7 +50,7 @@ export const PopoverMenuOptions = ({
 				{options.map((option, index) => {
 					if (isLabel(option)) {
 						return (
-							<div className="my-0.5 space-y-0.5">
+							<div className="my-0.5 space-y-0.5" key={index}>
 								<p
 									key={index}
 									className="text-xs text-muted-foreground font-bold uppercase mx-1"

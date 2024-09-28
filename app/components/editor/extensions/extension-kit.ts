@@ -8,6 +8,7 @@ import Superscript from '@tiptap/extension-superscript'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
 import Underline from '@tiptap/extension-underline'
+import Youtube from '@tiptap/extension-youtube'
 import StarterKit from '@tiptap/starter-kit'
 import { common, createLowlight } from 'lowlight'
 
@@ -36,6 +37,7 @@ export const ExtensionKit = () => [
 	CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
 	TextStyle.configure({}),
 	ImageBlock,
+	Youtube,
 ]
 
 export default ExtensionKit

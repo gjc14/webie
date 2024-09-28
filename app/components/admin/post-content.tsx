@@ -35,7 +35,7 @@ export const PostContent = ({
 
 	return (
 		<div className="w-full flex flex-col md:flex-row gap-5">
-			<section className="md:w-3/5 flex flex-col gap-5">
+			<section className="flex flex-col gap-5">
 				<div>
 					<Label htmlFor="title">Title</Label>
 					<Input
@@ -48,11 +48,12 @@ export const PostContent = ({
 						onChange={onInputChange}
 					/>
 				</div>
-				<div className="w-full">
+				<div>
 					<Label htmlFor="content">Content</Label>
 					<div
 						ref={contentWrapperRef}
-						className="max-w-full p-3 border border-border rounded-md"
+						className="p-3 border border-border rounded-md"
+						style={{ maxWidth: 'calc(65ch + 1.5rem)' }} // max-w-prose + p-3 padding
 					>
 						<input
 							id="content"
