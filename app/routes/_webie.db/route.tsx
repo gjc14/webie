@@ -1,4 +1,5 @@
 import '~/tailwind.css'
+import './db.css'
 
 import { json, LoaderFunctionArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
