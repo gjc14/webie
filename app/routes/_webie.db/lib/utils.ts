@@ -7,15 +7,15 @@ import { webieColumns, zodTypeMap } from '../schema/table'
  * @returns zod schema
  */
 export const generateSchema = (columns: webieColumns) => {
-	const schemaShape: Record<string, ZodTypeAny> = {}
+    const schemaShape: Record<string, ZodTypeAny> = {}
 
-	columns.forEach(column => {
-		const zodType = zodTypeMap[column.type]
-		if (!zodType) {
-			throw new Error(`Unsupported type: ${column.type}`)
-		}
-		schemaShape[column._id] = zodType
-	})
+    columns.forEach(column => {
+        const zodType = zodTypeMap[column.type]
+        if (!zodType) {
+            throw new Error(`Unsupported type: ${column.type}`)
+        }
+        schemaShape[column._id] = zodType
+    })
 
-	return z.object(schemaShape)
+    return z.object(schemaShape)
 }
