@@ -1,18 +1,24 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
-import { useFetcher, useLoaderData } from '@remix-run/react'
+import {
+    ActionFunctionArgs,
+    json,
+    LoaderFunctionArgs,
+    SerializeFrom,
+} from '@remix-run/node'
+import { Link, useFetcher, useLoaderData } from '@remix-run/react'
+import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
+import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
+import { Separator } from '~/components/ui/separator'
 import { DataGrid } from '../_webie.db/components/data-grid'
 import { getTableConfig, getTableData } from '../_webie.db/lib/db/table.server'
 import { generateSchema } from '../_webie.db/lib/utils'
 import {
-    webieColDef,
     webieRowData,
     webieRowDataSchema,
     webieTableConfigSchema,
 } from '../_webie.db/schema/table'
-import { ThemeToggle } from '~/components/theme-toggle'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
@@ -67,18 +73,39 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     })
 }
 
+export type SerializedLoaderData = SerializeFrom<typeof loader>
+
 export default function DBTable() {
-    const { tableConfig, rows } = useLoaderData<typeof loader>()
     const fetcher = useFetcher()
-    const [tableConfigState, setTableConfigState] = useState(tableConfig)
+
+    const { tableConfig, rows } = useLoaderData<typeof loader>()
     const [rowsState, setRowsState] = useState(rows)
+
+    const isDirty = JSON.stringify(rowsState) !== JSON.stringify(rows)
 
     const rowCreate = () => {
         const newRow: webieRowData = {
             _id: 'new-row-' + Math.random().toString(36).substring(2, 9),
-            ...tableConfigState.columnMeta.reduce(
+            ...tableConfig.columnMeta.reduce(
                 (acc: { [columnId: string]: any }, column) => {
-                    acc[column._id] = null
+                    let defaultValue: unknown
+                    switch (column.type) {
+                        case 'string':
+                            defaultValue = ''
+                            break
+                        case 'number':
+                            defaultValue = 0
+                            break
+                        case 'boolean':
+                            defaultValue = false
+                            break
+                        case 'date':
+                            defaultValue = new Date().toISOString()
+                            break
+                        default:
+                            defaultValue = null
+                    }
+                    acc[column._id] = defaultValue
                     return acc
                 },
                 {}
@@ -99,72 +126,63 @@ export default function DBTable() {
         )
     }
 
-    const columnCreate = () => {
-        setTableConfigState(prevConfig => {
-            const newColumn: webieColDef = {
-                _id: 'new-col-' + Math.random().toString(36).substring(2, 9),
-                type: 'string',
-                headerName: 'New Column',
-                editable: true,
-                filter: true,
-                sortable: true,
-            }
-            return {
-                ...prevConfig,
-                columnMeta: [...prevConfig.columnMeta, newColumn],
-            }
-        })
-    }
-
     return (
         <div className="h-full flex flex-col p-3 gap-2">
             {/* TODO: page */}
 
             <fetcher.Form
-                className="h-fit flex gap-1.5"
+                id="rowDataForm"
                 onSubmit={e => {
                     e.preventDefault()
 
                     const formData = new FormData(e.currentTarget)
 
-                    const tableConfig = JSON.stringify(tableConfigState)
-                    const rows = JSON.stringify(rowsState)
-                    formData.set('tableConfig', tableConfig)
-                    formData.set('rows', rows)
+                    const tableConfigString = JSON.stringify(tableConfig)
+                    const rowsString = JSON.stringify(rowsState)
+                    formData.set('tableConfig', tableConfigString)
+                    formData.set('rows', rowsString)
 
                     fetcher.submit(formData, {
                         method: 'POST',
                     })
                 }}
-            >
-                <div className="w-full h-full flex p-1 bg-primary-foreground rounded-md border border-border">
-                    <Button size={'sm'} variant={'ghost'}>
-                        Save
-                    </Button>
-                    <Button
-                        size={'sm'}
-                        variant={'ghost'}
-                        type="button"
-                        onClick={rowCreate}
-                    >
-                        Add Row
-                    </Button>
-                    <Button
-                        size={'sm'}
-                        variant={'ghost'}
-                        type="button"
-                        onClick={columnCreate}
-                    >
-                        Add Column
-                    </Button>
+            />
+            <div className="w-full h-fit flex items-center gap-1 p-1 bg-primary-foreground rounded-md border border-border">
+                <Button
+                    size={'sm'}
+                    variant={'ghost'}
+                    form="rowDataForm"
+                    disabled={!isDirty}
+                >
+                    Save
+                </Button>
 
-                    <ThemeToggle size="sm" className="ml-auto mr-3" />
+                <Separator orientation="vertical" className="h-4/5" />
+
+                {/* Function area */}
+                <Button size={'sm'} variant={'ghost'} onClick={rowCreate}>
+                    Add Row
+                </Button>
+
+                {/* Config area */}
+                <div className="ml-auto flex items-center justify-end gap-1.5">
+                    <Link to={'edit'} state={{ tableConfig }}>
+                        <Button
+                            size={'icon'}
+                            variant={'ghost'}
+                            className="h-auto p-2"
+                        >
+                            <Settings size={16} />
+                        </Button>
+                    </Link>
+
+                    <ThemeToggle className="ml-auto mr-3 scale-90" />
                 </div>
-            </fetcher.Form>
+            </div>
 
             <div className="flex-grow">
                 <DataGrid
-                    tableConfig={tableConfigState}
+                    tableConfig={tableConfig}
                     rows={rowsState}
                     onRowUpdate={e => rowUpdate(e)}
                     onRowDelete={e => rowDelete(e)}
