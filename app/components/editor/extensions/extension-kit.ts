@@ -10,6 +10,7 @@ import TextStyle from '@tiptap/extension-text-style'
 import Underline from '@tiptap/extension-underline'
 import Youtube from '@tiptap/extension-youtube'
 import StarterKit from '@tiptap/starter-kit'
+import Link from '@tiptap/extension-link'
 import { common, createLowlight } from 'lowlight'
 
 export const ExtensionKit = () => [
@@ -23,6 +24,7 @@ export const ExtensionKit = () => [
             class: 'ProseMirror-dropcursor border-black',
         },
     }),
+
     // Marks
     Underline,
     Highlight.configure({
@@ -31,6 +33,11 @@ export const ExtensionKit = () => [
     Color,
     Superscript,
     Subscript,
+    Link.configure({
+        defaultProtocol: 'https',
+        validate: href => /^https?:\/\//.test(href),
+    }),
+
     // Nodes
     Placeholder.configure({ placeholder: 'Write something amazing...' }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),

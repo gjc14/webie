@@ -11,11 +11,36 @@ import {
 import { ToggleButton } from '../toggle-button'
 import { useCallback, useState } from 'react'
 import Youtube from '~/components/editor/components/asset/youtube'
-import { Image } from 'lucide-react'
+import { Image, Link, Unlink } from 'lucide-react'
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
     const [height, setHeight] = useState('480')
     const [width, setWidth] = useState('640')
+
+    const setLink = useCallback(() => {
+        const previousUrl = editor.getAttributes('link').href
+        const url = window.prompt('URL', previousUrl)
+
+        // cancelled
+        if (url === null) {
+            return
+        }
+
+        // empty
+        if (url === '') {
+            editor.chain().focus().extendMarkRange('link').unsetLink().run()
+
+            return
+        }
+
+        // update link
+        editor
+            .chain()
+            .focus()
+            .extendMarkRange('link')
+            .setLink({ href: url })
+            .run()
+    }, [editor])
 
     return (
         <div id="menu-bar" className="my-3 py-1.5 border-y">
@@ -157,6 +182,28 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                     orientation="vertical"
                     className="h-full min-h-[1.5rem]"
                 />
+
+                {/* Link */}
+                <ToggleButton
+                    onClick={setLink}
+                    disabled={false}
+                    tooltip="Set Link"
+                    className={
+                        editor.isActive('link')
+                            ? 'bg-accent text-bg-accent-foreground'
+                            : ''
+                    }
+                >
+                    <Link size={14} />
+                </ToggleButton>
+
+                <ToggleButton
+                    onClick={() => editor.chain().focus().unsetLink().run()}
+                    disabled={!editor.isActive('link')}
+                    tooltip="Unset Link"
+                >
+                    <Unlink size={14} />
+                </ToggleButton>
 
                 {/* Media */}
                 <ToggleButton
