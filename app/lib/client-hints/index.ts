@@ -3,56 +3,56 @@ import { ClientHint, ClientHintsValue } from './utils'
 export type { ClientHint }
 
 export function getHintUtils<Hints extends Record<string, ClientHint<any>>>(
-	hints: Hints
+    hints: Hints
 ) {
-	function getCookieValue(cookieString: string, name: string) {
-		const hint = hints[name]
-		if (!hint) {
-			throw new Error(
-				`Unknown client hint: ${
-					typeof name === 'string' ? name : 'Unknown'
-				}`
-			)
-		}
-		const value = cookieString
-			.split(';')
-			.map((c: string) => c.trim())
-			.find((c: string) => c.startsWith(hint.cookieName + '='))
-			?.split('=')[1]
+    function getCookieValue(cookieString: string, name: string) {
+        const hint = hints[name]
+        if (!hint) {
+            throw new Error(
+                `Unknown client hint: ${
+                    typeof name === 'string' ? name : 'Unknown'
+                }`
+            )
+        }
+        const value = cookieString
+            .split(';')
+            .map((c: string) => c.trim())
+            .find((c: string) => c.startsWith(hint.cookieName + '='))
+            ?.split('=')[1]
 
-		return value ? decodeURIComponent(value) : null
-	}
+        return value ? decodeURIComponent(value) : null
+    }
 
-	function getHints(request?: Request): ClientHintsValue<Hints> {
-		const cookieString =
-			typeof document !== 'undefined'
-				? document.cookie
-				: typeof request !== 'undefined'
-				? request.headers.get('Cookie') ?? ''
-				: ''
+    function getHints(request?: Request): ClientHintsValue<Hints> {
+        const cookieString =
+            typeof document !== 'undefined'
+                ? document.cookie
+                : typeof request !== 'undefined'
+                ? request.headers.get('Cookie') ?? ''
+                : ''
 
-		return Object.entries(hints).reduce((acc, [name, hint]) => {
-			const hintName = name
-			if ('transform' in hint) {
-				// @ts-expect-error - this is fine (PRs welcome though)
-				acc[hintName] = hint.transform(
-					getCookieValue(cookieString, hintName) ?? hint.fallback
-				)
-			} else {
-				// @ts-expect-error - this is fine (PRs welcome though)
-				acc[hintName] =
-					getCookieValue(cookieString, hintName) ?? hint.fallback
-			}
-			return acc
-		}, {} as ClientHintsValue<Hints>)
-	}
+        return Object.entries(hints).reduce((acc, [name, hint]) => {
+            const hintName = name
+            if ('transform' in hint) {
+                // @ts-expect-error - this is fine (PRs welcome though)
+                acc[hintName] = hint.transform(
+                    getCookieValue(cookieString, hintName) ?? hint.fallback
+                )
+            } else {
+                // @ts-expect-error - this is fine (PRs welcome though)
+                acc[hintName] =
+                    getCookieValue(cookieString, hintName) ?? hint.fallback
+            }
+            return acc
+        }, {} as ClientHintsValue<Hints>)
+    }
 
-	/**
-	 * This returns a string of JavaScript that can be used to check if the client
-	 * hints have changed and will reload the page if they have.
-	 */
-	function getClientHintCheckScript() {
-		return `
+    /**
+     * This returns a string of JavaScript that can be used to check if the client
+     * hints have changed and will reload the page if they have.
+     */
+    function getClientHintCheckScript() {
+        return `
 // This block of code allows us to check if the client hints have changed and
 // force a reload of the page with updated hints if they have so you don't get
 // a flash of incorrect content.
@@ -74,11 +74,11 @@ function checkClientHints() {
 	let cookieChanged = false;
 	const hints = [
 	${Object.values(hints)
-		.map(hint => {
-			const cookieName = JSON.stringify(hint.cookieName)
-			return `{ name: ${cookieName}, actual: String(${hint.getValueCode}), value: cookies[${cookieName}] != null ? cookies[${cookieName}] : encodeURIComponent("${hint.fallback}") }`
-		})
-		.join(',\n')}
+        .map(hint => {
+            const cookieName = JSON.stringify(hint.cookieName)
+            return `{ name: ${cookieName}, actual: String(${hint.getValueCode}), value: cookies[${cookieName}] != null ? cookies[${cookieName}] : encodeURIComponent("${hint.fallback}") }`
+        })
+        .join(',\n')}
 	];
 	for (const hint of hints) {
 		document.cookie = encodeURIComponent(hint.name) + '=' + encodeURIComponent(hint.actual) + '; Max-Age=31536000; path=/';
@@ -91,7 +91,7 @@ function checkClientHints() {
 
 checkClientHints();
 `
-	}
+    }
 
-	return { getHints, getClientHintCheckScript }
+    return { getHints, getClientHintCheckScript }
 }

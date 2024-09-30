@@ -1,36 +1,36 @@
 export const isConventional = (
-	fetcherData: unknown
+    fetcherData: unknown
 ): fetcherData is { data: any; msg: string; err: string } => {
-	if (typeof fetcherData !== 'object' || fetcherData === null) return false
-	if (
-		!('data' in fetcherData) ||
-		!('msg' in fetcherData) ||
-		!('err' in fetcherData)
-	)
-		return false
-	return true
+    if (typeof fetcherData !== 'object' || fetcherData === null) return false
+    if (
+        !('data' in fetcherData) ||
+        !('msg' in fetcherData) ||
+        !('err' in fetcherData)
+    )
+        return false
+    return true
 }
 
 export const isConventionalData = (
-	fetcherData: unknown
+    fetcherData: unknown
 ): fetcherData is { data: any } => {
-	if (typeof fetcherData !== 'object' || fetcherData === null) return false
-	if (!('data' in fetcherData)) return false
-	return true
+    if (typeof fetcherData !== 'object' || fetcherData === null) return false
+    if (!('data' in fetcherData)) return false
+    return true
 }
 
 export const isConventionalSuccess = (
-	fetcherData: unknown
+    fetcherData: unknown
 ): fetcherData is { msg: string } => {
-	if (typeof fetcherData !== 'object' || fetcherData === null) return false
-	if (!('msg' in fetcherData)) return false
-	return true
+    if (typeof fetcherData !== 'object' || fetcherData === null) return false
+    if (!('msg' in fetcherData)) return false
+    return true
 }
 
 export const isConventionalError = (
-	fetcherData: unknown
+    fetcherData: unknown
 ): fetcherData is { err: string } => {
-	if (typeof fetcherData !== 'object' || fetcherData === null) return false
-	if (!('err' in fetcherData)) return false
-	return true
+    if (typeof fetcherData !== 'object' || fetcherData === null) return false
+    if (!('err' in fetcherData)) return false
+    return true
 }

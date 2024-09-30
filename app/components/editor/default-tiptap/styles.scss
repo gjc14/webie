@@ -1,16 +1,16 @@
 /* Basic editor styles */
 .tiptap {
-	// Code area
-	pre {
-		@apply border border-transparent bg-zinc-950 dark:bg-zinc-900 dark:border-border;
-	}
+    // Code area
+    pre {
+        @apply border border-transparent bg-zinc-950 dark:bg-zinc-900 dark:border-border;
+    }
 
-	p code {
-		@apply bg-muted rounded-lg py-1 px-2;
-	}
+    p code {
+        @apply bg-muted rounded-lg py-1 px-2;
+    }
 
-	p.is-editor-empty:first-child::before {
-		@apply h-0 float-left text-muted-foreground/50 text-base pointer-events-none;
-		content: attr(data-placeholder);
-	}
+    p.is-editor-empty:first-child::before {
+        @apply h-0 float-left text-muted-foreground/50 text-base pointer-events-none;
+        content: attr(data-placeholder);
+    }
 }

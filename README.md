@@ -124,9 +124,9 @@ npm run dev
 
 ```ts
 interface ActionResponse {
-	data?: {}
-	msg?: string
-	err?: string
+    data?: {}
+    msg?: string
+    err?: string
 }
 
 return json<ActionResponse>({ msg: 'Action success 🎉' })

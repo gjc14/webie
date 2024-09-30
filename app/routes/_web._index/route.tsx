@@ -9,49 +9,49 @@ import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return data?.seo
-		? [
-				{ title: data.seo.title },
-				{ name: 'description', content: data.seo.description },
-		  ]
-		: []
+    return data?.seo
+        ? [
+              { title: data.seo.title },
+              { name: 'description', content: data.seo.description },
+          ]
+        : []
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-	const { seo } = await getSEO(new URL(request.url).pathname)
+    const { seo } = await getSEO(new URL(request.url).pathname)
 
-	try {
-		const { posts } = await getPosts({ n: 10, status: 'PUBLISHED' })
-		return json({ seo, posts })
-	} catch (error) {
-		console.error(error)
-		return json({ seo, posts: [] })
-	}
+    try {
+        const { posts } = await getPosts({ n: 10, status: 'PUBLISHED' })
+        return json({ seo, posts })
+    } catch (error) {
+        console.error(error)
+        return json({ seo, posts: [] })
+    }
 }
 
 export default function Index() {
-	const { seo, posts } = useLoaderData<typeof loader>()
+    const { seo, posts } = useLoaderData<typeof loader>()
 
-	return (
-		<>
-			<Nav />
+    return (
+        <>
+            <Nav />
 
-			<main className="min-h-screen">
-				<h1 className="visually-hidden">{seo?.title}</h1>
-				<Hero />
-				<LatestPosts
-					posts={posts.map(post => {
-						return {
-							...post,
-							createdAt: new Date(post.createdAt),
-							updatedAt: new Date(post.updatedAt),
-						}
-					})}
-				/>
-				<CTA />
-			</main>
+            <main className="min-h-screen">
+                <h1 className="visually-hidden">{seo?.title}</h1>
+                <Hero />
+                <LatestPosts
+                    posts={posts.map(post => {
+                        return {
+                            ...post,
+                            createdAt: new Date(post.createdAt),
+                            updatedAt: new Date(post.updatedAt),
+                        }
+                    })}
+                />
+                <CTA />
+            </main>
 
-			<Footer />
-		</>
-	)
+            <Footer />
+        </>
+    )
 }

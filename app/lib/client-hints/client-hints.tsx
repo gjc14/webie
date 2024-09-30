@@ -6,8 +6,8 @@ import { clientHint as colorSchemeHint } from './color-schema'
 import { getHintUtils } from './index'
 
 const hintsUtils = getHintUtils(
-	{ theme: colorSchemeHint }
-	// add other hints here
+    { theme: colorSchemeHint }
+    // add other hints here
 )
 
 export const { getHints } = hintsUtils
@@ -18,11 +18,11 @@ export const { getHints } = hintsUtils
  * inaccurate value.
  */
 export function ClientHintCheck() {
-	return (
-		<script
-			dangerouslySetInnerHTML={{
-				__html: hintsUtils.getClientHintCheckScript(),
-			}}
-		/>
-	)
+    return (
+        <script
+            dangerouslySetInnerHTML={{
+                __html: hintsUtils.getClientHintCheckScript(),
+            }}
+        />
+    )
 }

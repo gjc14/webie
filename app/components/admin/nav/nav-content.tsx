@@ -1,15 +1,15 @@
 import { Form, NavLink, useNavigation } from '@remix-run/react'
 import { motion } from 'framer-motion'
 import {
-	ChevronLeft,
-	Eye,
-	LayoutDashboard,
-	LogOut,
-	PenBoxIcon,
-	Tag,
-	TextSearch,
-	User2,
-	UserRoundCog,
+    ChevronLeft,
+    Eye,
+    LayoutDashboard,
+    LogOut,
+    PenBoxIcon,
+    Tag,
+    TextSearch,
+    User2,
+    UserRoundCog,
 } from 'lucide-react'
 import { useState } from 'react'
 import { FullScreenLoading } from '~/components/loading'
@@ -19,153 +19,153 @@ import { Separator } from '~/components/ui/separator'
 import { cn } from '~/lib/utils'
 
 const NavOptions: Omit<NavButtonProps, 'desktopShrink'>[] = [
-	{ Icon: <PenBoxIcon size={18} />, label: 'Posts', to: '/admin/posts' },
-	{ Icon: <TextSearch size={18} />, label: 'SEO', to: '/admin/seo' },
-	{ Icon: <Tag size={18} />, label: 'Taxonomies', to: '/admin/taxonomy' },
-	{ Icon: <User2 size={18} />, label: 'Users', to: '/admin/users' },
-	{ Icon: <UserRoundCog size={18} />, label: 'Admin', to: '/admin/admins' },
+    { Icon: <PenBoxIcon size={18} />, label: 'Posts', to: '/admin/posts' },
+    { Icon: <TextSearch size={18} />, label: 'SEO', to: '/admin/seo' },
+    { Icon: <Tag size={18} />, label: 'Taxonomies', to: '/admin/taxonomy' },
+    { Icon: <User2 size={18} />, label: 'Users', to: '/admin/users' },
+    { Icon: <UserRoundCog size={18} />, label: 'Admin', to: '/admin/admins' },
 ]
 
 export const NavContent = ({
-	className,
-	isDesktop,
-	onClick,
+    className,
+    isDesktop,
+    onClick,
 }: {
-	className?: string
-	isDesktop: boolean
-	onClick?: () => void
+    className?: string
+    isDesktop: boolean
+    onClick?: () => void
 }) => {
-	const navigation = useNavigation()
-	const [open, setOpen] = useState(!isDesktop)
-	const desktopShrink = isDesktop && !open
+    const navigation = useNavigation()
+    const [open, setOpen] = useState(!isDesktop)
+    const desktopShrink = isDesktop && !open
 
-	const isSubmitting = navigation.formAction === '/admin/signout'
+    const isSubmitting = navigation.formAction === '/admin/signout'
 
-	return (
-		<nav
-			className={cn(
-				`${
-					desktopShrink ? 'w-[calc(auto)]' : 'w-56'
-				} relative z-10 shrink-0 ease-out transition-all duration-1000`,
-				className
-			)}
-		>
-			{isSubmitting && <FullScreenLoading />}
-			<aside className="h-screen w-full flex flex-col top-0 left-0 z-10 py-5 px-3 border-r overflow-y-scroll">
-				<Button
-					variant={'outline'}
-					className="absolute -right-2.5 w-fit h-auto px-0.5 py-1"
-					onClick={() => setOpen(!open)}
-				>
-					<ChevronLeft
-						size={16}
-						className={`transition-transform ${
-							open ? '' : 'rotate-180'
-						}`}
-					/>
-				</Button>
+    return (
+        <nav
+            className={cn(
+                `${
+                    desktopShrink ? 'w-[calc(auto)]' : 'w-56'
+                } relative z-10 shrink-0 ease-out transition-all duration-1000`,
+                className
+            )}
+        >
+            {isSubmitting && <FullScreenLoading />}
+            <aside className="h-screen w-full flex flex-col top-0 left-0 z-10 py-5 px-3 border-r overflow-y-scroll">
+                <Button
+                    variant={'outline'}
+                    className="absolute -right-2.5 w-fit h-auto px-0.5 py-1"
+                    onClick={() => setOpen(!open)}
+                >
+                    <ChevronLeft
+                        size={16}
+                        className={`transition-transform ${
+                            open ? '' : 'rotate-180'
+                        }`}
+                    />
+                </Button>
 
-				<div className="ml-2.5 flex justify-between items-center">
-					<NavLink to="/admin" className="w-fit">
-						<LayoutDashboard />
-					</NavLink>
-				</div>
+                <div className="ml-2.5 flex justify-between items-center">
+                    <NavLink to="/admin" className="w-fit">
+                        <LayoutDashboard />
+                    </NavLink>
+                </div>
 
-				<ul className="space-y-2 my-6">
-					<NavButton
-						Icon={<Eye size={18} />}
-						label="Website"
-						to="/"
-						onClick={onClick}
-						desktopShrink={desktopShrink}
-					/>
+                <ul className="space-y-2 my-6">
+                    <NavButton
+                        Icon={<Eye size={18} />}
+                        label="Website"
+                        to="/"
+                        onClick={onClick}
+                        desktopShrink={desktopShrink}
+                    />
 
-					<Separator />
+                    <Separator />
 
-					{NavOptions.map((option, index) => (
-						<NavButton
-							key={index}
-							{...option}
-							onClick={onClick}
-							desktopShrink={desktopShrink}
-						/>
-					))}
+                    {NavOptions.map((option, index) => (
+                        <NavButton
+                            key={index}
+                            {...option}
+                            onClick={onClick}
+                            desktopShrink={desktopShrink}
+                        />
+                    ))}
 
-					<Separator />
+                    <Separator />
 
-					{!desktopShrink && (
-						<li className="p-1 text-xs text-muted-foreground">
-							You have no plugins
-						</li>
-					)}
-				</ul>
+                    {!desktopShrink && (
+                        <li className="p-1 text-xs text-muted-foreground">
+                            You have no plugins
+                        </li>
+                    )}
+                </ul>
 
-				<div
-					className={`mt-auto flex justify-between items-center ${
-						desktopShrink ? 'flex-col-reverse gap-5' : ''
-					}`}
-				>
-					<Form
-						action="/admin/signout"
-						method="POST"
-						className="group mx-2 flex flex-col items-start gap-5"
-					>
-						<button className="flex items-center gap-2">
-							<LogOut
-								size={desktopShrink ? 20 : 16}
-								className="transition-transform group-hover:translate-x-1"
-							/>
-							{!desktopShrink && (
-								<p className="text-sm">Sign Out</p>
-							)}
-						</button>
-					</Form>
-					<ThemeToggle className="scale-90" />
-				</div>
-			</aside>
-		</nav>
-	)
+                <div
+                    className={`mt-auto flex justify-between items-center ${
+                        desktopShrink ? 'flex-col-reverse gap-5' : ''
+                    }`}
+                >
+                    <Form
+                        action="/admin/signout"
+                        method="POST"
+                        className="group mx-2 flex flex-col items-start gap-5"
+                    >
+                        <button className="flex items-center gap-2">
+                            <LogOut
+                                size={desktopShrink ? 20 : 16}
+                                className="transition-transform group-hover:translate-x-1"
+                            />
+                            {!desktopShrink && (
+                                <p className="text-sm">Sign Out</p>
+                            )}
+                        </button>
+                    </Form>
+                    <ThemeToggle className="scale-90" />
+                </div>
+            </aside>
+        </nav>
+    )
 }
 
 type NavButtonProps = {
-	Icon: JSX.Element
-	label: string
-	to: string
-	onClick?: () => void
-	desktopShrink: boolean
+    Icon: JSX.Element
+    label: string
+    to: string
+    onClick?: () => void
+    desktopShrink: boolean
 }
 
 export const NavButton = (props: NavButtonProps) => {
-	const { Icon, label, to, onClick, desktopShrink } = props
+    const { Icon, label, to, onClick, desktopShrink } = props
 
-	return (
-		<li className="w-full">
-			<NavLink
-				onClick={onClick}
-				to={to}
-				className={({ isActive }) =>
-					`group flex h-auto items-center justify-start py-2.5 px-2 gap-2
+    return (
+        <li className="w-full">
+            <NavLink
+                onClick={onClick}
+                to={to}
+                className={({ isActive }) =>
+                    `group flex h-auto items-center justify-start py-2.5 px-2 gap-2
                     rounded-lg transition-colors hover:bg-accent hover:text-foreground sm:py-1.5
                     ${desktopShrink ? 'w-fit' : 'w-full'}
                     ${
-						isActive
-							? 'bg-accent text-foreground '
-							: 'text-muted-foreground'
-					}
+                        isActive
+                            ? 'bg-accent text-foreground '
+                            : 'text-muted-foreground'
+                    }
                 `
-				}
-			>
-				<span className="p-1 group-hover:rotate-12">{Icon}</span>
-				{!desktopShrink && (
-					<motion.p
-						layout
-						initial={{ opacity: 0, y: 8 }}
-						animate={{ opacity: 1, y: 0 }}
-					>
-						{label}
-					</motion.p>
-				)}
-			</NavLink>
-		</li>
-	)
+                }
+            >
+                <span className="p-1 group-hover:rotate-12">{Icon}</span>
+                {!desktopShrink && (
+                    <motion.p
+                        layout
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                        {label}
+                    </motion.p>
+                )}
+            </NavLink>
+        </li>
+    )
 }

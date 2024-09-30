@@ -2,195 +2,195 @@ import { PostStatus } from '~/schema/database'
 import { prisma } from './_db.server'
 
 export const getPosts = async (props?: {
-	n?: number
-	status?: PostStatus
-	categoryFilter?: string[]
-	subCategoryFilter?: string[]
-	tagFilter?: string[]
+    n?: number
+    status?: PostStatus
+    categoryFilter?: string[]
+    subCategoryFilter?: string[]
+    tagFilter?: string[]
 }): Promise<{
-	posts: typeof posts
+    posts: typeof posts
 }> => {
-	const { n, status, categoryFilter, subCategoryFilter, tagFilter } =
-		props || {}
-	const whereCategory = {
-		categories: { some: { name: { in: categoryFilter } } },
-	}
-	const whereSubCategory = {
-		subCategories: { some: { name: { in: subCategoryFilter } } },
-	}
-	const whereTag = { tags: { some: { name: { in: tagFilter } } } }
+    const { n, status, categoryFilter, subCategoryFilter, tagFilter } =
+        props || {}
+    const whereCategory = {
+        categories: { some: { name: { in: categoryFilter } } },
+    }
+    const whereSubCategory = {
+        subCategories: { some: { name: { in: subCategoryFilter } } },
+    }
+    const whereTag = { tags: { some: { name: { in: tagFilter } } } }
 
-	const posts = await prisma.post.findMany({
-		where: {
-			status,
-			...(Array.isArray(categoryFilter) &&
-				categoryFilter.length > 0 &&
-				whereCategory),
-			...(Array.isArray(subCategoryFilter) &&
-				subCategoryFilter.length > 0 &&
-				whereSubCategory),
-			...(Array.isArray(tagFilter) && tagFilter.length > 0 && whereTag),
-		},
-		take: n,
-		orderBy: { createdAt: 'desc' },
-		include: {
-			seo: {
-				select: { title: true, description: true },
-			},
-			author: {
-				select: { email: true, name: true },
-			},
-		},
-	})
-	return { posts }
+    const posts = await prisma.post.findMany({
+        where: {
+            status,
+            ...(Array.isArray(categoryFilter) &&
+                categoryFilter.length > 0 &&
+                whereCategory),
+            ...(Array.isArray(subCategoryFilter) &&
+                subCategoryFilter.length > 0 &&
+                whereSubCategory),
+            ...(Array.isArray(tagFilter) && tagFilter.length > 0 && whereTag),
+        },
+        take: n,
+        orderBy: { createdAt: 'desc' },
+        include: {
+            seo: {
+                select: { title: true, description: true },
+            },
+            author: {
+                select: { email: true, name: true },
+            },
+        },
+    })
+    return { posts }
 }
 
 export const getPost = async (
-	id: string
+    id: string
 ): Promise<{
-	post: typeof post
+    post: typeof post
 }> => {
-	const post = await prisma.post.findFirst({
-		where: { id },
-		include: {
-			seo: {
-				select: { title: true, description: true },
-			},
-		},
-	})
+    const post = await prisma.post.findFirst({
+        where: { id },
+        include: {
+            seo: {
+                select: { title: true, description: true },
+            },
+        },
+    })
 
-	return { post }
+    return { post }
 }
 
 export const getPostBySlug = async (
-	slug: string
+    slug: string
 ): Promise<{
-	post: typeof post
-	prev: { title: string; slug: string } | null
-	next: { title: string; slug: string } | null
+    post: typeof post
+    prev: { title: string; slug: string } | null
+    next: { title: string; slug: string } | null
 }> => {
-	const post = await prisma.post.findFirst({
-		where: { slug },
-		include: {
-			seo: {
-				select: { title: true, description: true },
-			},
-			author: {
-				select: {
-					name: true,
-					imageUri: true,
-				},
-			},
-			categories: true,
-			tags: true,
-		},
-	})
+    const post = await prisma.post.findFirst({
+        where: { slug },
+        include: {
+            seo: {
+                select: { title: true, description: true },
+            },
+            author: {
+                select: {
+                    name: true,
+                    imageUri: true,
+                },
+            },
+            categories: true,
+            tags: true,
+        },
+    })
 
-	if (!post) {
-		return { post: null, prev: null, next: null }
-	}
+    if (!post) {
+        return { post: null, prev: null, next: null }
+    }
 
-	const prev = await prisma.post.findFirst({
-		where: { createdAt: { lt: post.createdAt } },
-		select: { slug: true, title: true },
-		orderBy: { createdAt: 'desc' },
-	})
+    const prev = await prisma.post.findFirst({
+        where: { createdAt: { lt: post.createdAt } },
+        select: { slug: true, title: true },
+        orderBy: { createdAt: 'desc' },
+    })
 
-	const next = await prisma.post.findFirst({
-		where: { createdAt: { gt: post.createdAt } },
-		select: { slug: true, title: true },
-		orderBy: { createdAt: 'asc' },
-	})
+    const next = await prisma.post.findFirst({
+        where: { createdAt: { gt: post.createdAt } },
+        select: { slug: true, title: true },
+        orderBy: { createdAt: 'asc' },
+    })
 
-	return { post, prev, next }
+    return { post, prev, next }
 }
 
 interface CreatePostProps {
-	title: string
-	content: string
-	excerpt: string
-	slug: string
-	status: PostStatus
-	authorId: string
-	seo: {
-		metaTitle?: string
-		metaDescription?: string
-	}
+    title: string
+    content: string
+    excerpt: string
+    slug: string
+    status: PostStatus
+    authorId: string
+    seo: {
+        metaTitle?: string
+        metaDescription?: string
+    }
 }
 
 export const createPost = async (
-	props: CreatePostProps
+    props: CreatePostProps
 ): Promise<{ post: typeof post }> => {
-	const { title, content, excerpt, status, authorId, seo, slug } = props
+    const { title, content, excerpt, status, authorId, seo, slug } = props
 
-	const post = await prisma.$transaction(async tx => {
-		const seoCreated = await tx.seo.create({
-			data: {
-				title: seo.metaTitle || title, // Title h1 matches metaTitle is best for SEO, page structure, and accessibility
-				description: seo.metaDescription ?? '',
-				autoGenerated: true,
-			},
-			select: { id: true },
-		})
-		return await tx.post.create({
-			data: {
-				title,
-				content,
-				excerpt,
-				slug,
-				seoId: seoCreated.id,
-				status,
-				authorId,
-			},
-		})
-	})
-	return { post }
+    const post = await prisma.$transaction(async tx => {
+        const seoCreated = await tx.seo.create({
+            data: {
+                title: seo.metaTitle || title, // Title h1 matches metaTitle is best for SEO, page structure, and accessibility
+                description: seo.metaDescription ?? '',
+                autoGenerated: true,
+            },
+            select: { id: true },
+        })
+        return await tx.post.create({
+            data: {
+                title,
+                content,
+                excerpt,
+                slug,
+                seoId: seoCreated.id,
+                status,
+                authorId,
+            },
+        })
+    })
+    return { post }
 }
 
 interface UpdatePostProps {
-	id: string
-	title: string
-	content: string
-	excerpt: string
-	slug: string
-	status: string
-	seo: {
-		metaTitle?: string
-		metaDescription?: string
-	}
+    id: string
+    title: string
+    content: string
+    excerpt: string
+    slug: string
+    status: string
+    seo: {
+        metaTitle?: string
+        metaDescription?: string
+    }
 }
 
 export const updatePost = async (
-	props: UpdatePostProps
+    props: UpdatePostProps
 ): Promise<{ post: typeof post }> => {
-	const { id, title, content, excerpt, status, seo, slug } = props
+    const { id, title, content, excerpt, status, seo, slug } = props
 
-	const post = await prisma.$transaction(async tx => {
-		return await tx.post.update({
-			where: { id },
-			data: {
-				title,
-				content,
-				excerpt,
-				slug,
-				status,
-				seo: {
-					update: {
-						title: seo.metaTitle ?? '',
-						description: seo.metaDescription ?? '',
-					},
-				},
-			},
-		})
-	})
-	return { post }
+    const post = await prisma.$transaction(async tx => {
+        return await tx.post.update({
+            where: { id },
+            data: {
+                title,
+                content,
+                excerpt,
+                slug,
+                status,
+                seo: {
+                    update: {
+                        title: seo.metaTitle ?? '',
+                        description: seo.metaDescription ?? '',
+                    },
+                },
+            },
+        })
+    })
+    return { post }
 }
 
 export const deletePost = async (
-	id: string
+    id: string
 ): Promise<{ post: typeof post }> => {
-	const post = await prisma.post.delete({
-		where: { id },
-	})
-	return { post }
+    const post = await prisma.post.delete({
+        where: { id },
+    })
+    return { post }
 }

@@ -13,31 +13,31 @@ import StarterKit from '@tiptap/starter-kit'
 import { common, createLowlight } from 'lowlight'
 
 export const ExtensionKit = () => [
-	StarterKit.configure({
-		heading: {
-			levels: [2, 3, 4, 5],
-		},
-		codeBlock: false,
-		dropcursor: {
-			width: 2,
-			class: 'ProseMirror-dropcursor border-black',
-		},
-	}),
-	// Marks
-	Underline,
-	Highlight.configure({
-		multicolor: true,
-	}),
-	Color,
-	Superscript,
-	Subscript,
-	// Nodes
-	Placeholder.configure({ placeholder: 'Write something amazing...' }),
-	TextAlign.configure({ types: ['heading', 'paragraph'] }),
-	CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
-	TextStyle.configure({}),
-	ImageBlock,
-	Youtube,
+    StarterKit.configure({
+        heading: {
+            levels: [2, 3, 4, 5],
+        },
+        codeBlock: false,
+        dropcursor: {
+            width: 2,
+            class: 'ProseMirror-dropcursor border-black',
+        },
+    }),
+    // Marks
+    Underline,
+    Highlight.configure({
+        multicolor: true,
+    }),
+    Color,
+    Superscript,
+    Subscript,
+    // Nodes
+    Placeholder.configure({ placeholder: 'Write something amazing...' }),
+    TextAlign.configure({ types: ['heading', 'paragraph'] }),
+    CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
+    TextStyle.configure({}),
+    ImageBlock,
+    Youtube,
 ]
 
 export default ExtensionKit
