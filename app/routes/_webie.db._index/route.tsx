@@ -6,7 +6,7 @@ import {
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
-} from '~/components/admin/admin-wrapper'
+} from '~/routes/_webie.admin/components/admin-wrapper'
 import { Button } from '~/components/ui/button'
 import {
     Dialog,
