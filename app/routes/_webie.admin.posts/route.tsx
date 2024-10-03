@@ -7,12 +7,12 @@ import {
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
-} from '~/components/admin/admin-wrapper'
+} from '~/routes/_webie.admin/components/admin-wrapper'
 import {
     AdminDataTableMoreMenu,
     DataTable,
-} from '~/components/admin/data-table'
-import { TaxonomyDialog } from '~/components/admin/taxonomy'
+} from '~/routes/_webie.admin/components/data-table'
+import { TaxonomyDialog } from '~/routes/_webie.admin/components/taxonomy'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'

@@ -1,6 +1,6 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
-import { Nav } from '~/components/admin/nav'
+import { Nav } from '~/routes/_webie.admin/components/nav'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { decodedAdminToken } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'

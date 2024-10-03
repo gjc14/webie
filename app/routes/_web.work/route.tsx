@@ -1,8 +1,8 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { UnderConstruction } from '~/components/under-construction'
-import { Nav } from '~/components/web/nav'
-import { Footer } from '~/components/web/footer'
+import { Nav } from '~/routes/_web/components/nav'
+import { Footer } from '~/routes/_web/components/footer'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {

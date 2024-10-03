@@ -8,8 +8,8 @@ import {
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
-} from '~/components/admin/admin-wrapper'
-import { PostContent } from '~/components/admin/post-content'
+} from '~/routes/_webie.admin/components/admin-wrapper'
+import { PostContent } from '~/routes/_webie.admin/components/post-content'
 import {
     AlertDialog,
     AlertDialogAction,

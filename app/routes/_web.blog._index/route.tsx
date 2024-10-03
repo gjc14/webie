@@ -1,7 +1,7 @@
 import { json, LoaderFunctionArgs, type MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { SectionWrapper } from '~/components/web/blog/max-width-wrapper'
-import { PostCollection } from '~/components/web/blog/posts'
+import { SectionWrapper } from '~/routes/_web.blog/components/max-width-wrapper'
+import { PostCollection } from '~/routes/_web.blog/components/posts'
 import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 

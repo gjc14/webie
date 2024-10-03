@@ -8,9 +8,9 @@ import {
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
-} from '~/components/admin/admin-wrapper'
-import { DataTable } from '~/components/admin/data-table'
-import { TaxonomyDialog } from '~/components/admin/taxonomy'
+} from '~/routes/_webie.admin/components/admin-wrapper'
+import { DataTable } from '~/routes/_webie.admin/components/data-table'
+import { TaxonomyDialog } from '~/routes/_webie.admin/components/taxonomy'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Separator } from '~/components/ui/separator'

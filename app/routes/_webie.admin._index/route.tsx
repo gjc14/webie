@@ -1,4 +1,4 @@
-import { AdminSectionWrapper } from '~/components/admin/admin-wrapper'
+import { AdminSectionWrapper } from '~/routes/_webie.admin/components/admin-wrapper'
 
 export default function AdminIndex() {
     return (

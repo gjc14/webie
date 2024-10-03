@@ -9,12 +9,12 @@ import {
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
-} from '~/components/admin/admin-wrapper'
+} from '~/routes/_webie.admin/components/admin-wrapper'
 import {
     AdminDataTableMoreMenu,
     DataTable,
-} from '~/components/admin/data-table'
-import { SeoContent } from '~/components/admin/seo-content'
+} from '~/routes/_webie.admin/components/data-table'
+import { SeoContent } from '~/routes/_webie.admin/components/seo-content'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'

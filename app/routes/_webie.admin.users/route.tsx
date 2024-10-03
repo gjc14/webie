@@ -6,12 +6,12 @@ import {
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
-} from '~/components/admin/admin-wrapper'
+} from '~/routes/_webie.admin/components/admin-wrapper'
 import {
     AdminDataTableMoreMenu,
     DataTable,
-} from '~/components/admin/data-table'
-import { UserContent } from '~/components/admin/user-content'
+} from '~/routes/_webie.admin/components/data-table'
+import { UserContent } from '~/routes/_webie.admin/components/user-content'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { getUsers } from '~/lib/db/user.server'
