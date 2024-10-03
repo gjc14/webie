@@ -36,6 +36,7 @@ export const ExtensionKit = () => [
     Link.configure({
         defaultProtocol: 'https',
         validate: href => /^https?:\/\//.test(href),
+        openOnClick: false,
     }),
 
     // Nodes
@@ -43,7 +44,10 @@ export const ExtensionKit = () => [
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
     CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
     TextStyle.configure({}),
-    ImageBlock,
+    ImageBlock.configure({
+        inline: true,
+        allowBase64: true,
+    }),
     Youtube,
 ]
 

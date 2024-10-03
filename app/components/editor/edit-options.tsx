@@ -1,3 +1,4 @@
+import Youtube from '~/components/editor/components/asset/youtube'
 import { Editor } from '@tiptap/react'
 import {
     AlignCenter,
@@ -13,6 +14,7 @@ import {
     Heading4,
     Heading5,
     Highlighter,
+    Image,
     Italic,
     List,
     ListOrdered,
@@ -27,6 +29,7 @@ import {
     Underline as UnderlineIcon,
     Undo,
 } from 'lucide-react'
+import { useCallback } from 'react'
 
 export interface EditOptionProps {
     tooltip: string
@@ -340,11 +343,59 @@ const editHistoryOptions: EditOptionProps[] = [
     },
 ]
 
+const editMediaOptions: EditOptionProps[] = [
+    {
+        tooltip: 'Insert Image',
+        icon: (size = 14) => {
+            return <Image size={size} />
+        },
+        onClick: (editor: Editor) => {
+            const url = window.prompt('URL')
+            const alt = window.prompt('Alt')
+            const title = window.prompt('Title')
+
+            if (url) {
+                editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                        src: url,
+                        alt: alt || 'Image',
+                        title: title || 'Image',
+                    })
+                    .run()
+            }
+        },
+        can: () => true,
+    },
+    {
+        tooltip: 'Insert Youtube',
+        icon: (size = 14) => {
+            return <Youtube size={size} />
+        },
+        onClick: (editor: Editor) => {
+            const url = window.prompt('URL')
+            const width = prompt('Enter width (default: 640)') || '640'
+            const height = prompt('Enter height (default: 480)') || '480'
+
+            if (url && width && height) {
+                editor.commands.setYoutubeVideo({
+                    src: url,
+                    width: Math.max(320, parseInt(width)),
+                    height: Math.max(180, parseInt(height)),
+                })
+            }
+        },
+        can: () => true,
+    },
+]
+
 export {
     editAlignOptions,
     editHistoryOptions,
     editListOptions,
     editMarkOptions,
     editMiscOptions,
+    editMediaOptions,
     editParagraphOptions,
 }

@@ -1,17 +1,19 @@
 import { Editor } from '@tiptap/react'
+import { Link, Unlink } from 'lucide-react'
+import { memo, useCallback, useState } from 'react'
 import { Separator } from '~/components/ui/separator'
 import {
     editAlignOptions,
     editHistoryOptions,
     editListOptions,
     editMarkOptions,
+    editMediaOptions,
     editMiscOptions,
     editParagraphOptions,
 } from '../../edit-options'
 import { ToggleButton } from '../toggle-button'
-import { useCallback, useState } from 'react'
-import Youtube from '~/components/editor/components/asset/youtube'
-import { Image, Link, Unlink } from 'lucide-react'
+
+const MemoToggleButton = memo(ToggleButton)
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
     const [height, setHeight] = useState('480')
@@ -47,7 +49,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             <div id="buttons" className="flex flex-wrap items-center gap-1 p-1">
                 {/* Formatting */}
                 {editMarkOptions.map((option, index) => (
-                    <ToggleButton
+                    <MemoToggleButton
                         key={index}
                         onClick={() => option.onClick(editor)}
                         disabled={!option.can(editor)}
@@ -60,7 +62,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         tooltip={option.tooltip}
                     >
                         {option.icon(14)}
-                    </ToggleButton>
+                    </MemoToggleButton>
                 ))}
 
                 <Separator
@@ -70,7 +72,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
 
                 {/* Paragraph */}
                 {editParagraphOptions.map((option, index) => (
-                    <ToggleButton
+                    <MemoToggleButton
                         key={index}
                         onClick={() => option.onClick(editor)}
                         disabled={!option.can(editor)}
@@ -83,7 +85,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         tooltip={option.tooltip}
                     >
                         {option.icon(14)}
-                    </ToggleButton>
+                    </MemoToggleButton>
                 ))}
 
                 <Separator
@@ -93,7 +95,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
 
                 {/* List */}
                 {editListOptions.map((option, index) => (
-                    <ToggleButton
+                    <MemoToggleButton
                         key={index}
                         onClick={() => option.onClick(editor)}
                         disabled={!option.can(editor)}
@@ -106,7 +108,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         tooltip={option.tooltip}
                     >
                         {option.icon(14)}
-                    </ToggleButton>
+                    </MemoToggleButton>
                 ))}
 
                 <Separator
@@ -116,7 +118,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
 
                 {/* Align */}
                 {editAlignOptions.map((option, index) => (
-                    <ToggleButton
+                    <MemoToggleButton
                         key={index}
                         onClick={() => option.onClick(editor)}
                         disabled={!option.can(editor)}
@@ -129,7 +131,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         tooltip={option.tooltip}
                     >
                         {option.icon(14)}
-                    </ToggleButton>
+                    </MemoToggleButton>
                 ))}
 
                 <Separator
@@ -139,7 +141,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
 
                 {/* Misc */}
                 {editMiscOptions.map((option, index) => (
-                    <ToggleButton
+                    <MemoToggleButton
                         key={index}
                         onClick={() => option.onClick(editor)}
                         disabled={!option.can(editor)}
@@ -152,7 +154,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         tooltip={option.tooltip}
                     >
                         {option.icon(14)}
-                    </ToggleButton>
+                    </MemoToggleButton>
                 ))}
 
                 <Separator
@@ -162,7 +164,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
 
                 {/* Undo/Redo */}
                 {editHistoryOptions.map((option, index) => (
-                    <ToggleButton
+                    <MemoToggleButton
                         key={index}
                         onClick={() => option.onClick(editor)}
                         disabled={!option.can(editor)}
@@ -175,7 +177,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         tooltip={option.tooltip}
                     >
                         {option.icon(14)}
-                    </ToggleButton>
+                    </MemoToggleButton>
                 ))}
 
                 <Separator
@@ -184,7 +186,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                 />
 
                 {/* Link */}
-                <ToggleButton
+                <MemoToggleButton
                     onClick={setLink}
                     disabled={false}
                     tooltip="Set Link"
@@ -195,62 +197,50 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                     }
                 >
                     <Link size={14} />
-                </ToggleButton>
+                </MemoToggleButton>
 
-                <ToggleButton
+                <MemoToggleButton
                     onClick={() => editor.chain().focus().unsetLink().run()}
                     disabled={!editor.isActive('link')}
                     tooltip="Unset Link"
                 >
                     <Unlink size={14} />
-                </ToggleButton>
+                </MemoToggleButton>
 
                 {/* Media */}
-                <ToggleButton
-                    onClick={useCallback(() => {
-                        const url = window.prompt('URL')
-                        const alt = window.prompt('Alt')
-                        const title = window.prompt('Title')
-
-                        if (url) {
-                            editor
-                                .chain()
-                                .focus()
-                                .setImage({
-                                    src: url,
-                                    alt: alt || 'Image',
-                                    title: title || 'Image',
-                                })
-                                .run()
+                {editMediaOptions.map((option, index) => (
+                    <MemoToggleButton
+                        key={index}
+                        onClick={() => option.onClick(editor)}
+                        disabled={!option.can(editor)}
+                        className={
+                            option.isActive?.(editor)
+                                ? 'bg-accent text-bg-accent-foreground'
+                                : ''
                         }
-                    }, [editor])}
-                    disabled={false}
-                    tooltip="Insert Image"
-                >
-                    <Image size={14} />
-                </ToggleButton>
+                        shortcut={option.shortcut}
+                        tooltip={option.tooltip}
+                    >
+                        {option.icon(14)}
+                    </MemoToggleButton>
+                ))}
 
-                <ToggleButton
-                    onClick={useCallback(() => {
-                        const url = window.prompt('URL')
-                        const width =
-                            prompt('Enter width (default: 640)') || '640'
-                        const height =
-                            prompt('Enter height (default: 480)') || '480'
-
-                        if (url && width && height) {
-                            editor.commands.setYoutubeVideo({
-                                src: url,
-                                width: Math.max(320, parseInt(width)),
-                                height: Math.max(180, parseInt(height)),
-                            })
+                {editHistoryOptions.map((option, index) => (
+                    <MemoToggleButton
+                        key={index}
+                        onClick={() => option.onClick(editor)}
+                        disabled={!option.can(editor)}
+                        className={
+                            option.isActive?.(editor)
+                                ? 'bg-accent text-bg-accent-foreground'
+                                : ''
                         }
-                    }, [editor])}
-                    disabled={false}
-                    tooltip="Insert Youtube"
-                >
-                    <Youtube />
-                </ToggleButton>
+                        shortcut={option.shortcut}
+                        tooltip={option.tooltip}
+                    >
+                        {option.icon(14)}
+                    </MemoToggleButton>
+                ))}
             </div>
         </div>
     )

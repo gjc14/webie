@@ -1,10 +1,10 @@
-const Youtube = () => {
+const Youtube = ({ size = 14 }: { size?: number }) => {
     return (
         <svg
             role="img"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-3.5 h-3.5"
+            style={{ width: `${size}px`, height: `${size}px` }}
             fill="currentColor"
         >
             <title>YouTube</title>

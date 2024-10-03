@@ -133,7 +133,7 @@ export const DataGrid = (props: webieDataGridProps) => {
     return (
         <div className="h-full">
             <AgGridReact
-                selection={{ mode: 'multiRow', enableClickSelection: true }}
+                rowSelection={{ mode: 'multiRow', enableClickSelection: true }}
                 rowData={rows}
                 columnDefs={colDefs}
                 getRowId={getRowId}
