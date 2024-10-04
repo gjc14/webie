@@ -22,7 +22,7 @@ import {
     AlertDialogTrigger,
 } from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
-import { decodedAdminToken } from '~/lib/db/auth.server'
+import { isAdmin } from '~/lib/db/auth.server'
 import { getPost, updatePost } from '~/lib/db/post.server'
 import { PostStatus } from '~/schema/database'
 
@@ -47,7 +47,7 @@ const PostUpdateSchema = z
     })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    await decodedAdminToken(request.headers.get('Cookie'))
+    await isAdmin(request.headers.get('Cookie'))
 
     if (request.method !== 'PUT') {
         throw new Response('Method not allowed', { status: 405 })

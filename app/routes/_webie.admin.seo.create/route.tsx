@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 import { z } from 'zod'
-import { decodedAdminToken } from '~/lib/db/auth.server'
+import { isAdmin } from '~/lib/db/auth.server'
 import { createSEO } from '~/lib/db/seo.server'
 
 export const SeoUpdateSchmea = z.object({
@@ -14,7 +14,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return json({ err: 'Method not allowed' }, { status: 405 })
     }
 
-    await decodedAdminToken(request.headers.get('Cookie'))
+    await isAdmin(request.headers.get('Cookie'))
 
     const formData = await request.formData()
     const createSeoData = Object.fromEntries(formData)

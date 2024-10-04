@@ -100,7 +100,7 @@ export const verifyMagicLink = async (
     }
 }
 
-export const decodedAdminToken = async (
+export const isAdmin = async (
     cookieString: string | null
 ): Promise<{ id: string }> => {
     if (!cookieString) throw redirect('/admin/signin')

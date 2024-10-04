@@ -8,7 +8,7 @@ import {
     deleteSubcategory,
     deleteTag,
 } from '~/lib/db/blog-taxonomy.server'
-import { decodedAdminToken } from '~/lib/db/auth.server'
+import { isAdmin } from '~/lib/db/auth.server'
 import { z } from 'zod'
 
 const intentSchema = z.enum(['category', 'subcategory', 'tag'])
@@ -35,7 +35,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         throw new Response('Method not allowd', { status: 405 })
     }
 
-    await decodedAdminToken(request.headers.get('Cookie'))
+    await isAdmin(request.headers.get('Cookie'))
 
     const formData = await request.formData()
     const intent = formData.get('intent')

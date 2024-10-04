@@ -1,9 +1,9 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
-import { decodedAdminToken } from '~/lib/db/auth.server'
+import { isAdmin } from '~/lib/db/auth.server'
 import { deletePost } from '~/lib/db/post.server'
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-    await decodedAdminToken(request.headers.get('Cookie'))
+    await isAdmin(request.headers.get('Cookie'))
 
     if (request.method !== 'DELETE') {
         throw new Response('Method not allowd', { status: 405 })
