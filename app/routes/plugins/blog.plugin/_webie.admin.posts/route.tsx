@@ -2,6 +2,7 @@ import { json, SerializeFrom } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, PlusCircle } from 'lucide-react'
+
 import {
     AdminActions,
     AdminHeader,

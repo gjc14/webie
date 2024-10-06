@@ -6,12 +6,13 @@ import { generateHTML } from '@tiptap/react'
 import { common, createLowlight } from 'lowlight'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
+
+import ExtensionKit from '~/components/editor/extensions/extension-kit'
 import { getPostBySlug } from '~/lib/db/post.server'
 import { FeaturedImage } from './featured-image'
 import { hilightInnerHTML } from './highlight-inner-html'
 import { PostFooter } from './post-footer'
 import { PostMeta } from './post-meta'
-import ExtensionKit from '~/components/editor/extensions/extension-kit'
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
     if (!params.postSlug) {

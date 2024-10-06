@@ -5,23 +5,28 @@ import {
     Eye,
     LayoutDashboard,
     LogOut,
-    PenBoxIcon,
-    Tag,
     TextSearch,
     User2,
     UserRoundCog,
 } from 'lucide-react'
 import { useState } from 'react'
+
+import Icon from '~/components/dynamic-icon'
 import { FullScreenLoading } from '~/components/loading'
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
+import { WebieConfig } from '~/lib/webie/get-plugin-configs.server'
 
 const NavOptions: Omit<NavButtonProps, 'desktopShrink'>[] = [
-    { Icon: <PenBoxIcon size={18} />, label: 'Posts', to: '/admin/posts' },
     { Icon: <TextSearch size={18} />, label: 'SEO', to: '/admin/seo' },
-    { Icon: <Tag size={18} />, label: 'Taxonomies', to: '/admin/taxonomy' },
     { Icon: <User2 size={18} />, label: 'Users', to: '/admin/users' },
     { Icon: <UserRoundCog size={18} />, label: 'Admin', to: '/admin/admins' },
 ]
@@ -30,10 +35,12 @@ export const NavContent = ({
     className,
     isDesktop,
     onClick,
+    pluginRoutes,
 }: {
     className?: string
     isDesktop: boolean
     onClick?: () => void
+    pluginRoutes: WebieConfig['adminRoutes']
 }) => {
     const navigation = useNavigation()
     const [open, setOpen] = useState(!isDesktop)
@@ -93,10 +100,21 @@ export const NavContent = ({
 
                     <Separator />
 
-                    {!desktopShrink && (
+                    {!desktopShrink ? (
                         <li className="p-1 text-xs text-muted-foreground">
                             You have no plugins
                         </li>
+                    ) : (
+                        pluginRoutes.map((route, index) => (
+                            <NavButton
+                                key={index}
+                                Icon={<Icon name={route.iconName} size={18} />}
+                                label={route.label}
+                                to={route.to}
+                                onClick={onClick}
+                                desktopShrink={desktopShrink}
+                            />
+                        ))
                     )}
                 </ul>
 
@@ -139,12 +157,15 @@ export const NavButton = (props: NavButtonProps) => {
     const { Icon, label, to, onClick, desktopShrink } = props
 
     return (
-        <li className="w-full">
-            <NavLink
-                onClick={onClick}
-                to={to}
-                className={({ isActive }) =>
-                    `group flex h-auto items-center justify-start py-2.5 px-2 gap-2
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <li className="w-full">
+                        <NavLink
+                            onClick={onClick}
+                            to={to}
+                            className={({ isActive }) =>
+                                `group flex h-auto items-center justify-start py-2.5 px-2 gap-2
                     rounded-lg transition-colors hover:bg-accent hover:text-foreground sm:py-1.5
                     ${desktopShrink ? 'w-fit' : 'w-full'}
                     ${
@@ -153,19 +174,25 @@ export const NavButton = (props: NavButtonProps) => {
                             : 'text-muted-foreground'
                     }
                 `
-                }
-            >
-                <span className="p-1 group-hover:rotate-12">{Icon}</span>
-                {!desktopShrink && (
-                    <motion.p
-                        layout
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        {label}
-                    </motion.p>
-                )}
-            </NavLink>
-        </li>
+                            }
+                        >
+                            <span className="p-1 group-hover:rotate-12">
+                                {Icon}
+                            </span>
+                            {!desktopShrink && (
+                                <motion.p
+                                    layout
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    {label}
+                                </motion.p>
+                            )}
+                        </NavLink>
+                    </li>
+                </TooltipTrigger>
+                <TooltipContent>{label}</TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
     )
 }

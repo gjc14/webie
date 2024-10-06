@@ -3,8 +3,9 @@ import { Link } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
-import { DataTable } from '~/routes/_web.blog/components/post-data-table'
+
 import { Input } from '~/components/ui/input'
+import { DataTable } from '../../_web.blog/components/post-data-table'
 
 export type DisplayPost = Post & {
     author: { email: string; name: string | null }

@@ -1,12 +1,13 @@
 import { json, LoaderFunctionArgs, type MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { Nav } from '~/routes/_web/components/nav'
-import { Footer } from '~/routes/_web/components/footer'
-import { LatestPosts } from '~/routes/_web.blog/components/posts'
-import { CTA } from '~/routes/_web.blog/components/cta'
-import { Hero } from './hero'
+
 import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
+import { Footer } from '~/routes/_web/components/footer'
+import { Nav } from '~/routes/_web/components/nav'
+import { CTA } from '~/routes/plugins/blog.plugin/_web.blog/components/cta'
+import { LatestPosts } from '~/routes/plugins/blog.plugin/_web.blog/components/posts'
+import { Hero } from './hero'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return data?.seo
