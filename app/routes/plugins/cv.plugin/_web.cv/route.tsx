@@ -1,8 +1,8 @@
 import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { UnderConstruction } from '~/components/under-construction'
-import { Nav } from '~/routes/plugins/_web.plugin/_web/components/nav'
-import { Footer } from '~/routes/plugins/_web.plugin/_web/components/footer'
+import { Nav } from './components/nav'
+import { Footer } from './components/footer'
 import { getSEO } from '~/lib/db/seo.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -25,7 +25,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
 }
 
-export default function Work() {
+export default function CV() {
     const { seo } = useLoaderData<typeof loader>()
 
     return (

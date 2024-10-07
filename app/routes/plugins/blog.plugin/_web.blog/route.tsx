@@ -1,7 +1,7 @@
 import { Outlet } from '@remix-run/react'
 
-import { Footer } from '~/routes/plugins/_web.plugin/_web/components/footer'
-import { Nav } from '~/routes/plugins/_web.plugin/_web/components/nav'
+import { Footer } from './components/footer'
+import { Nav } from './components/nav'
 import { CTA } from './components/cta'
 
 export default function Blog() {

@@ -15,7 +15,6 @@ const config = (): WebieConfig => {
                 iconName: 'tag',
             },
         ],
-        dependencies: ['_web'],
     }
 }
 
