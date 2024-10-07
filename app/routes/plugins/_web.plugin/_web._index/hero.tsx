@@ -1,8 +1,9 @@
-import { Button } from '~/components/ui/button'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import { File } from 'lucide-react'
 
 export const Hero = () => {
     return (
-        <section className="min-h-screen h-full py-20 px-6 my-12 md:px-28 lg:px-36">
+        <section className="h-full py-20 px-6 my-12 md:px-28 lg:px-36">
             <div className="w-full h-full border border-border rounded-xl grid grid-cols-1 md:grid-cols-2">
                 <div className="flex items-center justify-center aspect-[5/3] md:aspect-auto">
                     <svg
@@ -31,30 +32,67 @@ export const Hero = () => {
                 </div>
 
                 <article className="px-8 pb-8 md:py-16 lg:p-16 space-y-8 leading-4">
-                    <h2>👋 Hey I'm Webie.</h2>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut.
-                    </p>
-                    <div className="flex justify-start pb-6">
+                    <h2 className="leading text-2xl font-bold mt-1">
+                        👋 Welcome to <span className="sr-only">Webie</span>
+                    </h2>
+                    <div className="h-fit w-[125px]">
+                        <img
+                            src="/logos/webie-black-300.png"
+                            alt="Webie"
+                            className="block w-full dark:hidden"
+                        />
+                        <img
+                            src="/logos/webie-white-300.png"
+                            alt="Webie"
+                            className="hidden w-full dark:block"
+                        />
+                    </div>
+
+                    <ul className="pl-3">
+                        <li>
+                            To start building your website front, please add
+                            _web.base plugin.
+                        </li>
+                        <li>
+                            Webie is built on top of
+                            <a
+                                href="https://remix.run"
+                                aria-label="Go to Remix docs"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Go to the Remix docs"
+                            >
+                                <strong>&nbsp;Remix</strong>
+                            </a>
+                            .
+                        </li>
+                        <li>
+                            You could add new plugin via cli&nbsp;
+                            <span className="bg-zinc-300 dark:bg-zinc-700 py-0.5 px-1 rounded">
+                                webie add {'<plugin-name>'}
+                            </span>
+                            .
+                        </li>
+                    </ul>
+
+                    <div className="flex gap-3">
                         <a
-                            href="mailto:my@ema.il"
-                            aria-label="send email to my@ema.il"
-                            className="no-underline"
+                            href="https://webie.dev"
+                            aria-label="Go to webie"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Go to the Webie website"
                         >
-                            <Button>Email to my@ema.il</Button>
+                            <File className="w-5 h-5" />
+                        </a>
+                        <a
+                            href="https://github.com/gjc14/webie"
+                            aria-label="Go to webie repo"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Go to the GitHub repository for webie"
+                        >
+                            <GitHubLogoIcon className="w-5 h-5" />
                         </a>
                     </div>
                 </article>

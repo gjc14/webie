@@ -3,6 +3,10 @@ import { useFetcher, useLoaderData } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
+
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Separator } from '~/components/ui/separator'
 import {
     AdminActions,
     AdminHeader,
@@ -11,11 +15,8 @@ import {
 } from '~/routes/_webie.admin/components/admin-wrapper'
 import { DataTable } from '~/routes/_webie.admin/components/data-table'
 import { TaxonomyDialog } from '~/routes/_webie.admin/components/taxonomy'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Separator } from '~/components/ui/separator'
-import { getCategories, getTags } from '~/lib/db/blog-taxonomy.server'
-import { Intents } from '~/routes/_webie.admin.posts.action.taxonomy/route'
+import { Intents } from '../_webie.admin.posts.action.taxonomy/route'
+import { getCategories, getTags } from '../lib/db/blog-taxonomy.server'
 
 export const loader = async () => {
     try {

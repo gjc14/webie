@@ -23,7 +23,7 @@ import {
     TooltipTrigger,
 } from '~/components/ui/tooltip'
 import { cn } from '~/lib/utils'
-import { WebieConfig } from '~/lib/webie/get-plugin-configs.server'
+import { WebieConfig } from '~/routes/plugins/utils/get-plugin-configs.server'
 
 const NavOptions: Omit<NavButtonProps, 'desktopShrink'>[] = [
     { Icon: <TextSearch size={18} />, label: 'SEO', to: '/admin/seo' },
@@ -100,22 +100,24 @@ export const NavContent = ({
 
                     <Separator />
 
-                    {!desktopShrink ? (
-                        <li className="p-1 text-xs text-muted-foreground">
-                            You have no plugins
-                        </li>
-                    ) : (
-                        pluginRoutes.map((route, index) => (
-                            <NavButton
-                                key={index}
-                                Icon={<Icon name={route.iconName} size={18} />}
-                                label={route.label}
-                                to={route.to}
-                                onClick={onClick}
-                                desktopShrink={desktopShrink}
-                            />
-                        ))
-                    )}
+                    {!pluginRoutes || pluginRoutes.length === 0
+                        ? !desktopShrink && (
+                              <li className="p-1 text-xs text-muted-foreground">
+                                  You have no plugins
+                              </li>
+                          )
+                        : pluginRoutes.map((route, index) => (
+                              <NavButton
+                                  key={index}
+                                  Icon={
+                                      <Icon name={route.iconName} size={18} />
+                                  }
+                                  label={route.label}
+                                  to={route.to}
+                                  onClick={onClick}
+                                  desktopShrink={desktopShrink}
+                              />
+                          ))}
                 </ul>
 
                 <div

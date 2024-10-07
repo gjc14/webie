@@ -4,8 +4,8 @@ import { Outlet, useLoaderData } from '@remix-run/react'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { isAdmin } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
-import { getPluginConfigs } from '~/lib/webie/get-plugin-configs.server'
 import { Nav } from '~/routes/_webie.admin/components/nav'
+import { getPluginConfigs } from '~/routes/plugins/utils/get-plugin-configs.server'
 
 export const meta: MetaFunction = () => {
     return [{ title: 'Admin' }, { name: 'description', content: 'Admin page' }]
@@ -17,7 +17,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const existingUser = await getUserById(admin.id)
 
     const pluginConfigs = await getPluginConfigs()
-    const pluginRoutes = pluginConfigs.flatMap(config => config.adminRoutes)
+    const pluginRoutes = pluginConfigs
+        .flatMap(config => config.adminRoutes)
+        .filter(route => !!route)
 
     return json({ admin: existingUser.user, pluginRoutes: pluginRoutes })
 }

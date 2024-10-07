@@ -105,7 +105,7 @@
     }
 }
 
-/* tailwind typographt */
+/* tailwind typography */
 @layer base {
     article {
         @apply prose tracking-wide leading-loose dark:prose-invert;

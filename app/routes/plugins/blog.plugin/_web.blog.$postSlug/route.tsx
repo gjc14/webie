@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import ExtensionKit from '~/components/editor/extensions/extension-kit'
-import { getPostBySlug } from '~/lib/db/post.server'
+import { getPostBySlug } from '../lib/db/post.server'
 import { FeaturedImage } from './featured-image'
 import { hilightInnerHTML } from './highlight-inner-html'
 import { PostFooter } from './post-footer'

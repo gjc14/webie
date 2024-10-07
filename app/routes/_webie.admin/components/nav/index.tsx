@@ -9,7 +9,7 @@ import {
     SheetTrigger,
 } from '~/components/ui/sheet'
 import { NavContent } from './nav-content'
-import { WebieConfig } from '~/lib/webie/get-plugin-configs.server'
+import { WebieConfig } from '~/routes/plugins/utils/get-plugin-configs.server'
 
 export const Nav = ({
     pluginRoutes,

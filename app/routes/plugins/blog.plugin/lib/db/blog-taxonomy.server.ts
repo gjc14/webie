@@ -1,4 +1,4 @@
-import { prisma } from './_db.server'
+import { prisma } from '~/lib/db/_db.server'
 
 /**
  * Tag and Category functions

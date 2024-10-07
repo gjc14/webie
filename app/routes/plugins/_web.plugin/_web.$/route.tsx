@@ -1,3 +1,7 @@
+/**
+ * Where will match all routes that are not matched by other routes.
+ * Best place to put a 404 page.
+ */
 import { MetaFunction } from '@remix-run/node'
 import { Link } from '@remix-run/react'
 import { Button } from '~/components/ui/button'

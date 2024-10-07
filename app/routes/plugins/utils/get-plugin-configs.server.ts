@@ -1,9 +1,7 @@
 /**
  * Read all the plugin configs from the `app/routes/plugins/*.plugin/webie.config.ts`
  */
-export const getPluginConfigs = async (): Promise<
-    NonNullable<WebieConfig>[]
-> => {
+export const getPluginConfigs = async (): Promise<WebieConfig[]> => {
     const modules = import.meta.glob(
         '/app/routes/plugins/*.plugin/webie.config.ts',
         {
@@ -50,24 +48,27 @@ const iconOptions = Object.keys(dynamicIconImports) as Array<
 const WebieConfigSchema = z.object({
     pluginName: z.string(),
     /**
-     * Used to generate `Admin` nav bar
+     * Used to generate button for `Admin` nav bar
      */
-    adminRoutes: z.array(
-        z.object({
-            /**
-             * Which will show as tooltip
-             */
-            label: z.string(),
-            /**
-             * The path relative to the `admin` route.
-             */
-            to: z.string(),
-            /**
-             * Icon name from `lucide-react`
-             * zod enum should have at least one value
-             */
-            iconName: z.enum([iconOptions[0], ...iconOptions.slice(1)]),
-        })
-    ),
+    adminRoutes: z
+        .array(
+            z.object({
+                /**
+                 * Which will show as tooltip
+                 */
+                label: z.string(),
+                /**
+                 * The path relative to the `admin` route.
+                 */
+                to: z.string(),
+                /**
+                 * Icon name from `lucide-react`
+                 * zod enum should have at least one value
+                 */
+                iconName: z.enum([iconOptions[0], ...iconOptions.slice(1)]),
+            })
+        )
+        .optional(),
+    dependencies: z.array(z.string()).optional(),
 })
 export type WebieConfig = z.infer<typeof WebieConfigSchema>

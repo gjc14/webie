@@ -10,10 +10,12 @@ export const Nav = () => {
                 className="flex items-center gap-2"
                 aria-label="go to home /"
             >
+                {/* Replace your logo by replacing /public/logos/webie-black-300.png and /public/logos/webie-white-300.png */}
                 <div className="bg-[url('/logos/webie-black-300.png')] dark:bg-[url('/logos/webie-white-300.png')] bg-cover bg-center w-10 h-3.5" />
                 <span className="hidden">Home</span>
             </NavLink>
 
+            {/* Add your own routes here */}
             <CustomNav to="/blog">Blog</CustomNav>
             <CustomNav to="/work">Work</CustomNav>
             <ThemeToggle size="sm" />

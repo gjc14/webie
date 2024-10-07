@@ -1,3 +1,5 @@
+import './tailwind.css'
+
 import { json, LoaderFunctionArgs } from '@remix-run/node'
 import {
     isRouteErrorResponse,
@@ -14,6 +16,7 @@ import {
 import { parse } from 'cookie'
 import { useEffect, useRef } from 'react'
 import { toast, Toaster } from 'sonner'
+
 import {
     customThemeCookieName,
     getCustomTheme,

@@ -13,7 +13,7 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Textarea } from '~/components/ui/textarea'
-import { isConventionalSuccess } from '~/lib/check-action-response'
+import { isConventionalSuccess } from '~/lib/utils'
 import { SerializedSeo } from '~/routes/_webie.admin.seo/route'
 
 export const SeoContent = ({

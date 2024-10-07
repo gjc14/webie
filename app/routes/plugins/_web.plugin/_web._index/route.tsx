@@ -1,9 +1,10 @@
-import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
+import { json, LoaderFunctionArgs, type MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { UnderConstruction } from '~/components/under-construction'
-import { Nav } from '~/routes/_web/components/nav'
-import { Footer } from '~/routes/_web/components/footer'
+
 import { getSEO } from '~/lib/db/seo.server'
+import { Footer } from '../_web/components/footer'
+import { Nav } from '../_web/components/nav'
+import { Hero } from './hero'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return data?.seo
@@ -25,13 +26,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
 }
 
-export default function Work() {
+export default function Index() {
     const { seo } = useLoaderData<typeof loader>()
 
     return (
         <>
-            <h1 className="visually-hidden">{seo?.title}</h1>
-            <UnderConstruction nav={<Nav />} footer={<Footer />} />
+            <Nav />
+
+            <main className="w-full h-full min-h-screen flex flex-col items-center">
+                <h1 className="visually-hidden">{seo?.title}</h1>
+                <Hero />
+                <Footer />
+            </main>
         </>
     )
 }

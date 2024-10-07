@@ -1,5 +1,3 @@
-import '~/tailwind.css'
-
 import {
     isRouteErrorResponse,
     Link,
@@ -9,7 +7,7 @@ import {
 import { Undo2 } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 
-export default function WebBack() {
+export default function Webie() {
     return <Outlet />
 }
 
@@ -38,10 +36,10 @@ export function ErrorBoundary() {
 
                 <div className="fixed bottom-8 flex items-center font-open-sans">
                     <p className="inline-block mr-3 pr-5 text-lg font-normal border-r">
-                        mimiu.fyi
+                        Webie
                     </p>
                     <div className="inline-block">
-                        <p className="text-xs font-light">
+                        <p className="text-xs font-light text-left">
                             © 2024 CHIU YIN CHEN @Taipei
                         </p>
                     </div>

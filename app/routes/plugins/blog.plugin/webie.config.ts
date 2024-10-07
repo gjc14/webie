@@ -1,4 +1,4 @@
-import type { WebieConfig } from '~/lib/webie/get-plugin-configs.server'
+import type { WebieConfig } from '../utils/get-plugin-configs.server'
 
 const config = (): WebieConfig => {
     return {
@@ -15,6 +15,7 @@ const config = (): WebieConfig => {
                 iconName: 'tag',
             },
         ],
+        dependencies: ['_web'],
     }
 }
 

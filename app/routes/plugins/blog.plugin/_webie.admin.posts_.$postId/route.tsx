@@ -3,13 +3,7 @@ import { Form, Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { ExternalLink, Loader2, Save, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import {
-    AdminActions,
-    AdminHeader,
-    AdminSectionWrapper,
-    AdminTitle,
-} from '~/routes/_webie.admin/components/admin-wrapper'
-import { PostContent } from '~/routes/_webie.admin/components/post-content'
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,8 +17,15 @@ import {
 } from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
 import { isAdmin } from '~/lib/db/auth.server'
-import { getPost, updatePost } from '~/lib/db/post.server'
+import {
+    AdminActions,
+    AdminHeader,
+    AdminSectionWrapper,
+    AdminTitle,
+} from '~/routes/_webie.admin/components/admin-wrapper'
+import { PostContent } from '~/routes/_webie.admin/components/post-content'
 import { PostStatus } from '~/schema/database'
+import { getPost, updatePost } from '../lib/db/post.server'
 
 const PostUpdateSchema = z
     .object({

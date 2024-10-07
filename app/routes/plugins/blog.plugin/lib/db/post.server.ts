@@ -1,5 +1,5 @@
 import { PostStatus } from '~/schema/database'
-import { prisma } from './_db.server'
+import { prisma } from '~/lib/db/_db.server'
 
 export const getPosts = async (props?: {
     n?: number
