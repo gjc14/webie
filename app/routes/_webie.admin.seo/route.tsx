@@ -18,7 +18,7 @@ import { SeoContent } from '~/routes/_webie.admin/components/seo-content'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
-import { isAdmin } from '~/lib/db/auth.server'
+import { userIs } from '~/lib/db/auth.server'
 import { getSEOs, updateSEO } from '~/lib/db/seo.server'
 
 export const SeoUpdateSchmea = z.object({
@@ -32,7 +32,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return json({ err: 'Method not allowed' }, { status: 405 })
     }
 
-    await isAdmin(request.headers.get('Cookie'))
+    await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
 
     const formData = await request.formData()
     const updateSeoData = Object.fromEntries(formData)

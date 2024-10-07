@@ -2,7 +2,7 @@ import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { Outlet, useLoaderData } from '@remix-run/react'
 
 import { ScrollArea } from '~/components/ui/scroll-area'
-import { isAdmin } from '~/lib/db/auth.server'
+import { userIs } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
 import { Nav } from '~/routes/_webie.admin/components/nav'
 import { getPluginConfigs } from '~/routes/plugins/utils/get-plugin-configs.server'
@@ -12,7 +12,11 @@ export const meta: MetaFunction = () => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const admin = await isAdmin(request.headers.get('Cookie'))
+    const admin = await userIs(
+        request.headers.get('Cookie'),
+        'ADMIN',
+        '/admin/signin'
+    )
 
     const existingUser = await getUserById(admin.id)
 

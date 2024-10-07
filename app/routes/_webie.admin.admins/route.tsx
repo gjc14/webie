@@ -27,7 +27,7 @@ import {
 } from '~/components/ui/dialog'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
-import { isAdmin } from '~/lib/db/auth.server'
+import { userIs } from '~/lib/db/auth.server'
 import { getAdminUsers, updateUser } from '~/lib/db/user.server'
 import { UserRole, UserStatus } from '~/schema/database'
 
@@ -44,7 +44,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         return json({ data: null, err: 'Invalid method' }, { status: 400 })
     }
 
-    await isAdmin(request.headers.get('Cookie'))
+    await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
 
     const formData = await request.formData()
     const updateUserData = Object.fromEntries(formData)

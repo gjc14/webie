@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
-import { isAdmin } from '~/lib/db/auth.server'
+import { userIs } from '~/lib/db/auth.server'
 import { deleteSEO } from '~/lib/db/seo.server'
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -7,7 +7,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         return json({ err: 'Method not allowed' }, { status: 405 })
     }
 
-    await isAdmin(request.headers.get('Cookie'))
+    await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
 
     const id = params.seoId
 

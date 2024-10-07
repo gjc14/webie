@@ -16,7 +16,7 @@ import {
     AlertDialogTrigger,
 } from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
-import { isAdmin } from '~/lib/db/auth.server'
+import { userIs } from '~/lib/db/auth.server'
 import {
     AdminActions,
     AdminHeader,
@@ -48,7 +48,7 @@ const PostUpdateSchema = z
     })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    await isAdmin(request.headers.get('Cookie'))
+    await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
 
     if (request.method !== 'PUT') {
         throw new Response('Method not allowed', { status: 405 })

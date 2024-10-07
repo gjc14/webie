@@ -4,6 +4,7 @@ import Base64 from 'crypto-js/enc-base64'
 import Utf8 from 'crypto-js/enc-utf8'
 import { CreateEmailResponseSuccess, Resend } from 'resend'
 import MagicLinkEmail from '~/components/email/magic-link'
+import { UserRole } from '~/schema/database'
 import { getUserById } from './user.server'
 
 let COOKIE_SECRET = process.env.COOKIE_SECRET
@@ -100,19 +101,20 @@ export const verifyMagicLink = async (
     }
 }
 
-export const isAdmin = async (
-    cookieString: string | null
+export const userIs = async (
+    cookieString: string | null,
+    role: UserRole,
+    redirectToSignIn: string
 ): Promise<{ id: string }> => {
-    if (!cookieString) throw redirect('/admin/signin')
+    if (!cookieString) throw redirect(redirectToSignIn)
 
-    // cookie are set in /admin/magic
     const cookie = await authCookie.parse(cookieString)
     if (cookie && typeof cookie === 'object' && 'id' in cookie) {
         const { user } = await getUserById(cookie.id)
-        if (user && user.status === 'ACTIVE' && user.role === 'ADMIN') {
+        if (user && user.status === 'ACTIVE' && user.role === role) {
             return { id: cookie.id }
         }
     }
 
-    throw redirect('/admin/signin')
+    throw redirect(redirectToSignIn)
 }
