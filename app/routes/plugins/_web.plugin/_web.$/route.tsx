@@ -5,6 +5,7 @@
 import { MetaFunction } from '@remix-run/node'
 import { Link } from '@remix-run/react'
 import { Button } from '~/components/ui/button'
+import { MainWrapper } from '../../components/wrappers'
 
 export const meta: MetaFunction = () => {
     return [
@@ -15,7 +16,7 @@ export const meta: MetaFunction = () => {
 
 export default function WhereAreYou() {
     return (
-        <main className="w-full h-full min-h-screen flex flex-col items-center justify-center px-3">
+        <MainWrapper className="justify-center px-3">
             <h1 className="visually-hidden">Page not found</h1>
 
             <div className="flex flex-col items-center justify-center text-center">
@@ -33,6 +34,6 @@ export default function WhereAreYou() {
                     <Button>Back to a safe place</Button>
                 </Link>
             </nav>
-        </main>
+        </MainWrapper>
     )
 }

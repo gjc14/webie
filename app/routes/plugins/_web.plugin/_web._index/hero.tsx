@@ -1,11 +1,16 @@
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import { motion } from 'framer-motion'
 import { File } from 'lucide-react'
+import { fade } from '../../components/motions'
 
 export const Hero = () => {
     return (
         <section className="h-full py-20 px-6 my-12 md:px-28 lg:px-36">
             <div className="w-full h-full border border-border rounded-xl grid grid-cols-1 md:grid-cols-2">
-                <div className="flex items-center justify-center aspect-[5/3] md:aspect-auto">
+                <motion.div
+                    {...fade()}
+                    className="flex items-center justify-center aspect-[5/3] md:aspect-auto"
+                >
                     <svg
                         className="w-28 h-28"
                         viewBox="0 0 289 293"
@@ -29,12 +34,15 @@ export const Hero = () => {
                             ></path>
                         </g>
                     </svg>
-                </div>
+                </motion.div>
 
                 <article className="px-8 pb-8 md:py-16 lg:p-16 space-y-8 leading-4">
-                    <h2 className="leading text-2xl font-bold mt-1">
+                    <motion.h2
+                        {...fade()}
+                        className="leading text-2xl font-bold mt-1"
+                    >
                         👋 Welcome to <span className="sr-only">Webie</span>
-                    </h2>
+                    </motion.h2>
                     <div className="h-fit w-[125px]">
                         <img
                             src="/logos/webie-black-300.png"
@@ -48,13 +56,15 @@ export const Hero = () => {
                         />
                     </div>
 
-                    <ul className="pl-3">
+                    <motion.p {...fade()}>
+                        To start building your website, please add _web.plugin
+                        and edit the _web._index file. You could also find some
+                        useful components in /app/routes/plugins/components.
+                        Specifically for front-end websites. 🚀
+                    </motion.p>
+                    <motion.ul {...fade()} className="pl-3">
                         <li>
-                            To start building your website front, please add
-                            _web.base plugin.
-                        </li>
-                        <li>
-                            Webie is built on top of
+                            Webie is built on top of&nbsp;
                             <a
                                 href="https://remix.run"
                                 aria-label="Go to Remix docs"
@@ -62,18 +72,18 @@ export const Hero = () => {
                                 rel="noopener noreferrer"
                                 title="Go to the Remix docs"
                             >
-                                <strong>&nbsp;Remix</strong>
+                                <strong>Remix</strong>
                             </a>
                             .
                         </li>
                         <li>
                             You could add new plugin via cli&nbsp;
                             <span className="bg-zinc-300 dark:bg-zinc-700 py-0.5 px-1 rounded">
-                                webie add {'<plugin-name>'}
+                                webie add {'<name>.plugin'}
                             </span>
-                            .
+                            , and add a webie.config.ts file.
                         </li>
-                    </ul>
+                    </motion.ul>
 
                     <div className="flex gap-3">
                         <a

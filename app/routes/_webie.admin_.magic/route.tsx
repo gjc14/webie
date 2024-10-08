@@ -2,6 +2,7 @@ import { LoaderFunctionArgs, redirect } from '@remix-run/node'
 import { authCookie, verifyMagicLink } from '~/lib/db/auth.server'
 import { getUserById, updateUser } from '~/lib/db/user.server'
 import { UserRole, UserStatus } from '~/schema/database'
+import { MainWrapper } from '../plugins/components/wrappers'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     const cookie = await authCookie.parse(request.headers.get('Cookie'))
@@ -39,8 +40,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function AdminMagic() {
     return (
-        <main className="w-full h-full min-h-screen flex flex-col items-center justify-center">
+        <MainWrapper className="justify-center">
             <h1 className="text-center mx-6">Please checkout your email.</h1>
-        </main>
+        </MainWrapper>
     )
 }

@@ -3,9 +3,10 @@ import {
     LoaderFunctionArgs,
     redirect,
 } from '@remix-run/node'
-import { SignInForm } from './auth'
 import { authCookie, getToken, sendMagicLink } from '~/lib/db/auth.server'
 import { getUser, getUserById } from '~/lib/db/user.server'
+import { MainWrapper } from '../plugins/components/wrappers'
+import { SignInForm } from './auth'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
@@ -45,8 +46,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function AdminAuth() {
     return (
-        <main className="w-full h-full min-h-screen flex flex-col items-center justify-center">
+        <MainWrapper className="justify-center">
             <SignInForm />
-        </main>
+        </MainWrapper>
     )
 }

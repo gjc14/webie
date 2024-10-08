@@ -2,6 +2,7 @@ import { json, LoaderFunctionArgs, type MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 
 import { getSEO } from '~/lib/db/seo.server'
+import { MainWrapper } from '../../components/wrappers'
 import { Footer } from '../_web/components/footer'
 import { Nav } from '../_web/components/nav'
 import { Hero } from './hero'
@@ -33,11 +34,11 @@ export default function Index() {
         <>
             <Nav />
 
-            <main className="w-full h-full min-h-screen flex flex-col items-center">
+            <MainWrapper>
                 <h1 className="visually-hidden">{seo?.title}</h1>
                 <Hero />
                 <Footer />
-            </main>
+            </MainWrapper>
         </>
     )
 }
