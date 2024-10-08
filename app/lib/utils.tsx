@@ -1,4 +1,7 @@
+import { IconProps } from '@radix-ui/react-icons/dist/types'
 import { clsx, type ClassValue } from 'clsx'
+import { LucideIcon, LucideProps } from 'lucide-react'
+import { forwardRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -40,4 +43,15 @@ export const isConventionalError = (
     if (typeof fetcherData !== 'object' || fetcherData === null) return false
     if (!('err' in fetcherData)) return false
     return true
+}
+
+export const convertRadixToLucideIcon = (
+    IconComponent: React.ForwardRefExoticComponent<
+        IconProps & React.RefAttributes<SVGSVGElement>
+    >
+): LucideIcon => {
+    return forwardRef<SVGSVGElement, LucideProps>((props, ref) => {
+        const { children, ...restProps } = props
+        return <IconComponent {...restProps} ref={ref} />
+    })
 }
