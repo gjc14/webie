@@ -32,15 +32,15 @@ import {
 } from '~/components/ui/popover'
 import { Separator } from '~/components/ui/separator'
 import { SerializedLoaderData } from '../_webie.db.$table/route'
-import { DataGrid } from '../_webie.db/components/data-grid'
-import { getTableConfig } from '../_webie.db/lib/db/table.server'
+import { DataGrid } from '../components/data-grid'
+import { getTableConfig } from '../lib/db/table.server'
 import {
     webieColDef,
     webieColDefSchema,
     webieColType,
     webieColTypesSchema,
     webieTableConfigSchema,
-} from '../_webie.db/schema/table'
+} from '../schema/table'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()

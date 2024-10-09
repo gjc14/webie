@@ -1,13 +1,17 @@
 import '~/tailwind.css'
-import './db.css'
+import '../db.css'
 
 import { json, LoaderFunctionArgs } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
-import { decodedAdminToken } from '~/lib/db/auth.server'
+import { userIs } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    // const admin = await decodedAdminToken(request.headers.get('Cookie'))
+    // const admin = await userIs(
+    //     request.headers.get('Cookie'),
+    //     'ADMIN',
+    //     '/db/signin'
+    // )
 
     // const existingUser = await getUserById(admin.id)
 

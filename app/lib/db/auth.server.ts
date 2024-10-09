@@ -101,6 +101,13 @@ export const verifyMagicLink = async (
     }
 }
 
+/**
+ * This func validate the user role. Put it in every loader and action that needed validation
+ * @param cookieString
+ * @param role
+ * @param redirectToSignIn - redirect to sign in page if the user is not authenticated
+ * @returns
+ */
 export const userIs = async (
     cookieString: string | null,
     role: UserRole,

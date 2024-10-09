@@ -11,14 +11,14 @@ import { z } from 'zod'
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
-import { DataGrid } from '../_webie.db/components/data-grid'
-import { getTableConfig, getTableData } from '../_webie.db/lib/db/table.server'
-import { generateSchema } from '../_webie.db/lib/utils'
+import { DataGrid } from '../components/data-grid'
+import { getTableConfig, getTableData } from '../lib/db/table.server'
+import { generateSchema } from '../lib/utils'
 import {
     webieRowData,
     webieRowDataSchema,
     webieTableConfigSchema,
-} from '../_webie.db/schema/table'
+} from '../schema/table'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
