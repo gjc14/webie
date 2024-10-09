@@ -19,6 +19,7 @@ import {
     webieRowDataSchema,
     webieTableConfigSchema,
 } from '../schema/table'
+import { ToolBar } from '../components/table/tool-bar'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
@@ -147,38 +148,12 @@ export default function DBTable() {
                     })
                 }}
             />
-            <div className="w-full h-fit flex items-center gap-1 p-1 bg-primary-foreground rounded-md border border-border">
-                <Button
-                    size={'sm'}
-                    variant={'ghost'}
-                    form="rowDataForm"
-                    disabled={!isDirty}
-                >
-                    Save
-                </Button>
 
-                <Separator orientation="vertical" className="h-4/5" />
-
-                {/* Function area */}
-                <Button size={'sm'} variant={'ghost'} onClick={rowCreate}>
-                    Add Row
-                </Button>
-
-                {/* Config area */}
-                <div className="ml-auto flex items-center justify-end gap-1.5">
-                    <Link to={'edit'} state={{ tableConfig }}>
-                        <Button
-                            size={'icon'}
-                            variant={'ghost'}
-                            className="h-auto p-2"
-                        >
-                            <Settings size={16} />
-                        </Button>
-                    </Link>
-
-                    <ThemeToggle className="ml-auto mr-3 scale-90" />
-                </div>
-            </div>
+            <ToolBar
+                tableConfig={tableConfig}
+                isDirty={isDirty}
+                createRow={rowCreate}
+            />
 
             <div className="flex-grow">
                 <DataGrid
