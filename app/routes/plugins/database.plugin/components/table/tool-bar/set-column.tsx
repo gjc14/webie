@@ -9,7 +9,7 @@ import {
 import { webieColType } from '../../../schema/table'
 import { TypeSelector } from '../type-selector'
 
-export function AddColumnPopover({
+export function SetColumnPopover({
     children,
     onTypeSelect,
     side = 'right',
@@ -24,7 +24,7 @@ export function AddColumnPopover({
         <div className="flex items-center space-x-4">
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    {children ? children : <Button>Add column</Button>}
+                    {children ? children : <Button>Set column</Button>}
                 </PopoverTrigger>
                 <PopoverContent className="p-0" side={side} align="start">
                     <TypeSelector

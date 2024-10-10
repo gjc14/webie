@@ -20,6 +20,7 @@ import {
     webieTableConfigSchema,
 } from '../schema/table'
 import { ToolBar } from '../components/table/tool-bar'
+import { ObjectId } from 'bson'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
@@ -86,7 +87,7 @@ export default function DBTable() {
 
     const rowCreate = () => {
         const newRow: webieRowData = {
-            _id: 'new-row-' + Math.random().toString(36).substring(2, 9),
+            _id: new ObjectId().toString(),
             ...tableConfig.columnMeta.reduce(
                 (acc: { [columnId: string]: any }, column) => {
                     let defaultValue: unknown

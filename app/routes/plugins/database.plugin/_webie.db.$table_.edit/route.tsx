@@ -1,5 +1,6 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
 import { useFetcher, useLoaderData, useLocation } from '@remix-run/react'
+import { ObjectId } from 'bson'
 import { useState } from 'react'
 import { SerializedLoaderData } from '../_webie.db.$table/route'
 import { DataGrid } from '../components/data-grid'
@@ -8,8 +9,10 @@ import { getTableConfig } from '../lib/db/table.server'
 import {
     webieColDef,
     webieColDefSchema,
+    webieColType,
     webieTableConfigSchema,
 } from '../schema/table'
+import { ColumnSettings } from './components/column-settings'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
@@ -89,12 +92,12 @@ export default function DBTableEdit() {
     const isDirty =
         JSON.stringify(tableConfigState) !== JSON.stringify(tableConfig)
 
-    const createColumn = () => {
+    const createColumn = (type: webieColType) => {
         setTableConfigState(prevConfig => {
             const newColumn: webieColDef = {
-                _id: 'new-col-' + Math.random().toString(36).substring(2, 9),
-                type: 'string',
-                headerName: 'New Column',
+                _id: new ObjectId().toString(),
+                type: type,
+                headerName: `New ${type}`,
                 editable: true,
                 filter: true,
                 sortable: true,
@@ -108,8 +111,6 @@ export default function DBTableEdit() {
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            {/* TODO: page */}
-
             <fetcher.Form
                 id="tableConfigForm"
                 onSubmit={e => {
@@ -134,8 +135,11 @@ export default function DBTableEdit() {
                     rows={[]}
                     onColumnUpdate={e => console.log(e)}
                     onColumnDelete={e => console.log(e)}
+                    settingMode={true}
                 />
             </div>
+
+            <ColumnSettings type={'string'} />
         </div>
     )
 }

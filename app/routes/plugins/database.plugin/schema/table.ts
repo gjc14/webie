@@ -1,15 +1,32 @@
 import { z, ZodTypeAny } from 'zod'
 
 /**
- * Define supporting type for columns of the data grid.
+ * Define supporting type for column of the data grid.
+ * It could be directly selected by end user
  */
 export const webieColTypesSchema = z.enum([
+    // primitive values
     'string',
     'number',
-    'boolean',
-    'email',
-    'date',
     'bigint',
+    'boolean',
+    'date',
+    'symbol',
+    'email',
+
+    // empty types
+    'undefined',
+    'null',
+    'void', // accepts undefined
+
+    // catch-all types
+    // allows any value
+    'any',
+    'unknown',
+
+    // never type
+    // allows no values
+    'never',
 ])
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
@@ -22,8 +39,20 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     boolean: z.boolean(),
     email: z.string().email(),
     date: z.date(),
+    symbol: z.symbol(),
     bigint: z.bigint(),
+
+    undefined: z.undefined(),
+    null: z.null(),
+    void: z.void(),
+
+    any: z.any(),
+    unknown: z.unknown(),
+
+    never: z.never(),
 }
+
+export const zodValidatoinMap = {}
 
 /**
  * Define the schema for the column definition.
@@ -31,6 +60,7 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
 export const webieColDefSchema = z.object({
     _id: z.string(),
     type: webieColTypesSchema,
+
     headerName: z.string(),
     editable: z.boolean().optional(),
     filter: z.boolean().optional(),

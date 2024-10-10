@@ -4,13 +4,13 @@ import { useRevalidator } from '@remix-run/react'
 import { ColDef, GetRowIdParams } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
-import { Settings } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
-import { Button } from '~/components/ui/button'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { webieRowData, webieTableConfig } from '../../schema/table'
+import { CustomColumnSettingHeader } from './custom-header/column-setting-header'
+import { CustomFilterSortHeader } from './custom-header/filter-sort-header'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -47,6 +47,7 @@ export interface webieDataGridProps {
     onRowDelete?: (row: webieRowData) => void
     onColumnUpdate?: (column: webieTableConfig) => void
     onColumnDelete?: (column: webieTableConfig) => void
+    settingMode?: boolean
 }
 
 export const DataGrid = (props: webieDataGridProps) => {
@@ -57,6 +58,7 @@ export const DataGrid = (props: webieDataGridProps) => {
         onRowDelete,
         onColumnUpdate,
         onColumnDelete,
+        settingMode,
     } = props
 
     // Theme: Sets the theme for the data grid based on Client Hints
@@ -88,40 +90,49 @@ export const DataGrid = (props: webieDataGridProps) => {
 
     // Column Definitions: Defines the columns to be displayed.
     // keyof webieRowData will map to the field (column ID)
-    const mappedColumns = (
-        tableConfig: webieTableConfig
-    ): ColDef<webieRowData>[] => {
-        return tableConfig.columnMeta.map(column => {
-            return {
-                headerName: column.headerName,
-                field: column._id,
-                editable: column.editable,
-                filter: column.filter,
-                sortable: column.sortable,
-                onCellValueChanged: e => {
-                    const updatedRow = e.data
-                    console.log(updatedRow)
+    const mappedColumns = useCallback(
+        (tableConfig: webieTableConfig): ColDef<webieRowData>[] => {
+            return tableConfig.columnMeta.map(column => {
+                return {
+                    headerName: column.headerName,
+                    field: column._id,
+                    editable: settingMode ? false : column.editable,
+                    filter: settingMode ? false : column.filter,
+                    sortable: settingMode ? false : column.sortable,
+                    onCellValueChanged: e => {
+                        const updatedRow = e.data
+                        console.log(updatedRow)
 
-                    onRowUpdate?.(updatedRow)
-                },
-            }
-        })
-    }
+                        onRowUpdate?.(updatedRow)
+                    },
+                    headerComponentParams: {},
+                }
+            })
+        },
+        [tableConfig]
+    )
 
     const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([
-        { headerName: 'ID', field: '_id' },
+        {
+            headerName: 'ID',
+            field: '_id',
+            editable: settingMode && false,
+            filter: settingMode && false,
+            sortable: settingMode && false,
+        },
         ...mappedColumns(tableConfig),
     ])
 
     useEffect(() => {
         setColDefs([
-            { headerName: 'ID', field: '_id' },
-            ...mappedColumns(tableConfig),
             {
-                headerName: 'test',
-                field: 'test',
-                headerComponent: CustomColumnHeader,
+                headerName: 'ID',
+                field: '_id',
+                editable: settingMode && false,
+                filter: settingMode && false,
+                sortable: settingMode && false,
             },
+            ...mappedColumns(tableConfig),
         ])
     }, [tableConfig])
 
@@ -130,12 +141,23 @@ export const DataGrid = (props: webieDataGridProps) => {
         []
     )
 
+    const customHeaderComponents = useMemo<{
+        [p: string]: any
+    }>(() => {
+        return {
+            agColumnHeader: settingMode
+                ? CustomColumnSettingHeader
+                : CustomFilterSortHeader,
+        }
+    }, [settingMode])
+
     return (
         <div className="h-full">
             <AgGridReact
                 rowSelection={{ mode: 'multiRow', enableClickSelection: true }}
                 rowData={rows}
                 columnDefs={colDefs}
+                components={customHeaderComponents}
                 getRowId={getRowId}
                 pagination={true}
                 onColumnMoved={e => {
@@ -145,16 +167,5 @@ export const DataGrid = (props: webieDataGridProps) => {
                 loadThemeGoogleFonts={true}
             />
         </div>
-    )
-}
-
-const CustomColumnHeader = () => {
-    return (
-        <span className="w-full h-full flex items-center justify-between">
-            <button className="w-full h-full text-start">Test</button>
-            <Button variant={'ghost'} size={'icon'}>
-                <Settings size={16} />
-            </Button>
-        </span>
     )
 }

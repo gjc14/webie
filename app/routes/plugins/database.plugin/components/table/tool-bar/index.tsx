@@ -1,10 +1,12 @@
 import { Link } from '@remix-run/react'
-import { Settings, X } from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { ReactNode } from 'react'
+
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { SerializedLoaderData } from '../../../_webie.db.$table/route'
+import { webieColType } from '../../../schema/table'
 import { AddColumnPopover } from './add-column'
 
 const ToolBarWrapper = ({ children }: { children?: ReactNode }) => {
@@ -60,7 +62,7 @@ const ToolBar = ({ tableConfig, isDirty, createRow }: ToolBarProps) => {
 
 type ToolBarEditModeProps = {
     isDirty: boolean
-    createColumn: () => void
+    createColumn: (type: webieColType) => void
 }
 
 const ToolBarEditMode = ({ isDirty, createColumn }: ToolBarEditModeProps) => {
@@ -69,10 +71,13 @@ const ToolBarEditMode = ({ isDirty, createColumn }: ToolBarEditModeProps) => {
             {/* Function area */}
             <AddColumnPopover
                 onTypeSelect={type => {
-                    console.log(type)
-                    createColumn()
+                    createColumn(type)
                 }}
-            />
+            >
+                <Button variant="ghost" size="sm">
+                    Add column
+                </Button>
+            </AddColumnPopover>
 
             {/* Config area */}
             <div className="ml-auto flex items-center justify-end gap-1.5">
