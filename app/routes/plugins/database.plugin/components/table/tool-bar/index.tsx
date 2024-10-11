@@ -6,7 +6,6 @@ import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { useTable } from '../../../lib/hooks/table'
-import { webieColType } from '../../../schema/table'
 import { AddColumnPopover } from './add-column'
 import { ToolBarAlert } from './tool-bar-alert'
 
@@ -19,36 +18,21 @@ const ToolBarWrapper = ({ children }: { children?: ReactNode }) => {
 }
 
 type ToolBarProps = {
-    isDirty: boolean
-    createRow: () => void
+    onSaveRows: () => void
 }
 
-const ToolBar = ({ isDirty, createRow }: ToolBarProps) => {
-    const fetcher = useFetcher()
+const ToolBar = ({ onSaveRows }: ToolBarProps) => {
+    const { addRow, isRowsDirty } = useTable()
 
     return (
         <ToolBarWrapper>
             {/* Form part */}
-            <fetcher.Form
-                id="rowDataForm"
-                onSubmit={e => {
-                    e.preventDefault()
 
-                    const formData = new FormData(e.currentTarget)
-
-                    // const tableConfigJson = JSON.stringify(tableConfig)
-                    // formData.set('tableConfig', tableConfigJson)
-
-                    // fetcher.submit(formData, {
-                    //     method: 'POST',
-                    // })
-                }}
-            />
             <Button
                 size={'sm'}
                 variant={'ghost'}
-                form="rowDataForm"
-                disabled={!isDirty}
+                onClick={onSaveRows}
+                disabled={!isRowsDirty}
             >
                 Save
             </Button>
@@ -56,7 +40,7 @@ const ToolBar = ({ isDirty, createRow }: ToolBarProps) => {
             <Separator orientation="vertical" className="h-4/5" />
 
             {/* Function area */}
-            <Button size={'sm'} variant={'ghost'} onClick={createRow}>
+            <Button size={'sm'} variant={'ghost'} onClick={addRow}>
                 Add row
             </Button>
 
@@ -78,22 +62,17 @@ const ToolBar = ({ isDirty, createRow }: ToolBarProps) => {
     )
 }
 
-type ToolBarEditModeProps = {
-    isDirty: boolean
-    createColumn: (type: webieColType) => void
-}
-
-const ToolBarEditMode = ({ isDirty, createColumn }: ToolBarEditModeProps) => {
+const ToolBarEditMode = () => {
     const fetcher = useFetcher()
     const navigate = useNavigate()
-    const { tableConfigState, isTableConfigDirty } = useTable()
+    const { tableConfigState, isTableConfigDirty, addColumn } = useTable()
 
     return (
         <ToolBarWrapper>
             {/* Function area */}
             <AddColumnPopover
                 onTypeSelect={type => {
-                    createColumn(type)
+                    addColumn(type)
                 }}
             >
                 <Button variant="ghost" size="sm">
@@ -118,7 +97,11 @@ const ToolBarEditMode = ({ isDirty, createColumn }: ToolBarEditModeProps) => {
                 }}
             />
             <div className="ml-auto flex items-center justify-end gap-1.5">
-                <Button size={'sm'} form="tableConfigForm" disabled={!isDirty}>
+                <Button
+                    size={'sm'}
+                    form="tableConfigForm"
+                    disabled={!isTableConfigDirty}
+                >
                     Save
                 </Button>
                 {isTableConfigDirty ? (

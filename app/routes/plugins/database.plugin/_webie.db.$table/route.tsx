@@ -4,38 +4,31 @@ import {
     LoaderFunctionArgs,
     SerializeFrom,
 } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useEffect } from 'react'
 
 import { DataGrid } from '../components/data-grid'
 import { ToolBar } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
-import { generateNewRow, generateSchema } from '../lib/utils'
-import { webieRowData } from '../schema/table'
-import { processFormData } from './action.server'
+import { validateRows } from './action.server'
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+/**
+ * Get tableConfig from the database, rows from request form data (frontend state)
+ */
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+    if (!params.table) {
+        throw new Response('Bad Request', { status: 400 })
+    }
+    const tableConfig = await getTableConfig(params.table) // Get table config from the database
     const formData = await request.formData()
 
-    const { tableConfigResult, rowsResult } = await processFormData(
-        formData.get('tableConfig'),
-        formData.get('rows')
-    )
-
-    // Generate a schema from the table config
-    const dynamicSchema = generateSchema(tableConfigResult.data.columns)
-
     try {
-        // Validate the rows
-        rowsResult.data.forEach(row => {
-            dynamicSchema.parse(row)
-        })
-        console.log('Validation passed!')
+        await validateRows(formData.get('rows'), tableConfig)
         return json({ msg: 'Saved successfully' })
-    } catch (e: any) {
-        console.log('Validation failed:', e.errors)
-        return json({ err: 'Validation failed' }, { status: 400 })
+    } catch (error) {
+        console.log('Error saving rows:', error)
+        return json({ err: 'Rows validation failed' }, { status: 400 })
     }
 }
 
@@ -56,48 +49,30 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export type SerializedLoaderData = SerializeFrom<typeof loader>
 
 export default function DBTable() {
+    const fetcher = useFetcher()
     const loaderData = useLoaderData<typeof loader>()
-    const { tableConfigState, rowsState, setDBState, setRows, isRowsDirty } =
-        useTable()
+    const { setDBState, rowsState } = useTable()
 
     useEffect(() => {
         // Every time the loaderData changes (revalidated), update the tableConfig and rows to state
         setDBState(loaderData.tableConfig, loaderData.rows)
     }, [loaderData])
 
-    ///////////////////////////////////////////
-    // Functions for CUD operations on rows //
-    ///////////////////////////////////////////
-    const rowCreate = () => {
-        const newRow = generateNewRow(tableConfigState)
-        setRows([...rowsState, newRow])
-    }
-
-    const rowUpdate = (updateRow: webieRowData) => {
-        const newRows = rowsState.map(row =>
-            row._id === updateRow._id ? updateRow : row
+    const onSaveRows = async () => {
+        fetcher.submit(
+            { rows: JSON.stringify(rowsState) },
+            {
+                method: 'POST',
+            }
         )
-        setRows([...newRows])
-    }
-
-    const rowDelete = (deleteRow: webieRowData) => {
-        const newRows = rowsState.filter(row => row._id !== deleteRow._id)
-        setRows(newRows)
     }
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            <ToolBar isDirty={isRowsDirty} createRow={rowCreate} />
+            <ToolBar onSaveRows={onSaveRows} />
 
             <div className="flex-grow">
-                <DataGrid
-                    tableConfig={tableConfigState}
-                    rows={rowsState}
-                    onRowUpdate={e => rowUpdate(e)}
-                    onRowDelete={e => rowDelete(e)}
-                    onColumnUpdate={e => console.log(e)}
-                    onColumnDelete={e => console.log(e)}
-                />
+                <DataGrid />
             </div>
         </div>
     )

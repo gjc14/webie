@@ -17,9 +17,9 @@ export const getWebieDefinedColumns = ({
         _id: {
             field: '_id',
             headerName: 'ID',
-            editable: settingMode && false,
-            filter: settingMode && false,
-            sortable: settingMode && false,
+            editable: false,
+            filter: true,
+            sortable: true,
         },
         _actions: {
             field: '_actions',
@@ -27,6 +27,7 @@ export const getWebieDefinedColumns = ({
             editable: false,
             filter: false,
             sortable: false,
+            width: 60,
         },
         _addColumn: {
             field: '_addColumn',

@@ -1,45 +1,41 @@
 import { z } from 'zod'
-import { webieRowDataSchema, webieTableConfigSchema } from '../schema/table'
+import { generateSchema } from '../lib/utils'
+import { webieRowDataSchema, webieTableConfig } from '../schema/table'
 
 /**
- * @param tableConfigForm - FormDataEntryValue of tableConfig
- * @param rowsForm - FormDataEntryValue of rows
- * @returns zod safeParse results for tableConfig and rows
+ *
+ * @param rowsFormString
+ * @param tableConfig
+ * @returns
  */
-export const processFormData = async (
-    tableConfigForm: FormDataEntryValue | null,
-    rowsForm: FormDataEntryValue | null
+export const validateRows = async (
+    rowsFormString: FormDataEntryValue | null,
+    tableConfig: webieTableConfig
 ) => {
-    if (!tableConfigForm || typeof tableConfigForm !== 'string') {
-        throw new Error('Invalid tableConfig')
+    if (!rowsFormString || typeof rowsFormString !== 'string') {
+        throw new Error('Invalid rows form')
     }
 
-    if (!rowsForm || typeof rowsForm !== 'string') {
-        throw new Error('Invalid rows')
-    }
-
-    let tableConfig
-    let rows
+    let rowsForm
     try {
-        tableConfig = JSON.parse(tableConfigForm)
-        rows = JSON.parse(rowsForm)
+        rowsForm = JSON.parse(rowsFormString)
     } catch (e) {
         throw new Error('Invalid JSON')
     }
 
-    // Validate the tableConfig and rows
-    const tableConfigResult = webieTableConfigSchema.safeParse(tableConfig)
-    const rowsResult = z.array(webieRowDataSchema).safeParse(rows)
-
-    if (!tableConfigResult.success) {
-        console.log('error:', tableConfigResult.error)
-        throw new Error('Invalid table config')
-    }
+    // Validate the rowsFrom
+    const rowsResult = z.array(webieRowDataSchema).safeParse(rowsForm)
 
     if (!rowsResult.success) {
         console.log('error:', rowsResult.error)
         throw new Error('Invalid rows')
     }
 
-    return { tableConfigResult, rowsResult }
+    // Validate rowsForm with the tableConfig
+    const dynamicSchema = generateSchema(tableConfig.columns)
+
+    // Validate the rows
+    rowsResult.data.forEach(row => {
+        dynamicSchema.parse(row)
+    })
 }

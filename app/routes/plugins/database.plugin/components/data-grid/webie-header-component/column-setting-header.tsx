@@ -9,8 +9,6 @@ import {
     TooltipTrigger,
 } from '~/components/ui/tooltip'
 import { useTable } from '../../../lib/hooks/table'
-import { generateNewColumn } from '../../../lib/utils'
-import { webieColType } from '../../../schema/table'
 import { AddColumnPopover } from '../../table/tool-bar/add-column'
 import { supportedTypes } from '../../table/type-selector'
 import { webieDefinedColumns } from '../webie-system-column'
@@ -20,12 +18,8 @@ export interface CustomColumnSettingHeaderProps extends CustomHeaderProps {}
 export const CustomColumnSettingHeader = (
     props: CustomColumnSettingHeaderProps
 ) => {
-    const {
-        columnSelected,
-        setColumnSelected,
-        tableConfigState,
-        setTableConfig,
-    } = useTable()
+    const { columnSelected, setColumnSelected, tableConfigState, addColumn } =
+        useTable()
     const thisColumnId: webieDefinedColumns | string = props.column.getColId()
     const thisColumnIsSelected = columnSelected?._id === thisColumnId
     const thisColumnConfig = tableConfigState.columns.find(
@@ -42,14 +36,6 @@ export const CustomColumnSettingHeader = (
         setColumnSelected(thisColumnId)
     }
 
-    const createColumn = (type: webieColType) => {
-        const newColumn = generateNewColumn(type)
-        setTableConfig({
-            ...tableConfigState,
-            columns: [...tableConfigState.columns, newColumn],
-        })
-    }
-
     if (!isCustomColumn) {
         if (thisColumnId === '_addColumn') {
             return (
@@ -61,7 +47,7 @@ export const CustomColumnSettingHeader = (
 
                         <TooltipTrigger asChild>
                             <AddColumnPopover
-                                onTypeSelect={type => createColumn(type)}
+                                onTypeSelect={type => addColumn(type)}
                                 side="right"
                             >
                                 <Button

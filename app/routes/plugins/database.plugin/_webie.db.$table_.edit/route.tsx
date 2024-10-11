@@ -4,14 +4,13 @@ import { DataGrid } from '../components/data-grid'
 import { ToolBarEditMode } from '../components/table/tool-bar'
 import { getTableConfig } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
-import { generateNewColumn } from '../lib/utils'
 import {
     webieColDef,
     webieColDefSchema,
-    webieColType,
     webieTableConfigSchema,
 } from '../schema/table'
 import { ColumnSettings } from './components/column-settings'
+import { useFetcher } from '@remix-run/react'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
@@ -74,31 +73,16 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 }
 
 export default function DBTableEdit() {
-    const { tableConfigState, setTableConfig, isTableConfigDirty } = useTable()
-
-    const createColumn = (type: webieColType) => {
-        const newColumn = generateNewColumn(type)
-        setTableConfig({
-            ...tableConfigState,
-            columns: [...tableConfigState.columns, newColumn],
-        })
-    }
+    const fetcher = useFetcher()
+    const {} = useTable()
+    // TODO: Handle save to DB
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            <ToolBarEditMode
-                isDirty={isTableConfigDirty}
-                createColumn={createColumn}
-            />
+            <ToolBarEditMode />
 
             <div className="flex-grow">
-                <DataGrid
-                    tableConfig={tableConfigState}
-                    rows={[]}
-                    onColumnUpdate={e => console.log(e)}
-                    onColumnDelete={e => console.log(e)}
-                    settingMode={true}
-                />
+                <DataGrid settingMode={true} />
             </div>
 
             <ColumnSettings />

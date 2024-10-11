@@ -13,6 +13,7 @@ import { webieRowData, webieTableConfig } from '../../schema/table'
 import { CustomColumnSettingHeader } from './webie-header-component/column-setting-header'
 import { CustomFilterSortHeader } from './webie-header-component/filter-sort-header'
 import { getWebieDefinedColumns } from './webie-system-column'
+import { useTable } from '../../lib/hooks/table'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -43,25 +44,12 @@ const customDarkTheme = themeQuartz.withParams({
 })
 
 export interface webieDataGridProps {
-    tableConfig: webieTableConfig
-    rows: webieRowData[]
-    onRowUpdate?: (row: webieRowData) => void
-    onRowDelete?: (row: webieRowData) => void
-    onColumnUpdate?: (column: webieTableConfig) => void
-    onColumnDelete?: (column: webieTableConfig) => void
     settingMode?: boolean
 }
 
 export const DataGrid = (props: webieDataGridProps) => {
-    const {
-        tableConfig,
-        rows,
-        onRowUpdate,
-        onRowDelete,
-        onColumnUpdate,
-        onColumnDelete,
-        settingMode,
-    } = props
+    const { settingMode } = props
+    const { tableConfigState, rowsState, updateRow } = useTable()
 
     // Theme: Sets the theme for the data grid based on Client Hints
     const { revalidate } = useRevalidator()
@@ -101,15 +89,15 @@ export const DataGrid = (props: webieDataGridProps) => {
     useEffect(() => {
         setColDefs([
             ...(!settingMode ? [{ ...webieProvidedColumns._id }] : []),
-            ...mappedColumns(tableConfig),
             ...(!settingMode ? [{ ...webieProvidedColumns._actions }] : []),
-            ...(settingMode ? [{ ...webieProvidedColumns._addColumn }] : []),
+            ...mappedColumns(tableConfigState),
+            { ...webieProvidedColumns._addColumn },
         ])
-    }, [tableConfig])
+    }, [tableConfigState])
 
     const mappedColumns = useCallback(
-        (tableConfig: webieTableConfig): ColDef<webieRowData>[] => {
-            return tableConfig.columns.map(column => {
+        (tableConfigState: webieTableConfig): ColDef<webieRowData>[] => {
+            return tableConfigState.columns.map(column => {
                 return {
                     headerName: column.headerName,
                     field: column._id,
@@ -117,16 +105,14 @@ export const DataGrid = (props: webieDataGridProps) => {
                     filter: settingMode ? false : column.filter,
                     sortable: settingMode ? false : column.sortable,
                     onCellValueChanged: e => {
-                        const updatedRow = e.data
-                        console.log('grid update: ', updatedRow)
-
-                        onRowUpdate?.(updatedRow)
+                        const updatedRowTarget = e.data
+                        updateRow?.(updatedRowTarget)
                     },
                     headerComponentParams: {},
                 }
             })
         },
-        [tableConfig]
+        [tableConfigState]
     )
 
     const getRowId = useCallback(
@@ -148,12 +134,13 @@ export const DataGrid = (props: webieDataGridProps) => {
         <div className="h-full">
             <AgGridReact
                 rowSelection={{ mode: 'multiRow', enableClickSelection: true }}
-                rowData={rows}
+                rowData={settingMode ? [] : rowsState}
                 columnDefs={colDefs}
                 components={customHeaderComponents}
                 getRowId={getRowId}
                 pagination={true}
                 onColumnMoved={e => {
+                    // TODO: Implement column reordering
                     console.log(e)
                 }}
                 theme={gridTheme}
