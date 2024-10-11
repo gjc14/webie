@@ -7,7 +7,7 @@ import {
 export const getTableConfig = async (
     table: string
 ): Promise<webieTableConfig> => {
-    const columnMeta: webieColumns = [
+    const columns: webieColumns = [
         {
             _id: 'columnId1',
             type: 'string',
@@ -42,7 +42,7 @@ export const getTableConfig = async (
         },
     ]
 
-    return { _id: 'tableId', settings: { autoSave: false }, table, columnMeta }
+    return { _id: 'tableId', settings: { autoSave: false }, table, columns }
 }
 
 export const getTableData = async (table: string): Promise<webieRowData[]> => {

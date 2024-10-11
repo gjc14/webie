@@ -5,12 +5,14 @@ import { ColDef, GetRowIdParams } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { webieRowData, webieTableConfig } from '../../schema/table'
-import { CustomColumnSettingHeader } from './custom-header/column-setting-header'
-import { CustomFilterSortHeader } from './custom-header/filter-sort-header'
+import { CustomColumnSettingHeader } from './webie-header-component/column-setting-header'
+import { CustomFilterSortHeader } from './webie-header-component/filter-sort-header'
+import { getWebieDefinedColumns } from './webie-system-column'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -90,9 +92,23 @@ export const DataGrid = (props: webieDataGridProps) => {
 
     // Column Definitions: Defines the columns to be displayed.
     // keyof webieRowData will map to the field (column ID)
+    const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([])
+
+    const webieProvidedColumns = getWebieDefinedColumns({
+        settingMode: settingMode ?? false,
+    })
+
+    useEffect(() => {
+        setColDefs([
+            ...(!settingMode ? [{ ...webieProvidedColumns._id }] : []),
+            ...mappedColumns(tableConfig),
+            ...(!settingMode ? [{ ...webieProvidedColumns._actions }] : []),
+        ])
+    }, [tableConfig])
+
     const mappedColumns = useCallback(
         (tableConfig: webieTableConfig): ColDef<webieRowData>[] => {
-            return tableConfig.columnMeta.map(column => {
+            return tableConfig.columns.map(column => {
                 return {
                     headerName: column.headerName,
                     field: column._id,
@@ -111,30 +127,6 @@ export const DataGrid = (props: webieDataGridProps) => {
         },
         [tableConfig]
     )
-
-    const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([
-        {
-            headerName: 'ID',
-            field: '_id',
-            editable: settingMode && false,
-            filter: settingMode && false,
-            sortable: settingMode && false,
-        },
-        ...mappedColumns(tableConfig),
-    ])
-
-    useEffect(() => {
-        setColDefs([
-            {
-                headerName: 'ID',
-                field: '_id',
-                editable: settingMode && false,
-                filter: settingMode && false,
-                sortable: settingMode && false,
-            },
-            ...mappedColumns(tableConfig),
-        ])
-    }, [tableConfig])
 
     const getRowId = useCallback(
         (params: GetRowIdParams<webieRowData>) => params.data._id,

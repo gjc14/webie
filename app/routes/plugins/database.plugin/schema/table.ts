@@ -31,6 +31,25 @@ export const webieColTypesSchema = z.enum([
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
 /**
+ * Define the default values for the column types.
+ */
+export const typeDefaultValuesMap: { [key in webieColType]: any } = {
+    string: '',
+    number: 0,
+    bigint: 0,
+    boolean: true,
+    date: new Date().toLocaleString(),
+    symbol: '',
+    email: '',
+    undefined: undefined,
+    null: null,
+    void: `print("void")`,
+    any: null,
+    unknown: null,
+    never: null,
+}
+
+/**
  * Map webieColType to the corresponding Zod types.
  */
 export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
@@ -89,7 +108,7 @@ export const webieTableConfigSchema = z.object({
     _id: z.string(),
     table: z.string(),
     settings: webieTableSettingsSchema,
-    columnMeta: webieColumnsSchema,
+    columns: webieColumnsSchema,
 })
 export type webieTableConfig = z.infer<typeof webieTableConfigSchema>
 

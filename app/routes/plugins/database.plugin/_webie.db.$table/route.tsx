@@ -13,7 +13,7 @@ import { ToolBar } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
 import { generateSchema } from '../lib/utils'
-import { webieRowData } from '../schema/table'
+import { typeDefaultValuesMap, webieRowData } from '../schema/table'
 import { processFormData } from './action.server'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     )
 
     // Generate a schema from the table config
-    const dynamicSchema = generateSchema(tableConfigResult.data.columnMeta)
+    const dynamicSchema = generateSchema(tableConfigResult.data.columns)
 
     try {
         // Validate the rows
@@ -72,52 +72,9 @@ export default function DBTable() {
     const rowCreate = () => {
         const newRow: webieRowData = {
             _id: new ObjectId().toString(),
-            ...tableConfigState.columnMeta.reduce(
+            ...tableConfigState.columns.reduce(
                 (acc: { [columnId: string]: any }, column) => {
-                    let defaultValue: unknown
-                    switch (column.type) {
-                        // primitive values
-                        case 'string':
-                            defaultValue = ''
-                            break
-                        case 'number':
-                        case 'bigint':
-                            defaultValue = 0
-                            break
-                        case 'boolean':
-                            defaultValue = true
-                            break
-                        case 'date':
-                            defaultValue = new Date()
-                            break
-                        case 'symbol':
-                        case 'email':
-                            defaultValue = ''
-                            break
-
-                        // empty types
-                        case 'undefined':
-                            defaultValue = undefined
-                        case 'void':
-                            defaultValue = `print('void')`
-                        case 'any':
-                            defaultValue = ''
-
-                        // catch-all types
-                        // allows any value
-                        case 'null':
-                        case 'unknown':
-                            defaultValue = null
-
-                        // never type
-                        // allows no values
-                        case 'never':
-                            defaultValue = null
-
-                        default:
-                            defaultValue = null
-                    }
-                    acc[column._id] = defaultValue
+                    acc[column._id] = typeDefaultValuesMap[column.type]
                     return acc
                 },
                 {}

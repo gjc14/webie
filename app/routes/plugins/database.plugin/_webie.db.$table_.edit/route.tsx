@@ -39,7 +39,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     // Validate schema
     try {
-        tableConfigResult.data.columnMeta.forEach((col: webieColDef) => {
+        tableConfigResult.data.columns.forEach((col: webieColDef) => {
             const { success, error } = webieColDefSchema.safeParse(col)
             if (!success) {
                 console.error('Invalid column:', error)
@@ -91,7 +91,7 @@ export default function DBTableEdit() {
         const newColumn = generateNewColumn(type)
         setTableConfig({
             ...tableConfigState,
-            columnMeta: [...tableConfigState.columnMeta, newColumn],
+            columns: [...tableConfigState.columns, newColumn],
         })
     }
 
@@ -112,7 +112,7 @@ export default function DBTableEdit() {
                 />
             </div>
 
-            <ColumnSettings type={'string'} />
+            <ColumnSettings />
         </div>
     )
 }

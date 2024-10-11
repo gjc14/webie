@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
-import { webieRowData, webieTableConfig } from '../../schema/table'
+import { persist } from 'zustand/middleware'
+import { webieColDef, webieRowData, webieTableConfig } from '../../schema/table'
 
 type TableState = {
     db?: {
@@ -11,6 +11,7 @@ type TableState = {
     rowsState: webieRowData[]
     isRowsDirty: boolean
     isTableConfigDirty: boolean
+    columnSelected: webieColDef | null
 }
 
 type Action = {
@@ -25,6 +26,8 @@ type Action = {
     setTableConfigDirty: (isDirty: boolean) => void
     setRowsDirty: (isDirty: boolean) => void
 
+    setColumnSelected: (columnId: string) => void
+
     resetTableConfig: () => void
     resetRows: () => void
     resetTable: () => void
@@ -38,11 +41,12 @@ const initialState: TableState = {
         settings: {
             autoSave: false,
         },
-        columnMeta: [],
+        columns: [],
     },
     rowsState: [],
     isRowsDirty: false,
     isTableConfigDirty: false,
+    columnSelected: null,
 }
 
 export const useTable = create(
@@ -53,8 +57,9 @@ export const useTable = create(
             rowsState: initialState.rowsState,
             isRowsDirty: initialState.isRowsDirty,
             isTableConfigDirty: initialState.isTableConfigDirty,
+            columnSelected: initialState.columnSelected,
 
-            setDBState: (tableConfig, rows) => {
+            setDBState(tableConfig, rows) {
                 set({
                     db: {
                         tableConfig: JSON.parse(JSON.stringify(tableConfig)),
@@ -64,13 +69,14 @@ export const useTable = create(
                     rowsState: rows,
                     isRowsDirty: false,
                     isTableConfigDirty: false,
+                    columnSelected: null,
                 })
             },
-            getDBState: () => {
+            getDBState() {
                 return get().db
             },
 
-            setTableConfig: tableConfig => {
+            setTableConfig(tableConfig) {
                 console.log(JSON.stringify(tableConfig))
                 console.log(JSON.stringify(get().db?.tableConfig))
                 const isTableConfigDirty =
@@ -78,29 +84,36 @@ export const useTable = create(
                     JSON.stringify(get().db?.tableConfig)
                 set({ tableConfigState: tableConfig, isTableConfigDirty })
             },
-            setRows: rows => {
+            setRows(rows) {
                 const isRowsDirty =
                     JSON.stringify(rows) !== JSON.stringify(get().db?.rows)
                 set({ rowsState: rows, isRowsDirty })
             },
 
-            setTableConfigDirty: (isDirty: boolean) => {
+            setTableConfigDirty(isDirty: boolean) {
                 set({ isTableConfigDirty: isDirty })
             },
-            setRowsDirty: (isDirty: boolean) => {
+            setRowsDirty(isDirty: boolean) {
                 set({ isRowsDirty: isDirty })
             },
 
-            resetTableConfig: () => {
+            setColumnSelected(columnId) {
+                const columnSelected = get().tableConfigState.columns.find(
+                    c => c._id === columnId
+                )
+                set({ columnSelected })
+            },
+
+            resetTableConfig() {
                 set({
                     tableConfigState: get().db?.tableConfig,
                     isTableConfigDirty: false,
                 })
             },
-            resetRows: () => {
+            resetRows() {
                 set({ rowsState: get().db?.rows, isRowsDirty: false })
             },
-            resetTable: () => {
+            resetTable() {
                 set(initialState)
             },
         }),
