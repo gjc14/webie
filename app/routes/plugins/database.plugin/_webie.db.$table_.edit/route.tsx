@@ -1,11 +1,10 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
-import { useFetcher, useLoaderData, useLocation } from '@remix-run/react'
 import { ObjectId } from 'bson'
-import { useState } from 'react'
-import { SerializedLoaderData } from '../_webie.db.$table/route'
+
 import { DataGrid } from '../components/data-grid'
 import { ToolBarEditMode } from '../components/table/tool-bar'
 import { getTableConfig } from '../lib/db/table.server'
+import { useTable } from '../lib/hooks/table'
 import {
     webieColDef,
     webieColDefSchema,
@@ -75,59 +74,33 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 }
 
 export default function DBTableEdit() {
-    const location = useLocation()
-    const fetcher = useFetcher()
-    const loaderData = useLoaderData<typeof loader>()
+    const { tableConfigState, setTableConfig, isTableConfigDirty } = useTable()
 
-    let tableConfig
-    if (loaderData) {
-        tableConfig = loaderData.tableConfig
-    } else {
-        tableConfig = location.state
-            .tableConfig as SerializedLoaderData['tableConfig']
+    const generateNewColumn = (type: webieColType): webieColDef => {
+        return {
+            _id: new ObjectId().toString(),
+            type: type,
+            headerName: `New ${type}`,
+            editable: true,
+            filter: true,
+            sortable: true,
+        }
     }
 
-    const [tableConfigState, setTableConfigState] = useState(tableConfig)
-
-    const isDirty =
-        JSON.stringify(tableConfigState) !== JSON.stringify(tableConfig)
-
     const createColumn = (type: webieColType) => {
-        setTableConfigState(prevConfig => {
-            const newColumn: webieColDef = {
-                _id: new ObjectId().toString(),
-                type: type,
-                headerName: `New ${type}`,
-                editable: true,
-                filter: true,
-                sortable: true,
-            }
-            return {
-                ...prevConfig,
-                columnMeta: [...prevConfig.columnMeta, newColumn],
-            }
+        const newColumn = generateNewColumn(type)
+        setTableConfig({
+            ...tableConfigState,
+            columnMeta: [...tableConfigState.columnMeta, newColumn],
         })
     }
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            <fetcher.Form
-                id="tableConfigForm"
-                onSubmit={e => {
-                    e.preventDefault()
-
-                    const formData = new FormData(e.currentTarget)
-
-                    const tableConfig = JSON.stringify(tableConfigState)
-                    formData.set('tableConfig', tableConfig)
-
-                    fetcher.submit(formData, {
-                        method: 'POST',
-                    })
-                }}
+            <ToolBarEditMode
+                isDirty={isTableConfigDirty}
+                createColumn={createColumn}
             />
-
-            <ToolBarEditMode isDirty={isDirty} createColumn={createColumn} />
 
             <div className="flex-grow">
                 <DataGrid

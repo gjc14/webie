@@ -4,53 +4,32 @@ import {
     LoaderFunctionArgs,
     SerializeFrom,
 } from '@remix-run/node'
-import { Link, useFetcher, useLoaderData } from '@remix-run/react'
-import { Settings } from 'lucide-react'
-import { useState } from 'react'
-import { z } from 'zod'
-import { ThemeToggle } from '~/components/theme-toggle'
-import { Button } from '~/components/ui/button'
-import { Separator } from '~/components/ui/separator'
-import { DataGrid } from '../components/data-grid'
-import { getTableConfig, getTableData } from '../lib/db/table.server'
-import { generateSchema } from '../lib/utils'
-import {
-    webieRowData,
-    webieRowDataSchema,
-    webieTableConfigSchema,
-} from '../schema/table'
-import { ToolBar } from '../components/table/tool-bar'
+import { useLoaderData } from '@remix-run/react'
 import { ObjectId } from 'bson'
+import { useEffect } from 'react'
+
+import { DataGrid } from '../components/data-grid'
+import { ToolBar } from '../components/table/tool-bar'
+import { getTableConfig, getTableData } from '../lib/db/table.server'
+import { useTable } from '../lib/hooks/table'
+import { generateSchema } from '../lib/utils'
+import { webieRowData } from '../schema/table'
+import { processFormData } from './action.server'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
 
-    const tableConfigString = formData.get('tableConfig')
-    const rowsString = formData.get('rows')
-
-    const { tableConfig, rows } = await processFormData(
-        tableConfigString,
-        rowsString
+    const { tableConfigResult, rowsResult } = await processFormData(
+        formData.get('tableConfig'),
+        formData.get('rows')
     )
 
-    // Validate the tableConfig and rows
-    const tableConfigResult = webieTableConfigSchema.safeParse(tableConfig)
-    const dataRowsResult = z.array(webieRowDataSchema).safeParse(rows)
-
-    if (!tableConfigResult.success) {
-        console.log('error:', tableConfigResult.error)
-        throw new Error('Invalid table config')
-    }
-
-    if (!dataRowsResult.success) {
-        console.log('error:', dataRowsResult.error)
-        throw new Error('Invalid rows')
-    }
-
+    // Generate a schema from the table config
     const dynamicSchema = generateSchema(tableConfigResult.data.columnMeta)
 
     try {
-        dataRowsResult.data.forEach(row => {
+        // Validate the rows
+        rowsResult.data.forEach(row => {
             dynamicSchema.parse(row)
         })
         console.log('Validation passed!')
@@ -78,32 +57,63 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export type SerializedLoaderData = SerializeFrom<typeof loader>
 
 export default function DBTable() {
-    const fetcher = useFetcher()
+    const loaderData = useLoaderData<typeof loader>()
+    const { tableConfigState, rowsState, setDBState, setRows, isRowsDirty } =
+        useTable()
 
-    const { tableConfig, rows } = useLoaderData<typeof loader>()
-    const [rowsState, setRowsState] = useState(rows)
+    useEffect(() => {
+        // Every time the loaderData changes (revalidated), update the tableConfig and rows to state
+        setDBState(loaderData.tableConfig, loaderData.rows)
+    }, [loaderData])
 
-    const isDirty = JSON.stringify(rowsState) !== JSON.stringify(rows)
-
+    ///////////////////////////////////////////
+    // Functions for CUD operations on rows //
+    ///////////////////////////////////////////
     const rowCreate = () => {
         const newRow: webieRowData = {
             _id: new ObjectId().toString(),
-            ...tableConfig.columnMeta.reduce(
+            ...tableConfigState.columnMeta.reduce(
                 (acc: { [columnId: string]: any }, column) => {
                     let defaultValue: unknown
                     switch (column.type) {
+                        // primitive values
                         case 'string':
                             defaultValue = ''
                             break
                         case 'number':
+                        case 'bigint':
                             defaultValue = 0
                             break
                         case 'boolean':
-                            defaultValue = false
+                            defaultValue = true
                             break
                         case 'date':
-                            defaultValue = new Date().toISOString()
+                            defaultValue = new Date()
                             break
+                        case 'symbol':
+                        case 'email':
+                            defaultValue = ''
+                            break
+
+                        // empty types
+                        case 'undefined':
+                            defaultValue = undefined
+                        case 'void':
+                            defaultValue = `print('void')`
+                        case 'any':
+                            defaultValue = ''
+
+                        // catch-all types
+                        // allows any value
+                        case 'null':
+                        case 'unknown':
+                            defaultValue = null
+
+                        // never type
+                        // allows no values
+                        case 'never':
+                            defaultValue = null
+
                         default:
                             defaultValue = null
                     }
@@ -113,52 +123,28 @@ export default function DBTable() {
                 {}
             ),
         }
-        setRowsState(prevRows => [...prevRows, newRow])
+        setRows([...rowsState, newRow])
     }
 
     const rowUpdate = (updateRow: webieRowData) => {
-        setRowsState(prevRows =>
-            prevRows.map(row => (row._id === updateRow._id ? updateRow : row))
+        const newRows = rowsState.map(row =>
+            row._id === updateRow._id ? updateRow : row
         )
+        setRows([...newRows])
     }
 
     const rowDelete = (deleteRow: webieRowData) => {
-        setRowsState(prevRows =>
-            prevRows.filter(row => row._id !== deleteRow._id)
-        )
+        const newRows = rowsState.filter(row => row._id !== deleteRow._id)
+        setRows(newRows)
     }
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            {/* TODO: page */}
-
-            <fetcher.Form
-                id="rowDataForm"
-                onSubmit={e => {
-                    e.preventDefault()
-
-                    const formData = new FormData(e.currentTarget)
-
-                    const tableConfigString = JSON.stringify(tableConfig)
-                    const rowsString = JSON.stringify(rowsState)
-                    formData.set('tableConfig', tableConfigString)
-                    formData.set('rows', rowsString)
-
-                    fetcher.submit(formData, {
-                        method: 'POST',
-                    })
-                }}
-            />
-
-            <ToolBar
-                tableConfig={tableConfig}
-                isDirty={isDirty}
-                createRow={rowCreate}
-            />
+            <ToolBar isDirty={isRowsDirty} createRow={rowCreate} />
 
             <div className="flex-grow">
                 <DataGrid
-                    tableConfig={tableConfig}
+                    tableConfig={tableConfigState}
                     rows={rowsState}
                     onRowUpdate={e => rowUpdate(e)}
                     onRowDelete={e => rowDelete(e)}
@@ -168,27 +154,4 @@ export default function DBTable() {
             </div>
         </div>
     )
-}
-
-const processFormData = async (
-    tableConfigString: FormDataEntryValue | null,
-    rowsString: FormDataEntryValue | null
-) => {
-    if (!tableConfigString || typeof tableConfigString !== 'string') {
-        throw new Error('Invalid tableConfig')
-    }
-
-    if (!rowsString || typeof rowsString !== 'string') {
-        throw new Error('Invalid rows')
-    }
-
-    let tableConfig
-    let rows
-    try {
-        tableConfig = JSON.parse(tableConfigString)
-        rows = JSON.parse(rowsString)
-        return { tableConfig, rows }
-    } catch (e) {
-        throw new Error('Invalid JSON')
-    }
 }

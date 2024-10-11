@@ -101,7 +101,7 @@ export const DataGrid = (props: webieDataGridProps) => {
                     sortable: settingMode ? false : column.sortable,
                     onCellValueChanged: e => {
                         const updatedRow = e.data
-                        console.log(updatedRow)
+                        console.log('grid update: ', updatedRow)
 
                         onRowUpdate?.(updatedRow)
                     },
