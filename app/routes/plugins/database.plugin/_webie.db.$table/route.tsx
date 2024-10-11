@@ -8,10 +8,11 @@ import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useEffect } from 'react'
 
 import { DataGrid } from '../components/data-grid'
-import { ToolBar } from '../components/table/tool-bar'
+import { ToolBar, ToolBarEditMode } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
 import { validateRows } from './action.server'
+import { ColumnSettings } from './components/column-settings'
 
 /**
  * Get tableConfig from the database, rows from request form data (frontend state)
@@ -51,11 +52,17 @@ export type SerializedLoaderData = SerializeFrom<typeof loader>
 export default function DBTable() {
     const fetcher = useFetcher()
     const loaderData = useLoaderData<typeof loader>()
-    const { setDBState, rowsState } = useTable()
+    const {
+        setDBState,
+        rowsState,
+        settingSelectedColumn,
+        setSettingSelectedColumn,
+    } = useTable()
 
     useEffect(() => {
         // Every time the loaderData changes (revalidated), update the tableConfig and rows to state
         setDBState(loaderData.tableConfig, loaderData.rows)
+        setSettingSelectedColumn(null)
     }, [loaderData])
 
     const onSaveRows = async () => {
@@ -69,11 +76,17 @@ export default function DBTable() {
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            <ToolBar onSaveRows={onSaveRows} />
+            {settingSelectedColumn ? (
+                <ToolBarEditMode />
+            ) : (
+                <ToolBar onSaveRows={onSaveRows} />
+            )}
 
             <div className="flex-grow">
                 <DataGrid />
             </div>
+
+            <ColumnSettings />
         </div>
     )
 }

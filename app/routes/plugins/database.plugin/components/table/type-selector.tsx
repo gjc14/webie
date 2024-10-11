@@ -1,6 +1,6 @@
 import {
     Calendar,
-    Circle,
+    CheckCheck,
     CircleEllipsis,
     Earth,
     FileJson,
@@ -43,7 +43,7 @@ export const supportedTypes: TypeButtonArgs[] = [
     {
         value: 'boolean',
         label: 'True/False',
-        icon: Circle,
+        icon: CheckCheck,
     },
     {
         value: 'select',

@@ -11,11 +11,11 @@ import { supportedTypes } from '../../../components/table/type-selector'
 import { useTable } from '../../../lib/hooks/table'
 
 export const TypeSettingCard = () => {
-    const { columnSelected } = useTable()
+    const { settingSelectedColumn } = useTable()
 
     // Get column type
     const columnType = supportedTypes.find(
-        type => type.value === columnSelected?.type
+        type => type.value === settingSelectedColumn?.type
     )
 
     return (

@@ -1,12 +1,12 @@
-import { Link, useFetcher, useNavigate } from '@remix-run/react'
-import { Settings } from 'lucide-react'
+import { Link } from '@remix-run/react'
+import { CloudUpload } from 'lucide-react'
 import { ReactNode } from 'react'
 
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { useTable } from '../../../lib/hooks/table'
-import { AddColumnPopover } from './add-column'
+import { DBToolTip } from '../../db-tooltip'
 import { ToolBarAlert } from './tool-bar-alert'
 
 const ToolBarWrapper = ({ children }: { children?: ReactNode }) => {
@@ -22,7 +22,7 @@ type ToolBarProps = {
 }
 
 const ToolBar = ({ onSaveRows }: ToolBarProps) => {
-    const { addRow, isRowsDirty } = useTable()
+    const { addRow, isRowsDirty, isTableConfigDirty } = useTable()
 
     return (
         <ToolBarWrapper>
@@ -43,16 +43,35 @@ const ToolBar = ({ onSaveRows }: ToolBarProps) => {
             <Button size={'sm'} variant={'ghost'} onClick={addRow}>
                 Add row
             </Button>
+            <Button
+                size={'sm'}
+                variant={'ghost'}
+                onClick={() => alert('not implemented')}
+            >
+                Import
+            </Button>
+            <Button
+                size={'sm'}
+                variant={'ghost'}
+                onClick={() => alert('not implemented')}
+            >
+                Export
+            </Button>
+            {(isRowsDirty || isTableConfigDirty) && (
+                <DBToolTip asChild message="Uploading your data to database">
+                    <CloudUpload size={16} className="animate-pulse ml-5" />
+                </DBToolTip>
+            )}
 
-            {/* Config area */}
+            {/* Additional area */}
             <div className="ml-auto flex items-center justify-end gap-1.5">
-                <Link to={'edit'} state={{}}>
+                <Link to={'form'}>
                     <Button
                         size={'sm'}
                         variant={'ghost'}
                         className="h-auto p-2"
                     >
-                        <Settings size={16} />
+                        Generate form
                     </Button>
                 </Link>
 
@@ -62,82 +81,47 @@ const ToolBar = ({ onSaveRows }: ToolBarProps) => {
     )
 }
 
+// TODO: Here should check if each column type is altered, instead of the whole column config
+// PS. System will automatically save the new column, user dont need to manually save it.
 const ToolBarEditMode = () => {
-    const fetcher = useFetcher()
-    const navigate = useNavigate()
-    const { tableConfigState, isTableConfigDirty, addColumn } = useTable()
+    const { isTableConfigDirty, setSettingSelectedColumn, resetTableConfig } =
+        useTable()
 
     return (
         <ToolBarWrapper>
-            {/* Function area */}
-            <AddColumnPopover
-                onTypeSelect={type => {
-                    addColumn(type)
-                }}
+            <Button
+                size={'sm'}
+                variant={'ghost'}
+                form="tableConfigForm"
+                disabled={!isTableConfigDirty}
             >
-                <Button variant="ghost" size="sm">
-                    Add column
-                </Button>
-            </AddColumnPopover>
-
-            {/* Config area */}
-            <fetcher.Form
-                id="tableConfigForm"
-                onSubmit={e => {
-                    e.preventDefault()
-
-                    const formData = new FormData(e.currentTarget)
-
-                    const tableConfigString = JSON.stringify(tableConfigState)
-                    formData.set('tableConfig', tableConfigString)
-
-                    fetcher.submit(formData, {
-                        method: 'POST',
-                    })
-                }}
-            />
-            <div className="ml-auto flex items-center justify-end gap-1.5">
-                <Button
-                    size={'sm'}
-                    form="tableConfigForm"
-                    disabled={!isTableConfigDirty}
+                Save
+            </Button>
+            {isTableConfigDirty ? (
+                <ToolBarAlert
+                    promptTitle={'Discard changes'}
+                    promptMessage={'Are you sure you want to discard changes?'}
+                    executeMessage={'Discard'}
+                    execute={() => {
+                        setSettingSelectedColumn(null)
+                        resetTableConfig()
+                    }}
                 >
-                    Save
-                </Button>
-                {isTableConfigDirty ? (
-                    <ToolBarAlert
-                        promptTitle={'Discard changes'}
-                        promptMessage={
-                            'Are you sure you want to discard changes?'
-                        }
-                        executeMessage={'Discard'}
-                        execute={() => {
-                            // No need to reset the tableConfig, the table main page will reset the whole table
-                            navigate('..', {
-                                replace: true,
-                                relative: 'path',
-                            })
-                        }}
-                    >
-                        <Button size={'sm'} variant={'ghost'}>
-                            Discard
-                        </Button>
-                    </ToolBarAlert>
-                ) : (
-                    <Button
-                        size={'sm'}
-                        variant={'ghost'}
-                        onClick={() =>
-                            navigate('..', {
-                                replace: true,
-                                relative: 'path',
-                            })
-                        }
-                    >
+                    <Button size={'sm'} variant={'ghost'}>
                         Discard
                     </Button>
-                )}
+                </ToolBarAlert>
+            ) : (
+                <Button
+                    size={'sm'}
+                    variant={'ghost'}
+                    onClick={() => setSettingSelectedColumn(null)}
+                >
+                    Discard
+                </Button>
+            )}
 
+            <div className="ml-auto flex items-center justify-end gap-1.5">
                 <ThemeToggle className="ml-auto mr-3 scale-90" />
             </div>
         </ToolBarWrapper>

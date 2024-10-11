@@ -20,7 +20,8 @@ type TableState = {
     rowsState: webieRowData[]
     isRowsDirty: boolean
     isTableConfigDirty: boolean
-    columnSelected: webieColDef | null
+    // TODO: set is type setting of table columns are dirty
+    settingSelectedColumn: webieColDef | null
 }
 
 type Action = {
@@ -44,7 +45,7 @@ type Action = {
     setTableConfigDirty: (isDirty: boolean) => void
     setRowsDirty: (isDirty: boolean) => void
 
-    setColumnSelected: (columnId: string | null) => void
+    setSettingSelectedColumn: (columnId: string | null) => void
 
     resetTableConfig: () => void
     resetRows: () => void
@@ -64,7 +65,7 @@ const initialState: TableState = {
     rowsState: [],
     isRowsDirty: false,
     isTableConfigDirty: false,
-    columnSelected: null,
+    settingSelectedColumn: null,
 }
 
 export const useTable = create(
@@ -75,7 +76,7 @@ export const useTable = create(
             rowsState: initialState.rowsState,
             isRowsDirty: initialState.isRowsDirty,
             isTableConfigDirty: initialState.isTableConfigDirty,
-            columnSelected: initialState.columnSelected,
+            settingSelectedColumn: initialState.settingSelectedColumn,
 
             setDBState(tableConfig, rows) {
                 set({
@@ -87,7 +88,7 @@ export const useTable = create(
                     rowsState: rows,
                     isRowsDirty: false,
                     isTableConfigDirty: false,
-                    columnSelected: null,
+                    settingSelectedColumn: null,
                 })
             },
             getDBState() {
@@ -139,7 +140,7 @@ export const useTable = create(
                 }
 
                 get().setTableConfig(newTableConfig)
-                get().setColumnSelected(null)
+                get().setSettingSelectedColumn(null)
             },
 
             //////////////////////////////////////////
@@ -178,11 +179,10 @@ export const useTable = create(
                 set({ isRowsDirty: isDirty })
             },
 
-            setColumnSelected(columnId) {
-                const columnSelected = get().tableConfigState.columns.find(
-                    c => c._id === columnId
-                )
-                set({ columnSelected })
+            setSettingSelectedColumn(columnId) {
+                const settingSelectedColumn =
+                    get().tableConfigState.columns.find(c => c._id === columnId)
+                set({ settingSelectedColumn })
             },
 
             resetTableConfig() {

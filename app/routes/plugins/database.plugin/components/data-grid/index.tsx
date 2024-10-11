@@ -9,11 +9,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
-import { webieRowData, webieTableConfig } from '../../schema/table'
-import { CustomColumnSettingHeader } from './webie-header-component/column-setting-header'
-import { CustomFilterSortHeader } from './webie-header-component/filter-sort-header'
-import { getWebieDefinedColumns } from './webie-system-column'
 import { useTable } from '../../lib/hooks/table'
+import { webieRowData, webieTableConfig } from '../../schema/table'
+import { CustomFilterSortSettingHeader } from './webie-header-component/filter-sort-setting-header'
+import { getWebieDefinedColumns } from './webie-system-column'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -43,13 +42,11 @@ const customDarkTheme = themeQuartz.withParams({
     headerFontSize: 14,
 })
 
-export interface webieDataGridProps {
-    settingMode?: boolean
-}
+export interface webieDataGridProps {}
 
 export const DataGrid = (props: webieDataGridProps) => {
-    const { settingMode } = props
-    const { tableConfigState, rowsState, updateRow } = useTable()
+    const { tableConfigState, rowsState, updateRow, settingSelectedColumn } =
+        useTable()
 
     // Theme: Sets the theme for the data grid based on Client Hints
     const { revalidate } = useRevalidator()
@@ -82,18 +79,21 @@ export const DataGrid = (props: webieDataGridProps) => {
     // keyof webieRowData will map to the field (column ID)
     const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([])
 
-    const webieProvidedColumns = getWebieDefinedColumns({
-        settingMode: settingMode ?? false,
-    })
+    const webieProvidedColumns = getWebieDefinedColumns()
 
     useEffect(() => {
         setColDefs([
-            ...(!settingMode ? [{ ...webieProvidedColumns._id }] : []),
-            ...(!settingMode ? [{ ...webieProvidedColumns._actions }] : []),
+            ...(!settingSelectedColumn
+                ? [{ ...webieProvidedColumns._id }]
+                : []),
+            ...(!settingSelectedColumn
+                ? [{ ...webieProvidedColumns._actions }]
+                : []),
+
             ...mappedColumns(tableConfigState),
             { ...webieProvidedColumns._addColumn },
         ])
-    }, [tableConfigState])
+    }, [tableConfigState, settingSelectedColumn])
 
     const mappedColumns = useCallback(
         (tableConfigState: webieTableConfig): ColDef<webieRowData>[] => {
@@ -101,9 +101,9 @@ export const DataGrid = (props: webieDataGridProps) => {
                 return {
                     headerName: column.headerName,
                     field: column._id,
-                    editable: settingMode ? false : column.editable,
-                    filter: settingMode ? false : column.filter,
-                    sortable: settingMode ? false : column.sortable,
+                    editable: settingSelectedColumn ? false : column.editable,
+                    filter: settingSelectedColumn ? false : column.filter,
+                    sortable: settingSelectedColumn ? false : column.sortable,
                     onCellValueChanged: e => {
                         const updatedRowTarget = e.data
                         updateRow?.(updatedRowTarget)
@@ -124,17 +124,15 @@ export const DataGrid = (props: webieDataGridProps) => {
         [p: string]: any
     }>(() => {
         return {
-            agColumnHeader: settingMode
-                ? CustomColumnSettingHeader
-                : CustomFilterSortHeader,
+            agColumnHeader: CustomFilterSortSettingHeader,
         }
-    }, [settingMode])
+    }, [settingSelectedColumn])
 
     return (
         <div className="h-full">
             <AgGridReact
                 rowSelection={{ mode: 'multiRow', enableClickSelection: true }}
-                rowData={settingMode ? [] : rowsState}
+                rowData={settingSelectedColumn ? [] : rowsState}
                 columnDefs={colDefs}
                 components={customHeaderComponents}
                 getRowId={getRowId}

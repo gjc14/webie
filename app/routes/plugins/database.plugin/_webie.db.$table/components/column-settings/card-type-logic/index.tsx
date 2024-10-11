@@ -5,11 +5,11 @@ import { useTable } from '../../../../lib/hooks/table'
 import { APISettingCard } from './api'
 
 export const TypeLogicSettingCard = () => {
-    const { columnSelected } = useTable()
+    const { settingSelectedColumn } = useTable()
 
-    if (!columnSelected) return null
+    if (!settingSelectedColumn) return null
 
-    switch (columnSelected.type) {
+    switch (settingSelectedColumn.type) {
         case 'api': {
             return <APISettingCard />
         }

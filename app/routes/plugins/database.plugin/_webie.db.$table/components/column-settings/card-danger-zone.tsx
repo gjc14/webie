@@ -10,7 +10,7 @@ import { useTable } from '../../../lib/hooks/table'
 import { ColumnSettingAlert } from './column-setting-alert'
 
 export const DangerZoneCard = () => {
-    const { columnSelected, deleteColumn } = useTable()
+    const { settingSelectedColumn, deleteColumn } = useTable()
 
     return (
         <Card className="w-full border-destructive">
@@ -25,13 +25,13 @@ export const DangerZoneCard = () => {
             </CardHeader>
             <CardFooter>
                 <ColumnSettingAlert
-                    promptTitle={`Delete column ${columnSelected?.headerName}`}
+                    promptTitle={`Delete column ${settingSelectedColumn?.headerName}`}
                     promptMessage="Delete your column will also remove all respective
                             data in the row. Please make sure you have a backup."
-                    executeMessage={`Delete ${columnSelected?.headerName}`}
+                    executeMessage={`Delete ${settingSelectedColumn?.headerName}`}
                     execute={() => {
-                        columnSelected
-                            ? deleteColumn(columnSelected)
+                        settingSelectedColumn
+                            ? deleteColumn(settingSelectedColumn)
                             : console.log('No column selected')
                     }}
                 >

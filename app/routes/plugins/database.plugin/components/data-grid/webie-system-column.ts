@@ -4,11 +4,7 @@ import { webieRowData } from '../../schema/table'
 
 export type webieDefinedColumns = '_id' | '_actions' | '_addColumn'
 
-export const getWebieDefinedColumns = ({
-    settingMode,
-}: {
-    settingMode: boolean
-}): {
+export const getWebieDefinedColumns = (): {
     [key in webieDefinedColumns]: ColDef<webieRowData>
 } => {
     const webieProvidedColumns: {
