@@ -103,6 +103,7 @@ export const DataGrid = (props: webieDataGridProps) => {
             ...(!settingMode ? [{ ...webieProvidedColumns._id }] : []),
             ...mappedColumns(tableConfig),
             ...(!settingMode ? [{ ...webieProvidedColumns._actions }] : []),
+            ...(settingMode ? [{ ...webieProvidedColumns._addColumn }] : []),
         ])
     }, [tableConfig])
 

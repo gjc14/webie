@@ -1,10 +1,10 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
-import { ObjectId } from 'bson'
 
 import { DataGrid } from '../components/data-grid'
 import { ToolBarEditMode } from '../components/table/tool-bar'
 import { getTableConfig } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
+import { generateNewColumn } from '../lib/utils'
 import {
     webieColDef,
     webieColDefSchema,
@@ -75,17 +75,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 export default function DBTableEdit() {
     const { tableConfigState, setTableConfig, isTableConfigDirty } = useTable()
-
-    const generateNewColumn = (type: webieColType): webieColDef => {
-        return {
-            _id: new ObjectId().toString(),
-            type: type,
-            headerName: `New ${type}`,
-            editable: true,
-            filter: true,
-            sortable: true,
-        }
-    }
 
     const createColumn = (type: webieColType) => {
         const newColumn = generateNewColumn(type)

@@ -1,10 +1,19 @@
 import { useEffect } from 'react'
 
 import { Button } from '~/components/ui/button'
-import { Label } from '~/components/ui/label'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '~/components/ui/card'
 import { SetColumnPopover } from '../../components/table/tool-bar/set-column'
 import { supportedTypes } from '../../components/table/type-selector'
 import { useTable } from '../../lib/hooks/table'
+import { ColumnSettingAlert } from './column-setting-alert'
+import { APISettingCard } from './type-setting-cards/api'
 
 export const ColumnSettings = () => {
     const { columnSelected, setColumnSelected, tableConfigState } = useTable()
@@ -21,30 +30,87 @@ export const ColumnSettings = () => {
 
     if (!columnSelected) return null
 
-    return (
-        <div className="absolute bottom-0 left-0 z-10 w-full h-[60vh] p-3 space-y-2 bg-zinc-100 dark:bg-zinc-800 border border-border rounded-2xl sm:p-6 md:p-9">
-            <div>
-                <h2>Setting {columnSelected.headerName}</h2>
-            </div>
+    const ColumnLogicSetting = () => {
+        switch (columnSelected.type) {
+            case 'string': {
+                return <APISettingCard />
+            }
+            default: {
+                return (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Type is undefined</CardTitle>
+                        </CardHeader>
+                    </Card>
+                )
+            }
+        }
+    }
 
-            <div>
-                <Label>Column type</Label>
-                <SetColumnPopover side="bottom">
-                    <Button className="w-52 justify-start">
-                        {columnType ? (
-                            <>
-                                <columnType.icon
-                                    size={16}
-                                    className="mr-2 opacity-100"
-                                />
-                                {columnType?.label}
-                            </>
-                        ) : (
-                            'No type defined'
-                        )}
-                    </Button>
-                </SetColumnPopover>
-            </div>
-        </div>
+    return (
+        <Card className="absolute bottom-0 left-0 z-10 w-full h-[75vh] p-3 border border-border rounded-2xl overflow-scroll sm:p-6 md:p-9">
+            <CardHeader>
+                <CardTitle>Setting {columnSelected.headerName}</CardTitle>
+                <CardDescription>
+                    Delete your column will also remove all respective data in
+                    the row. Please make sure you have a backup.
+                </CardDescription>
+            </CardHeader>
+
+            <CardContent className="my-3 space-y-2">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Type settings</CardTitle>
+                        <CardDescription></CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <SetColumnPopover side="bottom">
+                            <Button
+                                variant={'outline'}
+                                className="w-52 justify-start"
+                            >
+                                {columnType ? (
+                                    <>
+                                        <columnType.icon
+                                            size={16}
+                                            className="mr-2 opacity-100"
+                                        />
+                                        {columnType?.label}
+                                    </>
+                                ) : (
+                                    'No type defined'
+                                )}
+                            </Button>
+                        </SetColumnPopover>
+                    </CardContent>
+                </Card>
+                <ColumnLogicSetting />
+            </CardContent>
+
+            <CardFooter>
+                <Card className="w-full border-destructive">
+                    <CardHeader>
+                        <CardTitle className="text-destructive font-black">
+                            Danger zone
+                        </CardTitle>
+                        <CardDescription>
+                            Delete your column will also remove all respective
+                            data in the row. Please make sure you have a backup.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                        <ColumnSettingAlert
+                            promptTitle="Delete column"
+                            promptMessage="Delete your column will also remove all respective
+                            data in the row. Please make sure you have a backup."
+                            executeMessage="Delete"
+                            execute={() => {}}
+                        >
+                            <Button variant="destructive">Delete column</Button>
+                        </ColumnSettingAlert>
+                    </CardFooter>
+                </Card>
+            </CardFooter>
+        </Card>
     )
 }

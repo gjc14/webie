@@ -1,23 +1,73 @@
 import { CustomHeaderProps } from 'ag-grid-react'
-import { Settings } from 'lucide-react'
-import { useRef } from 'react'
+import { Plus, Settings } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '~/components/ui/tooltip'
 import { useTable } from '../../../lib/hooks/table'
+import { generateNewColumn } from '../../../lib/utils'
+import { webieColType } from '../../../schema/table'
+import { AddColumnPopover } from '../../table/tool-bar/add-column'
+import { webieDefinedColumns } from '../webie-system-column'
 
 export interface CustomColumnSettingHeaderProps extends CustomHeaderProps {}
 
 export const CustomColumnSettingHeader = (
     props: CustomColumnSettingHeaderProps
 ) => {
-    const refButton = useRef(null)
-    const { columnSelected, setColumnSelected } = useTable()
-    const thisColumnIsSelected = columnSelected?._id === props.column.getColId()
+    const {
+        columnSelected,
+        setColumnSelected,
+        tableConfigState,
+        setTableConfig,
+    } = useTable()
+    const thisColumnId: webieDefinedColumns | string = props.column.getColId()
+    const thisColumnIsSelected = columnSelected?._id === thisColumnId
 
-    const isCustomColumn = props.column.getUserProvidedColDef()
+    const isCustomColumn =
+        props.column.getUserProvidedColDef() && !thisColumnId.startsWith('_')
 
     const onSettingClicked = () => {
-        setColumnSelected(props.column.getColId())
+        setColumnSelected(thisColumnId)
+    }
+
+    const createColumn = (type: webieColType) => {
+        const newColumn = generateNewColumn(type)
+        setTableConfig({
+            ...tableConfigState,
+            columns: [...tableConfigState.columns, newColumn],
+        })
+    }
+
+    if (!isCustomColumn) {
+        if (thisColumnId === '_addColumn') {
+            return (
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipContent className="bg-primary-foreground text-primary border border-primary/20">
+                            Add a new column
+                        </TooltipContent>
+
+                        <TooltipTrigger asChild>
+                            <AddColumnPopover
+                                onTypeSelect={type => createColumn(type)}
+                            >
+                                <Button
+                                    variant={'ghost'}
+                                    className="h-fit w-fit p-[5px] rounded-sm"
+                                >
+                                    <Plus size={16} />
+                                </Button>
+                            </AddColumnPopover>
+                        </TooltipTrigger>
+                    </Tooltip>
+                </TooltipProvider>
+            )
+        }
     }
 
     return (
@@ -38,7 +88,6 @@ export const CustomColumnSettingHeader = (
             {isCustomColumn && (
                 <>
                     <Button
-                        ref={refButton}
                         variant={'ghost'}
                         className="h-fit w-fit p-[5px] rounded-sm"
                     >

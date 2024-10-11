@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -9,27 +9,32 @@ import {
 import { webieColType } from '../../../schema/table'
 import { TypeSelector } from '../type-selector'
 
-export function AddColumnPopover({
-    children,
-    onTypeSelect,
-    side = 'right',
-}: {
+interface AddColumnPopoverProps {
     children?: React.ReactNode
     onTypeSelect?: (type: webieColType) => void
     side?: 'right' | 'top' | 'bottom' | 'left' | undefined
-}) {
+}
+
+export const AddColumnPopover = forwardRef<
+    HTMLDivElement,
+    AddColumnPopoverProps
+>((props, ref) => {
     const [open, setOpen] = useState(false)
 
     return (
-        <div className="flex items-center space-x-4">
+        <div ref={ref} className="flex items-center space-x-4">
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    {children ? children : <Button>Add column</Button>}
+                    {props.children ? (
+                        props.children
+                    ) : (
+                        <Button>Add column</Button>
+                    )}
                 </PopoverTrigger>
-                <PopoverContent className="p-0" side={side} align="start">
+                <PopoverContent className="p-0" side={props.side} align="start">
                     <TypeSelector
                         onTypeSelect={type => {
-                            onTypeSelect?.(type)
+                            props.onTypeSelect?.(type)
                             setOpen(false)
                         }}
                     />
@@ -37,4 +42,4 @@ export function AddColumnPopover({
             </Popover>
         </div>
     )
-}
+})

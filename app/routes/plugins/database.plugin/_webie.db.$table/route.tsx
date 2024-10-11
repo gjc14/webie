@@ -5,15 +5,14 @@ import {
     SerializeFrom,
 } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { ObjectId } from 'bson'
 import { useEffect } from 'react'
 
 import { DataGrid } from '../components/data-grid'
 import { ToolBar } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
-import { generateSchema } from '../lib/utils'
-import { typeDefaultValuesMap, webieRowData } from '../schema/table'
+import { generateNewRow, generateSchema } from '../lib/utils'
+import { webieRowData } from '../schema/table'
 import { processFormData } from './action.server'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -70,16 +69,7 @@ export default function DBTable() {
     // Functions for CUD operations on rows //
     ///////////////////////////////////////////
     const rowCreate = () => {
-        const newRow: webieRowData = {
-            _id: new ObjectId().toString(),
-            ...tableConfigState.columns.reduce(
-                (acc: { [columnId: string]: any }, column) => {
-                    acc[column._id] = typeDefaultValuesMap[column.type]
-                    return acc
-                },
-                {}
-            ),
-        }
+        const newRow = generateNewRow(tableConfigState)
         setRows([...rowsState, newRow])
     }
 
