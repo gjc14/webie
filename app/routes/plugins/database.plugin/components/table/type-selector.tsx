@@ -1,18 +1,17 @@
-import { QuestionMarkIcon } from '@radix-ui/react-icons'
 import {
-    Binary,
     Calendar,
     Circle,
-    CircleDashed,
-    CircleOff,
+    CircleEllipsis,
     Earth,
+    FileJson,
     FunctionSquare,
     Hash,
+    Link,
     LucideIcon,
     Mail,
-    Star,
+    Router,
     Text,
-    X,
+    Webhook,
 } from 'lucide-react'
 import {
     Command,
@@ -22,7 +21,6 @@ import {
     CommandItem,
     CommandList,
 } from '~/components/ui/command'
-import { convertRadixToLucideIcon } from '~/components/utils'
 import { webieColType, webieColTypesSchema } from '../../schema/table'
 
 export type TypeButtonArgs = {
@@ -31,18 +29,26 @@ export type TypeButtonArgs = {
     icon: LucideIcon
 }
 
-const RadixQuestionMarkIcon = convertRadixToLucideIcon(QuestionMarkIcon)
-
 export const supportedTypes: TypeButtonArgs[] = [
     {
         value: 'string',
-        label: 'String',
+        label: 'Text',
         icon: Text,
     },
     {
+        value: 'number',
+        label: 'Number',
+        icon: Hash,
+    },
+    {
         value: 'boolean',
-        label: 'Boolean',
+        label: 'True/False',
         icon: Circle,
+    },
+    {
+        value: 'select',
+        label: 'Select',
+        icon: CircleEllipsis,
     },
     {
         value: 'date',
@@ -55,34 +61,14 @@ export const supportedTypes: TypeButtonArgs[] = [
         icon: Mail,
     },
     {
-        value: 'number',
-        label: 'Number',
-        icon: Hash,
-    },
-    {
-        value: 'bigint',
-        label: 'Bigint',
-        icon: Binary,
-    },
-    {
-        value: 'symbol',
-        label: 'Symbol',
-        icon: Star,
-    },
-    {
-        value: 'undefined',
-        label: 'Undefined',
-        icon: CircleDashed,
-    },
-    {
-        value: 'null',
-        label: 'Null',
-        icon: CircleOff,
-    },
-    {
         value: 'void',
-        label: 'Void',
+        label: 'Function',
         icon: FunctionSquare,
+    },
+    {
+        value: 'api',
+        label: 'API',
+        icon: Webhook,
     },
     {
         value: 'any',
@@ -90,14 +76,34 @@ export const supportedTypes: TypeButtonArgs[] = [
         icon: Earth,
     },
     {
-        value: 'unknown',
-        label: 'Unknown',
-        icon: RadixQuestionMarkIcon,
+        value: 'url',
+        label: 'URL',
+        icon: Link,
     },
     {
-        value: 'never',
-        label: 'Never',
-        icon: X,
+        value: 'ip',
+        label: 'IP Address',
+        icon: Router,
+    },
+    {
+        value: 'uuid',
+        label: 'UUID',
+        icon: Hash,
+    },
+    {
+        value: 'cuid',
+        label: 'CUID',
+        icon: Hash,
+    },
+    {
+        value: 'nanoId',
+        label: 'Nano ID',
+        icon: Hash,
+    },
+    {
+        value: 'json',
+        label: 'JSON Data',
+        icon: FileJson,
     },
 ]
 

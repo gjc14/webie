@@ -32,14 +32,14 @@ export const ColumnSettings = () => {
 
     const ColumnLogicSetting = () => {
         switch (columnSelected.type) {
-            case 'string': {
+            case 'api': {
                 return <APISettingCard />
             }
             default: {
                 return (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Type is undefined</CardTitle>
+                            <CardTitle>Not implemented</CardTitle>
                         </CardHeader>
                     </Card>
                 )

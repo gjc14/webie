@@ -18,8 +18,8 @@ export const getTableConfig = async (
         },
         {
             _id: 'columnId2',
-            type: 'string',
-            headerName: 'Model',
+            type: 'api',
+            headerName: 'Api',
             editable: true,
             filter: true,
             sortable: true,
@@ -38,6 +38,14 @@ export const getTableConfig = async (
             headerName: 'In Stock',
             editable: false,
             filter: true,
+            sortable: true,
+        },
+        {
+            _id: 'columnId5',
+            type: 'void',
+            headerName: 'Func',
+            editable: true,
+            filter: false,
             sortable: true,
         },
     ]

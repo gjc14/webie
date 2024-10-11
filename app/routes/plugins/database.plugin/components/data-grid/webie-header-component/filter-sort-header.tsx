@@ -1,13 +1,28 @@
 import { CustomHeaderProps } from 'ag-grid-react'
 import { ArrowDown, ArrowUp, Filter } from 'lucide-react'
 import { useRef, useState } from 'react'
+
 import { Button } from '~/components/ui/button'
+import { useTable } from '../../../lib/hooks/table'
+import { supportedTypes } from '../../table/type-selector'
+import { webieDefinedColumns } from '../webie-system-column'
 
 export interface CustomFilterSortHeaderProps extends CustomHeaderProps {}
 
 export const CustomFilterSortHeader = (props: CustomFilterSortHeaderProps) => {
     const refButton = useRef(null)
     const [sort, setSort] = useState<ReturnType<typeof props.column.getSort>>()
+
+    const { tableConfigState } = useTable()
+    const thisColumnId: webieDefinedColumns | string = props.column.getColId()
+    const thisColumnConfig = tableConfigState.columns.find(
+        column => column._id === thisColumnId
+    )
+    const columnType = supportedTypes.find(
+        type => type.value === thisColumnConfig?.type
+    )
+    const isCustomColumn =
+        props.column.getUserProvidedColDef() && !thisColumnId.startsWith('_')
 
     const onFilterClicked = () => {
         props.showColumnMenu(refButton.current!)
@@ -52,6 +67,7 @@ export const CustomFilterSortHeader = (props: CustomFilterSortHeaderProps) => {
                     props.enableSorting && onSortRequested(e)
                 }}
             >
+                {isCustomColumn && columnType && <columnType.icon size={14} />}
                 {props.displayName}
                 {sortIndicator}
             </button>

@@ -12,6 +12,7 @@ import { useTable } from '../../../lib/hooks/table'
 import { generateNewColumn } from '../../../lib/utils'
 import { webieColType } from '../../../schema/table'
 import { AddColumnPopover } from '../../table/tool-bar/add-column'
+import { supportedTypes } from '../../table/type-selector'
 import { webieDefinedColumns } from '../webie-system-column'
 
 export interface CustomColumnSettingHeaderProps extends CustomHeaderProps {}
@@ -27,6 +28,12 @@ export const CustomColumnSettingHeader = (
     } = useTable()
     const thisColumnId: webieDefinedColumns | string = props.column.getColId()
     const thisColumnIsSelected = columnSelected?._id === thisColumnId
+    const thisColumnConfig = tableConfigState.columns.find(
+        column => column._id === thisColumnId
+    )
+    const columnType = supportedTypes.find(
+        type => type.value === thisColumnConfig?.type
+    )
 
     const isCustomColumn =
         props.column.getUserProvidedColDef() && !thisColumnId.startsWith('_')
@@ -55,6 +62,7 @@ export const CustomColumnSettingHeader = (
                         <TooltipTrigger asChild>
                             <AddColumnPopover
                                 onTypeSelect={type => createColumn(type)}
+                                side="right"
                             >
                                 <Button
                                     variant={'ghost'}
@@ -81,6 +89,7 @@ export const CustomColumnSettingHeader = (
             <button
                 className={`w-full h-full text-start flex items-center gap-2`}
             >
+                {isCustomColumn && columnType && <columnType.icon size={14} />}
                 {props.displayName}
             </button>
 

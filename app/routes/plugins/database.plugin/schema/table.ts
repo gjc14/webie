@@ -3,30 +3,36 @@ import { z, ZodTypeAny } from 'zod'
 /**
  * Define supporting type for column of the data grid.
  * It could be directly selected by end user
+ * Workflow:
+ * -> Add a new type
+ * -> update rest of this file
+ * -> expose select button in components/table/type-selector.tsx
+ * -> update table_.edit/components/column-settings.tsx SettingCard component
  */
 export const webieColTypesSchema = z.enum([
     // primitive values
     'string',
     'number',
-    'bigint',
     'boolean',
     'date',
-    'symbol',
     'email',
 
-    // empty types
-    'undefined',
-    'null',
     'void', // accepts undefined
 
-    // catch-all types
-    // allows any value
     'any',
-    'unknown',
 
-    // never type
-    // allows no values
-    'never',
+    // complex or nested types
+    'api',
+    'select',
+
+    'url',
+    'ip',
+
+    'uuid',
+    'cuid',
+    'nanoId',
+
+    'json',
 ])
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
@@ -36,17 +42,24 @@ export type webieColType = z.infer<typeof webieColTypesSchema>
 export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     string: '',
     number: 0,
-    bigint: 0,
     boolean: true,
     date: new Date().toLocaleString(),
-    symbol: '',
     email: '',
-    undefined: undefined,
-    null: null,
+
     void: `print("void")`,
     any: null,
-    unknown: null,
-    never: null,
+
+    api: undefined,
+    select: ['w', 'e'],
+
+    url: 'https://webie.dev',
+    ip: '',
+
+    uuid: '',
+    cuid: '',
+    nanoId: '',
+
+    json: '{}',
 }
 
 /**
@@ -56,22 +69,24 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     string: z.string(),
     number: z.number(),
     boolean: z.boolean(),
-    email: z.string().email(),
     date: z.date(),
-    symbol: z.symbol(),
-    bigint: z.bigint(),
+    email: z.string().email(),
 
-    undefined: z.undefined(),
-    null: z.null(),
     void: z.void(),
-
     any: z.any(),
-    unknown: z.unknown(),
 
-    never: z.never(),
+    api: z.undefined(),
+    select: z.array(z.string()),
+
+    url: z.string().url(),
+    ip: z.string().ip(),
+
+    uuid: z.string().uuid(),
+    cuid: z.string().cuid(),
+    nanoId: z.string().nanoid(),
+
+    json: z.undefined(),
 }
-
-export const zodValidatoinMap = {}
 
 /**
  * Define the schema for the column definition.

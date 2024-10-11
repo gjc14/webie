@@ -36,6 +36,7 @@ export const getWebieDefinedColumns = ({
             sortable: false,
             width: 60,
             resizable: false,
+            suppressMovable: true,
         },
     }
     return webieProvidedColumns

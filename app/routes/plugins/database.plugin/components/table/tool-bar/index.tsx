@@ -86,7 +86,7 @@ type ToolBarEditModeProps = {
 const ToolBarEditMode = ({ isDirty, createColumn }: ToolBarEditModeProps) => {
     const fetcher = useFetcher()
     const navigate = useNavigate()
-    const { tableConfigState } = useTable()
+    const { tableConfigState, isTableConfigDirty } = useTable()
 
     return (
         <ToolBarWrapper>
@@ -121,22 +121,39 @@ const ToolBarEditMode = ({ isDirty, createColumn }: ToolBarEditModeProps) => {
                 <Button size={'sm'} form="tableConfigForm" disabled={!isDirty}>
                     Save
                 </Button>
-                <ToolBarAlert
-                    promptTitle={'Discard changes'}
-                    promptMessage={'Are you sure you want to discard changes?'}
-                    executeMessage={'Discard'}
-                    execute={() => {
-                        // No need to reset the tableConfig, the table main page will reset the whole table
-                        navigate('..', {
-                            replace: true,
-                            relative: 'path',
-                        })
-                    }}
-                >
-                    <Button size={'sm'} variant={'ghost'}>
+                {isTableConfigDirty ? (
+                    <ToolBarAlert
+                        promptTitle={'Discard changes'}
+                        promptMessage={
+                            'Are you sure you want to discard changes?'
+                        }
+                        executeMessage={'Discard'}
+                        execute={() => {
+                            // No need to reset the tableConfig, the table main page will reset the whole table
+                            navigate('..', {
+                                replace: true,
+                                relative: 'path',
+                            })
+                        }}
+                    >
+                        <Button size={'sm'} variant={'ghost'}>
+                            Discard
+                        </Button>
+                    </ToolBarAlert>
+                ) : (
+                    <Button
+                        size={'sm'}
+                        variant={'ghost'}
+                        onClick={() =>
+                            navigate('..', {
+                                replace: true,
+                                relative: 'path',
+                            })
+                        }
+                    >
                         Discard
                     </Button>
-                </ToolBarAlert>
+                )}
 
                 <ThemeToggle className="ml-auto mr-3 scale-90" />
             </div>

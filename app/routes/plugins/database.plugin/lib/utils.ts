@@ -1,5 +1,6 @@
 import { ObjectId } from 'bson'
 import { z, ZodTypeAny } from 'zod'
+
 import {
     typeDefaultValuesMap,
     webieColDef,
@@ -53,3 +54,14 @@ export const generateNewRow = (tableConfig: webieTableConfig) => {
     }
     return newRow
 }
+
+/**
+ * Generate a Json type schema.
+ * @see https://zod.dev/?id=json-type
+ */
+const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()])
+type Literal = z.infer<typeof literalSchema>
+export type Json = Literal | { [key: string]: Json } | Json[]
+export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
+    z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)])
+)
