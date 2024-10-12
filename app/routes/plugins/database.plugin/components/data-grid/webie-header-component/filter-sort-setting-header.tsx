@@ -102,7 +102,7 @@ export const CustomFilterSortSettingHeader = (
             )
         } else if (thisColumnId === '_openRow') {
             return (
-                <DBToolTip asChild message="Manage your column">
+                <DBToolTip asChild message="Open your row">
                     <span className="w-full flex justify-center">
                         <Maximize2 size={16} />
                     </span>

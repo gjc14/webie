@@ -15,7 +15,7 @@ export const DangerZoneCard = () => {
     return (
         <Card className="w-full border-destructive">
             <CardHeader>
-                <CardTitle className="text-destructive font-black">
+                <CardTitle className="text-destructive font-bold">
                     Danger zone
                 </CardTitle>
                 <CardDescription>

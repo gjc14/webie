@@ -115,7 +115,7 @@ export const DataGrid = forwardRef<AgGridReact>(
         useEffect(() => {
             setColDefs([
                 { ...webieProvidedColumns._id },
-                { ...webieProvidedColumns._actions },
+                { ...webieProvidedColumns._openRow },
 
                 ...mappedColumns(tableConfigState),
                 { ...webieProvidedColumns._addColumn },
