@@ -1,4 +1,5 @@
 import { z, ZodTypeAny } from 'zod'
+import { valueGetterSchema } from './col-def'
 
 /**
  * Define supporting type for column of the data grid.
@@ -95,10 +96,13 @@ export const webieColDefSchema = z.object({
     _id: z.string(),
     type: webieColTypesSchema,
 
+    // AG-Grid ColDef properties
     headerName: z.string(),
     editable: z.boolean().optional(),
     filter: z.boolean().optional(),
     sortable: z.boolean().optional(),
+    width: z.number().optional(),
+    valueGetter: valueGetterSchema.optional(),
 })
 export type webieColDef = z.infer<typeof webieColDefSchema>
 

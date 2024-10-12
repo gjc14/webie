@@ -48,6 +48,19 @@ export const getTableConfig = async (
             filter: false,
             sortable: true,
         },
+        {
+            _id: 'columnId6',
+            type: 'string',
+            headerName: 'Read columnId1',
+            editable: true,
+            filter: true,
+            sortable: true,
+            width: 300,
+            valueGetter: {
+                func: 'sameAsColumn',
+                params: { columnId: 'columnId3' },
+            },
+        },
     ]
 
     return { _id: 'tableId', settings: { autoSave: false }, table, columns }

@@ -6,16 +6,17 @@ import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { toast } from 'sonner'
 import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
+import { generateColumnSchema } from '../../lib/utils'
+import { getValueGetterFunc } from '../../schema/col-def'
 import { webieColDef, webieRowData, webieTableConfig } from '../../schema/table'
+import { supportedTypes } from '../table/type-selector'
 import { CustomFilterSortSettingHeader } from './webie-header-component/filter-sort-setting-header'
 import { getWebieDefinedColumns } from './webie-system-column'
-import { generateColumnSchema } from '../../lib/utils'
-import { toast } from 'sonner'
-import { supportedTypes } from '../table/type-selector'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -107,6 +108,7 @@ export const DataGrid = (props: webieDataGridProps) => {
                     editable: settingSelectedColumn ? false : column.editable,
                     filter: settingSelectedColumn ? false : column.filter,
                     sortable: settingSelectedColumn ? false : column.sortable,
+                    width: column.width,
                     onCellValueChanged: e => {
                         const updateValue = handleCellValueChanged({
                             e,
@@ -114,6 +116,14 @@ export const DataGrid = (props: webieDataGridProps) => {
                         })
                         if (updateValue) updateRow(updateValue)
                     },
+                    ...(column.valueGetter && {
+                        valueGetter: p => {
+                            return (
+                                column.valueGetter &&
+                                getValueGetterFunc(p, column.valueGetter)
+                            )
+                        },
+                    }),
                     headerComponentParams: {},
                 }
             })
