@@ -61,11 +61,6 @@ export const supportedTypes: TypeButtonArgs[] = [
         icon: Mail,
     },
     {
-        value: 'void',
-        label: 'Function',
-        icon: FunctionSquare,
-    },
-    {
         value: 'api',
         label: 'API',
         icon: Webhook,
@@ -104,6 +99,11 @@ export const supportedTypes: TypeButtonArgs[] = [
         value: 'json',
         label: 'JSON Data',
         icon: FileJson,
+    },
+    {
+        value: 'calc',
+        label: 'Calculation',
+        icon: FunctionSquare,
     },
 ]
 

@@ -1,5 +1,4 @@
 import { z, ZodTypeAny } from 'zod'
-import { valueGetterSchema } from './col-def'
 
 /**
  * Define supporting type for column of the data grid.
@@ -18,7 +17,7 @@ export const webieColTypesSchema = z.enum([
     'date',
     'email',
 
-    'void', // accepts undefined
+    // 'void', // accepts undefined
 
     'any',
 
@@ -34,6 +33,9 @@ export const webieColTypesSchema = z.enum([
     'nanoId',
 
     'json',
+
+    // connetions
+    'calc',
 ])
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
@@ -47,7 +49,7 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     date: new Date().toLocaleString(),
     email: '',
 
-    void: `print("void")`,
+    // void: `print("void")`,
     any: null,
 
     api: undefined,
@@ -61,6 +63,8 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     nanoId: '',
 
     json: '{}',
+
+    calc: undefined,
 }
 
 /**
@@ -73,7 +77,7 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     date: z.date(),
     email: z.string().email(),
 
-    void: z.void(),
+    // void: z.void(),
     any: z.any(),
 
     api: z.undefined(),
@@ -86,7 +90,9 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     cuid: z.string().cuid(),
     nanoId: z.string().nanoid(),
 
-    json: z.undefined(),
+    json: z.string(),
+
+    calc: z.undefined(),
 }
 
 /**
@@ -102,7 +108,7 @@ export const webieColDefSchema = z.object({
     filter: z.boolean().optional(),
     sortable: z.boolean().optional(),
     width: z.number().optional(),
-    valueGetter: valueGetterSchema.optional(),
+    valueGetterCustomLogic: z.string().optional(),
 })
 export type webieColDef = z.infer<typeof webieColDefSchema>
 

@@ -1,20 +1,21 @@
 import { themeQuartz } from '@ag-grid-community/theming'
 
 import { useRevalidator } from '@remix-run/react'
-import { ColDef, GetRowIdParams, NewValueParams } from 'ag-grid-community'
+import { ColDef, GetRowIdParams } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { toast } from 'sonner'
 import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
-import { generateColumnSchema } from '../../lib/utils'
-import { getValueGetterFunc } from '../../schema/col-def'
 import { webieColDef, webieRowData, webieTableConfig } from '../../schema/table'
-import { supportedTypes } from '../table/type-selector'
+import {
+    checkCircular,
+    generateCustomLogic,
+    handleCellValueChanged,
+} from './utils'
 import { CustomFilterSortSettingHeader } from './webie-header-component/filter-sort-setting-header'
 import { getWebieDefinedColumns } from './webie-system-column'
 
@@ -83,6 +84,25 @@ export const DataGrid = (props: webieDataGridProps) => {
     // keyof webieRowData will map to the field (column ID)
     const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([])
 
+    const typeCalcColumns = useMemo(() => {
+        return tableConfigState.columns.filter(column => column.type === 'calc')
+    }, [tableConfigState.columns])
+
+    const circulatedColumns = useMemo(() => {
+        return checkCircular(typeCalcColumns)
+    }, [typeCalcColumns])
+
+    const getCustomLogic = useMemo(
+        () => (column: webieColDef) => {
+            return generateCustomLogic(
+                column,
+                typeCalcColumns,
+                circulatedColumns
+            )
+        },
+        [circulatedColumns, typeCalcColumns]
+    )
+
     const webieProvidedColumns = getWebieDefinedColumns()
 
     useEffect(() => {
@@ -116,14 +136,17 @@ export const DataGrid = (props: webieDataGridProps) => {
                         })
                         if (updateValue) updateRow(updateValue)
                     },
-                    ...(column.valueGetter && {
-                        valueGetter: p => {
-                            return (
-                                column.valueGetter &&
-                                getValueGetterFunc(p, column.valueGetter)
-                            )
-                        },
-                    }),
+                    valueGetter:
+                        column.valueGetterCustomLogic !== undefined // For type calc columns
+                            ? p => {
+                                  const customLogic = getCustomLogic(column)
+                                  const row = p.data
+                                  const chain = p.getValue
+
+                                  return customLogic(row, chain)
+                              }
+                            : undefined,
+
                     headerComponentParams: {},
                 }
             })
@@ -162,31 +185,4 @@ export const DataGrid = (props: webieDataGridProps) => {
             />
         </div>
     )
-}
-
-function handleCellValueChanged({
-    e,
-    column,
-}: {
-    e: NewValueParams<webieRowData>
-    column: webieColDef
-}) {
-    const updatedRowTarget = e.data
-    const dynamicSchema = generateColumnSchema(column)
-    const validate = dynamicSchema.safeParse(e.newValue)
-
-    if (!validate.success) {
-        console.log(
-            'error:',
-            validate.error.issues.map(i => i.message)
-        )
-        const supportedType = supportedTypes.find(
-            type => type.value === column.type
-        )
-        toast.error(`Invalid value for ${supportedType?.label}`)
-        e.node?.setDataValue(column._id, e.oldValue)
-        return false
-    } else {
-        return updatedRowTarget
-    }
 }
