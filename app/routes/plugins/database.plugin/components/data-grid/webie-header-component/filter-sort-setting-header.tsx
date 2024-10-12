@@ -3,9 +3,9 @@ import {
     ArrowDown,
     ArrowUp,
     Filter,
+    Maximize2,
     Plus,
     Settings,
-    Settings2,
 } from 'lucide-react'
 import { useRef, useState } from 'react'
 
@@ -14,7 +14,7 @@ import { useTable } from '../../../lib/hooks/table'
 import { DBToolTip } from '../../db-tooltip'
 import { AddColumnPopover } from '../../table/tool-bar/add-column'
 import { supportedTypes } from '../../table/type-selector'
-import { webieDefinedColumns } from '../webie-system-column'
+import { webieDefinedColumns } from '../webie-system-columns'
 
 export interface CustomFilterSortHeaderProps extends CustomHeaderProps {}
 
@@ -100,11 +100,11 @@ export const CustomFilterSortSettingHeader = (
                     </AddColumnPopover>
                 </DBToolTip>
             )
-        } else if (thisColumnId === '_actions') {
+        } else if (thisColumnId === '_openRow') {
             return (
                 <DBToolTip asChild message="Manage your column">
                     <span className="w-full flex justify-center">
-                        <Settings2 size={16} />
+                        <Maximize2 size={16} />
                     </span>
                 </DBToolTip>
             )

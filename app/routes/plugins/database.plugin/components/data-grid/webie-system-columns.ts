@@ -18,12 +18,13 @@ export const getWebieDefinedColumns = (): {
             sortable: true,
         },
         _actions: {
-            field: '_actions',
-            headerName: 'Actions',
+            field: '_openRow',
+            headerName: 'Open',
             editable: false,
             filter: false,
             sortable: false,
             width: 60,
+            // cellRenderer: 'openRowRenderer',
         },
         _addColumn: {
             field: '_addColumn',

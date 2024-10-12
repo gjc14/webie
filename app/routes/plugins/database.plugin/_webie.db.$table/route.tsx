@@ -5,8 +5,9 @@ import {
     SerializeFrom,
 } from '@remix-run/node'
 import { useFetcher, useLoaderData } from '@remix-run/react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
+import { AgGridReact } from 'ag-grid-react'
 import { DataGrid } from '../components/data-grid'
 import { ToolBar, ToolBarEditMode } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
@@ -51,6 +52,7 @@ export type SerializedLoaderData = SerializeFrom<typeof loader>
 
 export default function DBTable() {
     const fetcher = useFetcher()
+    const gridRef = useRef<AgGridReact>(null)
     const loaderData = useLoaderData<typeof loader>()
     const {
         setDBState,
@@ -77,13 +79,13 @@ export default function DBTable() {
     return (
         <div className="h-full flex flex-col p-3 gap-2">
             {settingSelectedColumn ? (
-                <ToolBarEditMode />
+                <ToolBarEditMode gridRef={gridRef} />
             ) : (
-                <ToolBar onSaveRows={onSaveRows} />
+                <ToolBar gridRef={gridRef} onSaveRows={onSaveRows} />
             )}
 
             <div className="flex-grow">
-                <DataGrid />
+                <DataGrid ref={gridRef} />
             </div>
 
             <ColumnSettings />

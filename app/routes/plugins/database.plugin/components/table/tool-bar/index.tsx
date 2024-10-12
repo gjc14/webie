@@ -1,9 +1,18 @@
 import { Link } from '@remix-run/react'
-import { CloudUpload } from 'lucide-react'
+import { ChevronDown, CloudUpload } from 'lucide-react'
 import { ReactNode } from 'react'
 
+import { AgGridReact } from 'ag-grid-react'
 import { ThemeToggle } from '~/components/theme-toggle'
 import { Button } from '~/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 import { Separator } from '~/components/ui/separator'
 import { useTable } from '../../../lib/hooks/table'
 import { DBToolTip } from '../../db-tooltip'
@@ -19,9 +28,11 @@ const ToolBarWrapper = ({ children }: { children?: ReactNode }) => {
 
 type ToolBarProps = {
     onSaveRows: () => void
+
+    gridRef: React.RefObject<AgGridReact<any>>
 }
 
-const ToolBar = ({ onSaveRows }: ToolBarProps) => {
+const ToolBar = ({ gridRef, onSaveRows }: ToolBarProps) => {
     const { addRow, isRowsDirty, isTableConfigDirty } = useTable()
 
     return (
@@ -53,7 +64,11 @@ const ToolBar = ({ onSaveRows }: ToolBarProps) => {
             <Button
                 size={'sm'}
                 variant={'ghost'}
-                onClick={() => alert('not implemented')}
+                onClick={() =>
+                    gridRef.current?.api.exportDataAsCsv({
+                        fileName: 'webie-data.csv',
+                    })
+                }
             >
                 Export
             </Button>
@@ -65,15 +80,25 @@ const ToolBar = ({ onSaveRows }: ToolBarProps) => {
 
             {/* Additional area */}
             <div className="ml-auto flex items-center justify-end gap-1.5">
-                <Link to={'form'}>
-                    <Button
-                        size={'sm'}
-                        variant={'ghost'}
-                        className="h-auto p-2"
-                    >
-                        Generate form
-                    </Button>
-                </Link>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            size={'sm'}
+                            variant={'ghost'}
+                            className="h-auto p-2"
+                        >
+                            Generate
+                            <ChevronDown size={14} className="ml-1" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Data visualized</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <Link to={'form'}>Form</Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
 
                 <ThemeToggle className="ml-auto mr-3 scale-90" />
             </div>
@@ -83,7 +108,11 @@ const ToolBar = ({ onSaveRows }: ToolBarProps) => {
 
 // TODO: Here should check if each column type is altered, instead of the whole column config
 // PS. System will automatically save the new column, user dont need to manually save it.
-const ToolBarEditMode = () => {
+const ToolBarEditMode = ({
+    gridRef,
+}: {
+    gridRef: React.RefObject<AgGridReact<any>>
+}) => {
     const { isTableConfigDirty, setSettingSelectedColumn, resetTableConfig } =
         useTable()
 
