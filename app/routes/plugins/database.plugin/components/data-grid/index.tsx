@@ -1,7 +1,7 @@
 import { themeQuartz } from '@ag-grid-community/theming'
 
 import { useRevalidator } from '@remix-run/react'
-import { ColDef, GetRowIdParams } from 'ag-grid-community'
+import { ColDef, GetRowIdParams, NewValueParams } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -10,9 +10,12 @@ import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
-import { webieRowData, webieTableConfig } from '../../schema/table'
+import { webieColDef, webieRowData, webieTableConfig } from '../../schema/table'
 import { CustomFilterSortSettingHeader } from './webie-header-component/filter-sort-setting-header'
 import { getWebieDefinedColumns } from './webie-system-column'
+import { generateColumnSchema } from '../../lib/utils'
+import { toast } from 'sonner'
+import { supportedTypes } from '../table/type-selector'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -45,7 +48,7 @@ const customDarkTheme = themeQuartz.withParams({
 export interface webieDataGridProps {}
 
 export const DataGrid = (props: webieDataGridProps) => {
-    const { tableConfigState, rowsState, updateRow, settingSelectedColumn } =
+    const { tableConfigState, rowsState, settingSelectedColumn, updateRow } =
         useTable()
 
     // Theme: Sets the theme for the data grid based on Client Hints
@@ -105,8 +108,11 @@ export const DataGrid = (props: webieDataGridProps) => {
                     filter: settingSelectedColumn ? false : column.filter,
                     sortable: settingSelectedColumn ? false : column.sortable,
                     onCellValueChanged: e => {
-                        const updatedRowTarget = e.data
-                        updateRow?.(updatedRowTarget)
+                        const updateValue = handleCellValueChanged({
+                            e,
+                            column,
+                        })
+                        if (updateValue) updateRow(updateValue)
                     },
                     headerComponentParams: {},
                 }
@@ -146,4 +152,31 @@ export const DataGrid = (props: webieDataGridProps) => {
             />
         </div>
     )
+}
+
+function handleCellValueChanged({
+    e,
+    column,
+}: {
+    e: NewValueParams<webieRowData>
+    column: webieColDef
+}) {
+    const updatedRowTarget = e.data
+    const dynamicSchema = generateColumnSchema(column)
+    const validate = dynamicSchema.safeParse(e.newValue)
+
+    if (!validate.success) {
+        console.log(
+            'error:',
+            validate.error.issues.map(i => i.message)
+        )
+        const supportedType = supportedTypes.find(
+            type => type.value === column.type
+        )
+        toast.error(`Invalid value for ${supportedType?.label}`)
+        e.node?.setDataValue(column._id, e.oldValue)
+        return false
+    } else {
+        return updatedRowTarget
+    }
 }

@@ -12,22 +12,32 @@ import {
 } from '../schema/table'
 
 /**
- * Generate a schema based on the columns.
+ * Generate a schema based on columns for table validation.
  * @param columns
- * @returns zod schema
+ * @returns zod object schema containing all columns
  */
-export const generateSchema = (columns: webieColumns) => {
-    const schemaShape: Record<string, ZodTypeAny> = {}
+export const generateTableSchema = (columns: webieColumns) => {
+    const tableSchemaShape: Record<string, ZodTypeAny> = {}
 
     columns.forEach(column => {
         const zodType = zodTypeMap[column.type]
         if (!zodType) {
             throw new Error(`Unsupported type: ${column.type}`)
         }
-        schemaShape[column._id] = zodType
+        tableSchemaShape[column._id] = zodType
     })
 
-    return z.object(schemaShape)
+    return z.object(tableSchemaShape)
+}
+
+/**
+ * Generate a schema based on a column for column validation.
+ * @param column
+ * @returns zod schema for a single column
+ */
+export const generateColumnSchema = (column: webieColDef) => {
+    const schema = zodTypeMap[column.type]
+    return schema
 }
 
 export const generateNewColumn = (type: webieColType): webieColDef => {

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { generateSchema } from '../lib/utils'
+import { generateTableSchema } from '../lib/utils'
 import { webieRowDataSchema, webieTableConfig } from '../schema/table'
 
 /**
@@ -32,7 +32,7 @@ export const validateRows = async (
     }
 
     // Validate rowsForm with the tableConfig
-    const dynamicSchema = generateSchema(tableConfig.columns)
+    const dynamicSchema = generateTableSchema(tableConfig.columns)
 
     // Validate the rows
     rowsResult.data.forEach(row => {
