@@ -12,7 +12,6 @@ import {
     DialogTrigger,
 } from '~/components/ui/dialog'
 import { webieRowData } from '../../schema/table'
-import { DBToolTip } from '../db-tooltip'
 
 export type webieDefinedColumns = '_id' | '_openRow' | '_addColumn'
 
@@ -26,6 +25,7 @@ export const getWebieDefinedColumns = (): {
             colId: '_id',
             field: '_id',
             headerName: 'ID',
+            headerTooltip: 'Unique identifier for the row',
             editable: false,
             filter: true,
             sortable: true,
@@ -34,6 +34,11 @@ export const getWebieDefinedColumns = (): {
             colId: '_openRow',
             field: '_openRow',
             headerName: 'Open',
+            headerTooltip: 'Open in a popup for clearer view',
+            tooltipField: undefined,
+            tooltipValueGetter() {
+                return 'Open this row in a popup'
+            },
             editable: false,
             filter: false,
             sortable: false,
@@ -44,6 +49,7 @@ export const getWebieDefinedColumns = (): {
             colId: '_addColumn',
             field: '_addColumn',
             headerName: 'Add Column',
+            headerTooltip: 'Add a new column',
             editable: false,
             filter: false,
             sortable: false,
@@ -78,14 +84,15 @@ const openRowRenderer = (params: CustomCellRendererProps<webieRowData>) => {
 
     return (
         <Dialog>
-            <DBToolTip asChild message="Open your row">
-                <DialogTrigger
-                    className="w-full h-full flex items-center justify-center"
-                    onClick={() => getRowData()}
-                >
+            <DialogTrigger
+                className="w-full h-full flex items-center justify-center"
+                onClick={() => getRowData()}
+            >
+                <div className="w-6 h-6 rounded flex items-center justify-center hover:bg-accent">
                     <Maximize2 size={16} />
-                </DialogTrigger>
-            </DBToolTip>
+                </div>
+            </DialogTrigger>
+
             <DialogContent className="flex flex-col md:h-[90vh] md:w-[40vw] max-h-[90vh] max-w-[40vw] overflow-auto ">
                 <DialogHeader>
                     <DialogTitle>

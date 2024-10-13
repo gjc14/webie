@@ -11,7 +11,6 @@ import { useRef, useState } from 'react'
 
 import { Button } from '~/components/ui/button'
 import { useTable } from '../../../lib/hooks/table'
-import { DBToolTip } from '../../db-tooltip'
 import { AddColumnPopover } from '../../table/tool-bar/add-column'
 import { supportedTypes } from '../../table/type-selector'
 import { webieDefinedColumns } from '../webie-system-columns'
@@ -86,27 +85,23 @@ export const CustomFilterSortSettingHeader = (
     if (!isCustomColumn) {
         if (thisColumnId === '_addColumn') {
             return (
-                <DBToolTip asChild message="Add a new column">
-                    <AddColumnPopover
-                        onTypeSelect={type => addColumn(type)}
-                        side="right"
+                <AddColumnPopover
+                    onTypeSelect={type => addColumn(type)}
+                    side="right"
+                >
+                    <Button
+                        variant={'ghost'}
+                        className="h-fit w-fit p-[5px] rounded-sm"
                     >
-                        <Button
-                            variant={'ghost'}
-                            className="h-fit w-fit p-[5px] rounded-sm"
-                        >
-                            <Plus size={16} />
-                        </Button>
-                    </AddColumnPopover>
-                </DBToolTip>
+                        <Plus size={16} />
+                    </Button>
+                </AddColumnPopover>
             )
         } else if (thisColumnId === '_openRow') {
             return (
-                <DBToolTip asChild message="Open your row">
-                    <span className="w-full flex justify-center">
-                        <Maximize2 size={16} />
-                    </span>
-                </DBToolTip>
+                <span className="w-full flex justify-center">
+                    <Maximize2 size={16} />
+                </span>
             )
         }
     }

@@ -4,13 +4,21 @@ import { useRevalidator } from '@remix-run/react'
 import { ColDef, GetRowIdParams } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
-import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+    forwardRef,
+    memo,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 
 import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
 import { webieColDef, webieRowData, webieTableConfig } from '../../schema/table'
+import { GridToolTip } from '../db-tooltip'
 import {
     checkCircular,
     generateCustomLogic,
@@ -129,13 +137,9 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                         colId: column._id,
                         field: column._id,
                         headerName: column.headerName,
-                        editable: settingSelectedColumn
-                            ? false
-                            : column.editable,
-                        filter: settingSelectedColumn ? false : column.filter,
-                        sortable: settingSelectedColumn
-                            ? false
-                            : column.sortable,
+                        editable: column.editable,
+                        filter: column.filter,
+                        sortable: column.sortable,
                         width: column.width,
                         onCellValueChanged: e => {
                             const updateValue = handleCellValueChanged({
@@ -157,6 +161,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                                 : undefined,
                         // valueFormatter: column.valueFormatter,
                         headerComponentParams: {},
+                        tooltipField: '_id', // The _id column of the row instead of column._id itself
                     }
                 })
             },
@@ -175,10 +180,17 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
             }
         }, [settingSelectedColumn])
 
+        const defaultColDef = useMemo<ColDef>(() => {
+            return {
+                tooltipComponent: memo(GridToolTip),
+            }
+        }, [])
+
         return (
             <div className="h-full">
                 <AgGridReact<webieRowData>
                     ref={ref}
+                    defaultColDef={defaultColDef}
                     rowSelection={{
                         mode: 'multiRow',
                         enableClickSelection: true,
@@ -192,6 +204,8 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                     paginationPageSizeSelector={[
                         10, 20, 50, 100, 200, 500, 1000,
                     ]}
+                    tooltipInteraction={true}
+                    tooltipShowDelay={1000}
                     onColumnMoved={e => {
                         // TODO: Implement column reordering
                         console.log(e)
