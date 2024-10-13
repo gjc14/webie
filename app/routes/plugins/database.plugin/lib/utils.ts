@@ -51,7 +51,7 @@ export const generateNewColumn = (type: webieColType): webieColDef => {
     }
 }
 
-export const generateNewRow = (tableConfig: webieTableConfig) => {
+export const generateNewRow = (tableConfig: webieTableConfig): webieRowData => {
     const newRow: webieRowData = {
         _id: new ObjectId().toString(),
         ...tableConfig.columns.reduce(

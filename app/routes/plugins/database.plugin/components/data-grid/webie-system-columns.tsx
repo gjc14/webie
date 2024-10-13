@@ -2,6 +2,7 @@ import { ColDef } from 'ag-grid-community'
 import { CustomCellRendererProps } from 'ag-grid-react'
 import { Maximize2 } from 'lucide-react'
 
+import { useCallback, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -22,6 +23,7 @@ export const getWebieDefinedColumns = (): {
         [key in webieDefinedColumns]: ColDef<webieRowData>
     } = {
         _id: {
+            colId: '_id',
             field: '_id',
             headerName: 'ID',
             editable: false,
@@ -29,6 +31,7 @@ export const getWebieDefinedColumns = (): {
             sortable: true,
         },
         _openRow: {
+            colId: '_openRow',
             field: '_openRow',
             headerName: 'Open',
             editable: false,
@@ -38,6 +41,7 @@ export const getWebieDefinedColumns = (): {
             cellRenderer: openRowRenderer,
         },
         _addColumn: {
+            colId: '_addColumn',
             field: '_addColumn',
             headerName: 'Add Column',
             editable: false,
@@ -51,23 +55,63 @@ export const getWebieDefinedColumns = (): {
     return webieProvidedColumns
 }
 
-const openRowRenderer = (params: CustomCellRendererProps) => {
+const openRowRenderer = (params: CustomCellRendererProps<webieRowData>) => {
+    const [thisRowData, setThisRowData] = useState<webieRowData | null>(null)
+    const rowIndex = params.node.rowIndex
+
+    const getRowData = useCallback(() => {
+        if (rowIndex === null) return null
+        const rowNode = params.api.getDisplayedRowAtIndex(rowIndex)
+        if (!rowNode || !rowNode.data?._id) return null
+
+        const columns = params.api.getColumns()
+
+        let rowData: webieRowData = { _id: rowNode.data._id }
+        columns?.forEach(col => {
+            const key = col.getColId()
+            const value = params.api.getCellValue({ rowNode, colKey: key })
+            rowData[key] = value
+        })
+        setThisRowData(rowData)
+        return
+    }, [])
+
     return (
         <Dialog>
             <DBToolTip asChild message="Open your row">
-                <DialogTrigger className="w-full h-full flex items-center justify-center">
+                <DialogTrigger
+                    className="w-full h-full flex items-center justify-center"
+                    onClick={() => getRowData()}
+                >
                     <Maximize2 size={16} />
                 </DialogTrigger>
             </DBToolTip>
-            <DialogContent className="md:h-[90vh] md:w-[50vw]">
+            <DialogContent className="flex flex-col md:h-[90vh] md:w-[40vw] max-h-[90vh] max-w-[40vw] overflow-auto ">
                 <DialogHeader>
                     <DialogTitle>
-                        This is your data for {params.data._id}
+                        This is your data for row {params.data?._id}
                     </DialogTitle>
-                    <DialogDescription>
-                        {JSON.stringify(params.data)}
-                    </DialogDescription>
+                    <DialogDescription>Index: {rowIndex}</DialogDescription>
                 </DialogHeader>
+                <div className="w-full grow rounded-lg">
+                    <h5
+                        onClick={() => {
+                            console.log('Row index:', rowIndex)
+                            console.log(
+                                params.api.getDisplayedRowAtIndex(rowIndex || 0)
+                            )
+                        }}
+                    >
+                        Row displayed:
+                    </h5>
+                    <p className="text-wrap break-all whitespace-break-spaces">
+                        {JSON.stringify(thisRowData)}
+                    </p>
+                    <h5>Column def:</h5>
+                    <p className="text-wrap break-all whitespace-break-spaces">
+                        {JSON.stringify(params.api.getColumnDefs(), null, 2)}
+                    </p>
+                </div>
             </DialogContent>
         </Dialog>
     )

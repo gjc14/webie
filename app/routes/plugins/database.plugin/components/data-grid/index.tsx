@@ -49,7 +49,7 @@ const customDarkTheme = themeQuartz.withParams({
 
 export interface webieDataGridProps {}
 
-export const DataGrid = forwardRef<AgGridReact>(
+export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
     (props: webieDataGridProps, ref) => {
         const {
             tableConfigState,
@@ -126,8 +126,9 @@ export const DataGrid = forwardRef<AgGridReact>(
             (tableConfigState: webieTableConfig): ColDef<webieRowData>[] => {
                 return tableConfigState.columns.map(column => {
                     return {
-                        headerName: column.headerName,
+                        colId: column._id,
                         field: column._id,
+                        headerName: column.headerName,
                         editable: settingSelectedColumn
                             ? false
                             : column.editable,
@@ -143,6 +144,7 @@ export const DataGrid = forwardRef<AgGridReact>(
                             })
                             if (updateValue) updateRow(updateValue)
                         },
+                        // cellRenderer: column.cellRenderer,
                         valueGetter:
                             column.valueGetterCustomLogic !== undefined // For type calc columns
                                 ? p => {
@@ -153,7 +155,7 @@ export const DataGrid = forwardRef<AgGridReact>(
                                       return customLogic(row, chain)
                                   }
                                 : undefined,
-
+                        // valueFormatter: column.valueFormatter,
                         headerComponentParams: {},
                     }
                 })
@@ -161,10 +163,9 @@ export const DataGrid = forwardRef<AgGridReact>(
             [tableConfigState]
         )
 
-        const getRowId = useCallback(
-            (params: GetRowIdParams<webieRowData>) => params.data._id,
-            []
-        )
+        const getRowId = useCallback((params: GetRowIdParams<webieRowData>) => {
+            return params.data._id
+        }, [])
 
         const customHeaderComponents = useMemo<{
             [p: string]: any
@@ -176,7 +177,7 @@ export const DataGrid = forwardRef<AgGridReact>(
 
         return (
             <div className="h-full">
-                <AgGridReact
+                <AgGridReact<webieRowData>
                     ref={ref}
                     rowSelection={{
                         mode: 'multiRow',
@@ -187,6 +188,10 @@ export const DataGrid = forwardRef<AgGridReact>(
                     components={customHeaderComponents}
                     getRowId={getRowId}
                     pagination={true}
+                    paginationPageSize={20}
+                    paginationPageSizeSelector={[
+                        10, 20, 50, 100, 200, 500, 1000,
+                    ]}
                     onColumnMoved={e => {
                         // TODO: Implement column reordering
                         console.log(e)

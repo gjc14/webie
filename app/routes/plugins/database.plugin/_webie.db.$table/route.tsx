@@ -12,6 +12,7 @@ import { DataGrid } from '../components/data-grid'
 import { ToolBar, ToolBarEditMode } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
+import { webieRowData } from '../schema/table'
 import { validateRows } from './action.server'
 import { ColumnSettings } from './components/column-settings'
 
@@ -52,7 +53,7 @@ export type SerializedLoaderData = SerializeFrom<typeof loader>
 
 export default function DBTable() {
     const fetcher = useFetcher()
-    const gridRef = useRef<AgGridReact>(null)
+    const gridRef = useRef<AgGridReact<webieRowData>>(null)
     const loaderData = useLoaderData<typeof loader>()
     const {
         setDBState,

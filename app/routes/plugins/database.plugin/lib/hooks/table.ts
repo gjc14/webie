@@ -155,7 +155,7 @@ export const useTable = create(
                 const tableConfig = get().tableConfigState
                 const rows = get().rowsState
                 const newRow = generateNewRow(tableConfig)
-                const newRows = [...rows, newRow]
+                const newRows = [newRow, ...rows]
 
                 get().setRows(newRows)
             },
