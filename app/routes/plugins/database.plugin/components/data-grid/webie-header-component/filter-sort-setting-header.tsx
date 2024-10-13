@@ -133,27 +133,36 @@ export const CustomFilterSortSettingHeader = (
             )}
 
             {/* Setting Button */}
-            {isCustomColumn && (
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant={'ghost'}
-                            className="h-fit w-fit p-[5px] rounded-sm"
-                            onClick={() =>
-                                setColDefEditing(thisColumnConfig ?? null)
-                            }
-                        >
-                            <Settings size={16} />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        side="right"
-                        className="w-96 max-h-[75vh] mt-5 overflow-auto"
-                    >
-                        <ColumnSettings />
-                    </PopoverContent>
-                </Popover>
-            )}
+            {isCustomColumn &&
+                ColumnSettingPopover({
+                    onTriggered: () =>
+                        setColDefEditing(thisColumnConfig ?? null),
+                })}
         </span>
+    )
+}
+
+const ColumnSettingPopover = ({ onTriggered }: { onTriggered: () => void }) => {
+    const triggerRef = useRef<HTMLButtonElement>(null)
+
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button
+                    ref={triggerRef}
+                    variant={'ghost'}
+                    className="h-fit w-fit p-[5px] rounded-sm"
+                    onClick={() => onTriggered()}
+                >
+                    <Settings size={16} />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent
+                side="right"
+                className="w-96 max-h-[75vh] mt-5 overflow-auto"
+            >
+                <ColumnSettings onSave={() => triggerRef.current?.click()} />
+            </PopoverContent>
+        </Popover>
     )
 }

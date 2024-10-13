@@ -13,11 +13,16 @@ import {
 } from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
+import { ColumnSettingsCardState } from '..'
 
 const APIMethods = ['GET', 'POST', 'PUT', 'DELETE'] as const
 type APIMethods = (typeof APIMethods)[number]
 
-export const APISettingCard = ({ className }: { className?: string }) => {
+export const APISettingCard = ({
+    colDefStateInPopover,
+    setColDefStateInPopover,
+    className,
+}: ColumnSettingsCardState & { className?: string }) => {
     const [method, setMethod] = useState<APIMethods>()
     const [response, setResponse] = useState<string>()
     const urlRef = useRef<HTMLInputElement>(null)

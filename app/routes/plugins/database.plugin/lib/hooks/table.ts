@@ -35,6 +35,7 @@ type Action = {
     addColumn: (type: webieColType) => void
     updateColumn: (column: webieColDef) => void
     deleteColumn: (column: webieColDef) => void
+    setColDef: (column: webieColDef) => void
 
     // CUD operations on rows
     setRows: (rows: webieRowData[]) => void
@@ -141,6 +142,24 @@ export const useTable = create(
 
                 get().setTableConfig(newTableConfig)
                 get().setColDefEditing(null)
+            },
+            setColDef(column) {
+                const tableConfigState = get().tableConfigState
+
+                const oldColumns = tableConfigState.columns
+                const newColumns = oldColumns.map(c => {
+                    if (c._id === column._id) {
+                        return column
+                    }
+                    return c
+                })
+
+                set({
+                    tableConfigState: {
+                        ...tableConfigState,
+                        columns: newColumns,
+                    },
+                })
             },
 
             //////////////////////////////////////////

@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/ui/button'
-import { Label } from '~/components/ui/label'
+import { ColumnSettingsCardState } from '.'
 import { supportedTypes } from '../../../components/table/type-selector'
-import { useTable } from '../../../lib/hooks/table'
+import { webieColType } from '../../../schema/table'
 import { ColumnTypePopover } from '../../table/tool-bar/column-type-popover'
 import { SettingSectionWrapper } from './setting-section'
 
-export const TypeSettingCard = () => {
+export const TypeSettingCard = ({
+    colDefStateInPopover,
+    setColDefStateInPopover,
+}: ColumnSettingsCardState) => {
     const buttonRef = useRef<HTMLButtonElement>(null)
     const [buttonWidth, setButtonWidth] = useState(0)
-    const { colDefEditing } = useTable()
 
     useEffect(() => {
         if (buttonRef.current) {
@@ -19,12 +21,12 @@ export const TypeSettingCard = () => {
 
     // Get column type
     const columnType = supportedTypes.find(
-        type => type.value === colDefEditing?.type
+        type => type.value === colDefStateInPopover.type
     )
 
-    if (!colDefEditing) {
-        console.error('Type setting card is called but column not specified')
-        return null
+    const onTypeSelect = (typeSelected: webieColType) => {
+        const newColDef = { ...colDefStateInPopover, type: typeSelected }
+        setColDefStateInPopover(newColDef)
     }
 
     return (
@@ -33,7 +35,11 @@ export const TypeSettingCard = () => {
             description="Here you could chose the type of your column and its
                     respective type settings."
         >
-            <ColumnTypePopover side="bottom" popOverWidth={buttonWidth}>
+            <ColumnTypePopover
+                side="bottom"
+                popOverWidth={buttonWidth}
+                onTypeSelect={type => onTypeSelect(type)}
+            >
                 <Button
                     ref={buttonRef}
                     id={'type-select'}

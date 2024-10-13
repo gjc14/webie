@@ -1,20 +1,11 @@
-import { useTable } from '../../../../lib/hooks/table'
+import { ColumnSettingsCardState } from '..'
+import { SettingSectionWrapper } from '../setting-section'
 
 // All supported column types
-import { SettingSectionWrapper } from '../setting-section'
 import { APISettingCard } from './api'
 
-export const TypeLogicSettingCard = () => {
-    const { colDefEditing } = useTable()
-
-    if (!colDefEditing) {
-        console.error(
-            'Type logic setting card is called but column not specified'
-        )
-        return null
-    }
-
-    switch (colDefEditing.type) {
+export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
+    switch (props.colDefStateInPopover.type) {
         case 'api': {
             return (
                 <SettingSectionWrapper
@@ -22,7 +13,7 @@ export const TypeLogicSettingCard = () => {
                     description="API URL is used to fetch data for this column. The data will
                     be fetched when the table is loaded or button clicked."
                 >
-                    <APISettingCard />
+                    <APISettingCard {...props} />
                 </SettingSectionWrapper>
             )
         }

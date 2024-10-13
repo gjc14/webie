@@ -16,7 +16,7 @@ export const DangerZoneCard = () => {
             title="Danger zone"
             description="Delete your column will also remove all respective data in
                     the row. Please make sure you have a backup."
-            titleClassName="text-destructive"
+            titleClassName="text-destructive text-lg font-bold md:text-xl"
         >
             <ColumnSettingAlert
                 promptTitle={`Delete column ${colDefEditing.headerName}`}
