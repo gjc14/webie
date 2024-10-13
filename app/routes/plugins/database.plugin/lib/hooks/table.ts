@@ -20,8 +20,8 @@ type TableState = {
     rowsState: webieRowData[]
     isRowsDirty: boolean
     isTableConfigDirty: boolean
-    // TODO: set is type setting of table columns are dirty
-    settingSelectedColumn: webieColDef | null
+
+    colDefEditing: webieColDef | null
 }
 
 type Action = {
@@ -45,7 +45,7 @@ type Action = {
     setTableConfigDirty: (isDirty: boolean) => void
     setRowsDirty: (isDirty: boolean) => void
 
-    setSettingSelectedColumn: (columnId: string | null) => void
+    setColDefEditing: (column: webieColDef | null) => void
 
     resetTableConfig: () => void
     resetRows: () => void
@@ -65,7 +65,7 @@ const initialState: TableState = {
     rowsState: [],
     isRowsDirty: false,
     isTableConfigDirty: false,
-    settingSelectedColumn: null,
+    colDefEditing: null,
 }
 
 export const useTable = create(
@@ -76,7 +76,7 @@ export const useTable = create(
             rowsState: initialState.rowsState,
             isRowsDirty: initialState.isRowsDirty,
             isTableConfigDirty: initialState.isTableConfigDirty,
-            settingSelectedColumn: initialState.settingSelectedColumn,
+            colDefEditing: initialState.colDefEditing,
 
             setDBState(tableConfig, rows) {
                 set({
@@ -88,7 +88,7 @@ export const useTable = create(
                     rowsState: rows,
                     isRowsDirty: false,
                     isTableConfigDirty: false,
-                    settingSelectedColumn: null,
+                    colDefEditing: null,
                 })
             },
             getDBState() {
@@ -140,7 +140,7 @@ export const useTable = create(
                 }
 
                 get().setTableConfig(newTableConfig)
-                get().setSettingSelectedColumn(null)
+                get().setColDefEditing(null)
             },
 
             //////////////////////////////////////////
@@ -179,10 +179,8 @@ export const useTable = create(
                 set({ isRowsDirty: isDirty })
             },
 
-            setSettingSelectedColumn(columnId) {
-                const settingSelectedColumn =
-                    get().tableConfigState.columns.find(c => c._id === columnId)
-                set({ settingSelectedColumn })
+            setColDefEditing(column) {
+                set({ colDefEditing: column })
             },
 
             resetTableConfig() {

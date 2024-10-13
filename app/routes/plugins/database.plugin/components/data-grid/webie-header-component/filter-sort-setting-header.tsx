@@ -10,9 +10,15 @@ import {
 import { useRef, useState } from 'react'
 
 import { Button } from '~/components/ui/button'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '~/components/ui/popover'
 import { useTable } from '../../../lib/hooks/table'
-import { AddColumnPopover } from '../../table/tool-bar/add-column'
+import { ColumnTypePopover } from '../../table/tool-bar/column-type-popover'
 import { supportedTypes } from '../../table/type-selector'
+import { ColumnSettings } from '../column-settings'
 import { webieDefinedColumns } from '../webie-system-columns'
 
 export interface CustomFilterSortHeaderProps extends CustomHeaderProps {}
@@ -26,12 +32,7 @@ export const CustomFilterSortSettingHeader = (
 ) => {
     const refFilterButton = useRef(null)
     const [sort, setSort] = useState<ReturnType<typeof props.column.getSort>>()
-    const {
-        tableConfigState,
-        addColumn,
-        settingSelectedColumn,
-        setSettingSelectedColumn,
-    } = useTable()
+    const { tableConfigState, addColumn, setColDefEditing } = useTable()
 
     const thisColumnId: webieDefinedColumns | string = props.column.getColId()
     const thisColumnConfig = tableConfigState.columns.find(
@@ -41,13 +42,8 @@ export const CustomFilterSortSettingHeader = (
         type => type.value === thisColumnConfig?.type
     )
 
-    const thisColumnIsSelected = settingSelectedColumn?._id === thisColumnId
     const isCustomColumn =
         props.column.getUserProvidedColDef() && !thisColumnId.startsWith('_')
-
-    const onSettingClicked = () => {
-        setSettingSelectedColumn(thisColumnId)
-    }
 
     const onFilterClicked = () => {
         props.showColumnMenu(refFilterButton.current!)
@@ -85,7 +81,7 @@ export const CustomFilterSortSettingHeader = (
     if (!isCustomColumn) {
         if (thisColumnId === '_addColumn') {
             return (
-                <AddColumnPopover
+                <ColumnTypePopover
                     onTypeSelect={type => addColumn(type)}
                     side="right"
                 >
@@ -95,7 +91,7 @@ export const CustomFilterSortSettingHeader = (
                     >
                         <Plus size={16} />
                     </Button>
-                </AddColumnPopover>
+                </ColumnTypePopover>
             )
         } else if (thisColumnId === '_openRow') {
             return (
@@ -104,28 +100,6 @@ export const CustomFilterSortSettingHeader = (
                 </span>
             )
         }
-    }
-
-    // In setting mode, all header is a button to select the column to show settings
-    if (settingSelectedColumn) {
-        return (
-            <span
-                className={`w-full h-full flex items-center justify-end ${
-                    thisColumnIsSelected ? 'font-black' : ''
-                }`}
-                onClick={onSettingClicked}
-            >
-                {/* Column Name */}
-                <button
-                    className={`w-full h-full text-start flex items-center gap-2`}
-                >
-                    {isCustomColumn && thisColumnTypeButton && (
-                        <thisColumnTypeButton.icon size={14} />
-                    )}
-                    {props.displayName}
-                </button>
-            </span>
-        )
     }
 
     return (
@@ -160,13 +134,25 @@ export const CustomFilterSortSettingHeader = (
 
             {/* Setting Button */}
             {isCustomColumn && (
-                <Button
-                    variant={'ghost'}
-                    className="h-fit w-fit p-[5px] rounded-sm"
-                    onClick={onSettingClicked}
-                >
-                    <Settings size={16} />
-                </Button>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant={'ghost'}
+                            className="h-fit w-fit p-[5px] rounded-sm"
+                            onClick={() =>
+                                setColDefEditing(thisColumnConfig ?? null)
+                            }
+                        >
+                            <Settings size={16} />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                        side="right"
+                        className="w-96 max-h-[75vh] mt-5 overflow-auto"
+                    >
+                        <ColumnSettings />
+                    </PopoverContent>
+                </Popover>
             )}
         </span>
     )

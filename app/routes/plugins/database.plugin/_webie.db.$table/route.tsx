@@ -9,12 +9,11 @@ import { useEffect, useRef } from 'react'
 
 import { AgGridReact } from 'ag-grid-react'
 import { DataGrid } from '../components/data-grid'
-import { ToolBar, ToolBarEditMode } from '../components/table/tool-bar'
+import { ToolBar } from '../components/table/tool-bar'
 import { getTableConfig, getTableData } from '../lib/db/table.server'
 import { useTable } from '../lib/hooks/table'
 import { webieRowData } from '../schema/table'
 import { validateRows } from './action.server'
-import { ColumnSettings } from './components/column-settings'
 
 /**
  * Get tableConfig from the database, rows from request form data (frontend state)
@@ -55,17 +54,11 @@ export default function DBTable() {
     const fetcher = useFetcher()
     const gridRef = useRef<AgGridReact<webieRowData>>(null)
     const loaderData = useLoaderData<typeof loader>()
-    const {
-        setDBState,
-        rowsState,
-        settingSelectedColumn,
-        setSettingSelectedColumn,
-    } = useTable()
+    const { setDBState, rowsState } = useTable()
 
     useEffect(() => {
         // Every time the loaderData changes (revalidated), update the tableConfig and rows to state
         setDBState(loaderData.tableConfig, loaderData.rows)
-        setSettingSelectedColumn(null)
     }, [loaderData])
 
     const onSaveRows = async () => {
@@ -79,17 +72,11 @@ export default function DBTable() {
 
     return (
         <div className="h-full flex flex-col p-3 gap-2">
-            {settingSelectedColumn ? (
-                <ToolBarEditMode gridRef={gridRef} />
-            ) : (
-                <ToolBar gridRef={gridRef} onSaveRows={onSaveRows} />
-            )}
+            <ToolBar gridRef={gridRef} onSaveRows={onSaveRows} />
 
             <div className="flex-grow">
                 <DataGrid ref={gridRef} />
             </div>
-
-            <ColumnSettings />
         </div>
     )
 }

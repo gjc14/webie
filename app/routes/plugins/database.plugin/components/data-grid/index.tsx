@@ -59,12 +59,7 @@ export interface webieDataGridProps {}
 
 export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
     (props: webieDataGridProps, ref) => {
-        const {
-            tableConfigState,
-            rowsState,
-            settingSelectedColumn,
-            updateRow,
-        } = useTable()
+        const { tableConfigState, rowsState, updateRow } = useTable()
 
         // Theme: Sets the theme for the data grid based on Client Hints
         const { revalidate } = useRevalidator()
@@ -128,7 +123,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                 ...mappedColumns(tableConfigState),
                 { ...webieProvidedColumns._addColumn },
             ])
-        }, [tableConfigState, settingSelectedColumn])
+        }, [tableConfigState])
 
         const mappedColumns = useCallback(
             (tableConfigState: webieTableConfig): ColDef<webieRowData>[] => {
@@ -178,7 +173,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
             return {
                 agColumnHeader: CustomFilterSortSettingHeader,
             }
-        }, [settingSelectedColumn])
+        }, [])
 
         const defaultColDef = useMemo<ColDef>(() => {
             return {

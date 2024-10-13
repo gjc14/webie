@@ -88,7 +88,7 @@ const openRowRenderer = (params: CustomCellRendererProps<webieRowData>) => {
                 className="w-full h-full flex items-center justify-center"
                 onClick={() => getRowData()}
             >
-                <div className="w-6 h-6 rounded flex items-center justify-center hover:bg-accent">
+                <div className="w-6 h-6 rounded flex items-center justify-center transition-colors hover:bg-accent">
                     <Maximize2 size={16} />
                 </div>
             </DialogTrigger>
