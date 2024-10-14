@@ -24,6 +24,7 @@ export const webieColTypesSchema = z.enum([
     // complex or nested types
     'api',
     'select',
+    'multipleSelect',
 
     'url',
     'ip',
@@ -36,6 +37,10 @@ export const webieColTypesSchema = z.enum([
 
     // connetions
     'calc',
+
+    // Cross table connections
+    'table',
+    'tableLookup',
 ])
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
@@ -53,7 +58,8 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     any: null,
 
     api: undefined,
-    select: ['w', 'e'],
+    select: '',
+    multipleSelect: [],
 
     url: 'https://webie.dev',
     ip: '',
@@ -65,6 +71,9 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     json: '{}',
 
     calc: undefined,
+
+    table: '',
+    tableLookup: '',
 }
 
 /**
@@ -81,7 +90,8 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     any: z.any(),
 
     api: z.undefined(),
-    select: z.array(z.string()),
+    select: z.string(),
+    multipleSelect: z.array(z.string()),
 
     url: z.string().url(),
     ip: z.string().ip(),
@@ -93,6 +103,9 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     json: z.string(),
 
     calc: z.undefined(),
+
+    table: z.string(),
+    tableLookup: z.string(),
 }
 
 /**
@@ -101,6 +114,8 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
 export const webieColDefSchema = z.object({
     _id: z.string(),
     type: webieColTypesSchema,
+    // type meta data
+    typeMeta: z.any().optional(),
 
     // AG-Grid ColDef properties
     headerName: z.string(),
@@ -109,6 +124,9 @@ export const webieColDefSchema = z.object({
     sortable: z.boolean().optional(),
     width: z.number().optional(),
     valueGetterCustomLogic: z.string().optional(),
+
+    // Meta data, used for storing additional information
+    meta: z.any().optional(),
 })
 export type webieColDef = z.infer<typeof webieColDefSchema>
 

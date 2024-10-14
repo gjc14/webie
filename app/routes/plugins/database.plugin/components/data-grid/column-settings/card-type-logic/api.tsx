@@ -13,22 +13,30 @@ import {
 } from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import { ColumnSettingsCardState } from '..'
-
-const APIMethods = ['GET', 'POST', 'PUT', 'DELETE'] as const
-type APIMethods = (typeof APIMethods)[number]
+import {
+    APIMethods,
+    ApiTypeMeta,
+    apiTypeMetaSchema,
+    TypeLogicProps,
+} from './type'
+import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
 export const APISettingCard = ({
-    colDefStateInPopover,
-    setColDefStateInPopover,
+    colDefEditing,
+    setColDefEditing,
     className,
-}: ColumnSettingsCardState & { className?: string }) => {
-    const [method, setMethod] = useState<APIMethods>()
+}: TypeLogicProps) => {
+    const {
+        success,
+        error,
+        data: typeMeta,
+    } = apiTypeMetaSchema.safeParse(colDefEditing.typeMeta)
+    // const [method, setMethod] = useState<ApiTypeMeta['method']>()
     const [response, setResponse] = useState<string>()
     const urlRef = useRef<HTMLInputElement>(null)
     const bodyRef = useRef<HTMLTextAreaElement>(null)
 
-    const testAPI = async (method: APIMethods) => {
+    const testAPI = async (method: ApiTypeMeta['method']) => {
         const url = urlRef.current?.value
         if (!url) return
         console.log(url, method)
@@ -78,58 +86,97 @@ export const APISettingCard = ({
 
     return (
         <div className={cn('space-y-2', className)}>
-            <div>
-                <Label htmlFor="api-method">API Method</Label>
-                <Select onValueChange={v => setMethod(v as APIMethods)}>
-                    <SelectTrigger className="w-[180px]" id="api-method">
-                        <SelectValue placeholder="Select your method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            {APIMethods.map(method => (
-                                <SelectItem key={method} value={method}>
-                                    {method}
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
-            <div>
-                <Label htmlFor="api-url">API Route</Label>
-                <Input
-                    ref={urlRef}
-                    id="api-url"
-                    type="text"
-                    placeholder="https://webie.dev/api/some-thing"
-                />
-            </div>
-            {method !== 'GET' && (
-                <div>
-                    <Label htmlFor="api-body">API Body</Label>
-                    <Textarea
-                        ref={bodyRef}
-                        id="api-body"
-                        placeholder={`{\n    input: someting,\n    in_your: body\n}`}
-                        rows={8}
-                    />
-                </div>
-            )}
-            <div>
-                <Label htmlFor="api-response">API Response</Label>
-                <Textarea
-                    readOnly
-                    ref={bodyRef}
-                    id="api-response"
-                    placeholder={`Press the "Test API" button below. The response will be shown here`}
-                    value={response}
-                    rows={8}
-                />
-            </div>
+            {success ? (
+                <>
+                    <div>
+                        <Label htmlFor="api-method">API Method</Label>
+                        <Select
+                            defaultValue={typeMeta.method}
+                            onValueChange={v =>
+                                setColDefEditing({
+                                    ...colDefEditing,
+                                    typeMeta: {
+                                        ...typeMeta,
+                                        method: v as ApiTypeMeta['method'],
+                                    },
+                                })
+                            }
+                        >
+                            <SelectTrigger
+                                className="w-[180px]"
+                                id="api-method"
+                            >
+                                <SelectValue placeholder="Select your method" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {APIMethods.map(method => (
+                                        <SelectItem key={method} value={method}>
+                                            {method}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Label htmlFor="api-url">API Route</Label>
+                        <Input
+                            ref={urlRef}
+                            id="api-url"
+                            type="text"
+                            placeholder="https://webie.dev/api/version/endpoint"
+                        />
+                    </div>
+                    {typeMeta.method !== 'GET' && (
+                        <div>
+                            <Label htmlFor="api-body">API Body</Label>
+                            <Textarea
+                                ref={bodyRef}
+                                id="api-body"
+                                placeholder={`{\n    input: someting,\n    in_your: body\n}`}
+                                rows={8}
+                            />
+                        </div>
+                    )}
+                    <div>
+                        <Label htmlFor="api-body">API Header</Label>
+                        <Textarea
+                            ref={bodyRef}
+                            id="api-header"
+                            placeholder={`{\n    "Authorization": "Bearer your_token"\n}
+                                \nor
+                                \n{\n    "Authorization": "Basic base64_encoded_credentials"
+                                \nor
+                                \n{\n    "Authorization": "ApiKey your_api_key"\n}
+                                `}
+                            rows={8}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="api-response">API Response</Label>
+                        <Textarea
+                            readOnly
+                            ref={bodyRef}
+                            id="api-response"
+                            placeholder={`Press the "Test API" button below. The response will be shown here`}
+                            value={response}
+                            rows={8}
+                        />
+                    </div>
 
-            <Button onClick={() => method && testAPI(method)} size={'sm'}>
-                Test API
-            </Button>
+                    <Button
+                        onClick={() =>
+                            typeMeta.method && testAPI(typeMeta.method)
+                        }
+                        size={'sm'}
+                    >
+                        Test API
+                    </Button>
+                </>
+            ) : (
+                <WebieTypeSettingErrorConstructor />
+            )}
         </div>
     )
 }

@@ -11,6 +11,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId1',
             type: 'string',
+            typeMeta: {},
             headerName: 'Make',
             editable: true,
             filter: true,
@@ -19,6 +20,12 @@ export const getTableConfig = async (
         {
             _id: 'columnId2',
             type: 'api',
+            typeMeta: {
+                url: '',
+                method: 'POST',
+                body: '',
+                header: {},
+            },
             headerName: 'Api',
             editable: true,
             filter: true,
@@ -27,6 +34,9 @@ export const getTableConfig = async (
         {
             _id: 'columnId3',
             type: 'number',
+            typeMeta: {
+                defaultValue: 999,
+            },
             headerName: 'Price',
             editable: true,
             filter: true,
@@ -35,6 +45,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId4',
             type: 'boolean',
+            typeMeta: {},
             headerName: 'In Stock',
             editable: true,
             filter: true,
@@ -43,6 +54,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId5',
             type: 'calc',
+            typeMeta: {},
             headerName: 'col1 + col3',
             editable: true,
             filter: true,
@@ -52,6 +64,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId6',
             type: 'calc',
+            typeMeta: {},
             headerName: 'col3 * 3',
             editable: true,
             filter: true,
@@ -61,6 +74,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId7',
             type: 'calc',
+            typeMeta: {},
             headerName: 'same col6',
             editable: true,
             filter: true,
@@ -70,6 +84,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId8',
             type: 'calc',
+            typeMeta: {},
             headerName: 'col6 * col9',
             editable: true,
             filter: true,
@@ -79,6 +94,7 @@ export const getTableConfig = async (
         {
             _id: 'columnId9',
             type: 'calc',
+            typeMeta: {},
             headerName: 'same col6',
             editable: true,
             filter: true,

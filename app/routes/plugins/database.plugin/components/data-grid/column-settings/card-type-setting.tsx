@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/ui/button'
 import { ColumnSettingsCardState } from '.'
 import { supportedTypes } from '../../../components/table/type-selector'
-import { webieColType } from '../../../schema/table'
+import { webieColDef, webieColType } from '../../../schema/table'
 import { ColumnTypePopover } from '../../table/tool-bar/column-type-popover'
 import { SettingSectionWrapper } from './setting-section'
+import { typeDefaultColumnMetaValueMap } from './card-type-logic/type'
 
 export const TypeSettingCard = ({
-    colDefStateInPopover,
-    setColDefStateInPopover,
+    colDefEditing,
+    setColDefEditing,
 }: ColumnSettingsCardState) => {
     const buttonRef = useRef<HTMLButtonElement>(null)
     const [buttonWidth, setButtonWidth] = useState(0)
@@ -21,12 +22,18 @@ export const TypeSettingCard = ({
 
     // Get column type
     const columnType = supportedTypes.find(
-        type => type.value === colDefStateInPopover.type
+        type => type.value === colDefEditing.type
     )
 
     const onTypeSelect = (typeSelected: webieColType) => {
-        const newColDef = { ...colDefStateInPopover, type: typeSelected }
-        setColDefStateInPopover(newColDef)
+        const defaultTypeColumnMetaValue =
+            typeDefaultColumnMetaValueMap[typeSelected]
+        const newColDef: webieColDef = {
+            ...colDefEditing,
+            type: typeSelected,
+            typeMeta: defaultTypeColumnMetaValue,
+        }
+        setColDefEditing(newColDef)
     }
 
     return (

@@ -11,7 +11,7 @@ import {
 } from '../../schema/table'
 import { generateNewColumn, generateNewRow } from '../utils'
 
-type TableState = {
+export type TableState = {
     db?: {
         tableConfig: webieTableConfig
         rows: webieRowData[]
@@ -24,7 +24,7 @@ type TableState = {
     colDefEditing: webieColDef | null
 }
 
-type Action = {
+export type Action = {
     setDBState: (tableConfig: webieTableConfig, rows: webieRowData[]) => void
     getDBState: () =>
         | { tableConfig: webieTableConfig; rows: webieRowData[] }

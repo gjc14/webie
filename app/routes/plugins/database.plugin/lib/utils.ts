@@ -1,6 +1,7 @@
 import { ObjectId } from 'bson'
 import { z, ZodTypeAny } from 'zod'
 
+import { typeDefaultColumnMetaValueMap } from '../components/data-grid/column-settings/card-type-logic/type'
 import {
     typeDefaultValuesMap,
     webieColDef,
@@ -41,9 +42,11 @@ export const generateColumnSchema = (column: webieColDef) => {
 }
 
 export const generateNewColumn = (type: webieColType): webieColDef => {
+    const defaultTypeColumnMeta = typeDefaultColumnMetaValueMap[type]
     return {
         _id: new ObjectId().toString(),
         type: type,
+        typeMeta: defaultTypeColumnMeta,
         headerName: `New ${type}`,
         editable: true,
         filter: true,
@@ -56,7 +59,15 @@ export const generateNewRow = (tableConfig: webieTableConfig): webieRowData => {
         _id: new ObjectId().toString(),
         ...tableConfig.columns.reduce(
             (acc: { [columnId: string]: any }, column) => {
-                acc[column._id] = typeDefaultValuesMap[column.type]
+                const customedDefaultValue = column.typeMeta?.defaultValue
+
+                if (customedDefaultValue) {
+                    acc[column._id] = customedDefaultValue
+                    return acc
+                }
+
+                const syetemDefaultValue = typeDefaultValuesMap[column.type]
+                acc[column._id] = syetemDefaultValue
                 return acc
             },
             {}

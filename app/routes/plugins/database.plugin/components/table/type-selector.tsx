@@ -1,8 +1,11 @@
 import {
     Calendar,
     CheckCheck,
-    CircleEllipsis,
+    CheckSquare2,
+    CopyCheck,
     Earth,
+    FileDigitIcon,
+    FileDown,
     FileJson,
     FunctionSquare,
     Hash,
@@ -42,13 +45,18 @@ export const supportedTypes: TypeButtonArgs[] = [
     },
     {
         value: 'boolean',
-        label: 'True/False',
+        label: 'Checkbox',
         icon: CheckCheck,
     },
     {
         value: 'select',
         label: 'Select',
-        icon: CircleEllipsis,
+        icon: CheckSquare2,
+    },
+    {
+        value: 'multipleSelect',
+        label: 'Multiple Select',
+        icon: CopyCheck,
     },
     {
         value: 'date',
@@ -104,6 +112,16 @@ export const supportedTypes: TypeButtonArgs[] = [
         value: 'calc',
         label: 'Calculation',
         icon: FunctionSquare,
+    },
+    {
+        value: 'table',
+        label: 'Table',
+        icon: FileDown,
+    },
+    {
+        value: 'tableLookup',
+        label: 'Table Lookup',
+        icon: FileDigitIcon,
     },
 ]
 

@@ -1,46 +1,35 @@
 /**
  * Column settings popover.
- * The components share the same state.
- * Eventually save changes to the zustand main state on this main component.
+ * The components uses the "colDefEditing".
+ * Eventually save changes to "ColDef".
  */
-import { useEffect, useState } from 'react'
-
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import SeparatorWithText from '~/routes/plugins/components/separator-with-text'
-import { useTable } from '../../../lib/hooks/table'
-import { webieColDef } from '../../../schema/table'
+import { Action, TableState, useTable } from '../../../lib/hooks/table'
 import { DangerZoneCard } from './card-danger-zone'
 import { TypeLogicSettingCard } from './card-type-logic'
 import { TypeSettingCard } from './card-type-setting'
 
 export type ColumnSettingsCardState = {
-    colDefStateInPopover: webieColDef
-    setColDefStateInPopover: React.Dispatch<
-        React.SetStateAction<webieColDef | undefined>
-    >
+    colDefEditing: NonNullable<TableState['colDefEditing']>
+    setColDefEditing: Action['setColDefEditing']
 }
 
-export const ColumnSettings = ({ onSave }: { onSave?: () => void }) => {
-    const { colDefEditing, setColDef } = useTable()
-    const [colDefStateInPopover, setColDefStateInPopover] =
-        useState<webieColDef>()
+export const ColumnSettings = ({ onFinished }: { onFinished?: () => void }) => {
+    const { colDefEditing, setColDefEditing, setColDef } = useTable()
 
-    useEffect(() => {
-        colDefEditing && setColDefStateInPopover(colDefEditing)
-    }, [colDefEditing])
-
-    if (!colDefEditing || !colDefStateInPopover) {
+    if (!colDefEditing) {
         return null
     }
 
-    const props = { colDefStateInPopover, setColDefStateInPopover }
+    const props = { colDefEditing, setColDefEditing }
 
     const handleSaveClick = () => {
-        onSave?.()
-        setColDef(colDefStateInPopover)
+        setColDef(colDefEditing)
+        onFinished?.()
     }
 
     return (
@@ -49,10 +38,10 @@ export const ColumnSettings = ({ onSave }: { onSave?: () => void }) => {
                 <Label htmlFor="col-name">Column Name</Label>
                 <Input
                     id="col-name"
-                    value={colDefStateInPopover.headerName}
+                    value={colDefEditing.headerName}
                     onChange={e =>
-                        setColDefStateInPopover({
-                            ...colDefStateInPopover,
+                        setColDefEditing({
+                            ...colDefEditing,
                             headerName: e.target.value,
                         })
                     }

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { useRef, useState } from 'react'
 
+import { PopoverClose } from '@radix-ui/react-popover'
 import { Button } from '~/components/ui/button'
 import {
     Popover,
@@ -149,7 +150,6 @@ const ColumnSettingPopover = ({ onTriggered }: { onTriggered: () => void }) => {
         <Popover>
             <PopoverTrigger asChild>
                 <Button
-                    ref={triggerRef}
                     variant={'ghost'}
                     className="h-fit w-fit p-[5px] rounded-sm"
                     onClick={() => onTriggered()}
@@ -161,7 +161,10 @@ const ColumnSettingPopover = ({ onTriggered }: { onTriggered: () => void }) => {
                 side="right"
                 className="w-96 max-h-[75vh] mt-5 overflow-auto"
             >
-                <ColumnSettings onSave={() => triggerRef.current?.click()} />
+                <PopoverClose ref={triggerRef} hidden />
+                <ColumnSettings
+                    onFinished={() => triggerRef.current?.click()}
+                />
             </PopoverContent>
         </Popover>
     )
