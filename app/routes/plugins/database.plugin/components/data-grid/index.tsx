@@ -175,6 +175,16 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
             }
         }, [])
 
+        // // Enterprise
+        // const cellSelection = useMemo<boolean | CellSelectionOptions>(() => {
+        //     return {
+        //         handle: {
+        //             mode: 'fill',
+        //             direction: 'y',
+        //         },
+        //     }
+        // }, [])
+
         const defaultColDef = useMemo<ColDef>(() => {
             return {
                 tooltipComponent: memo(GridToolTip),
@@ -194,6 +204,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                     columnDefs={colDefs}
                     components={customHeaderComponents}
                     getRowId={getRowId}
+                    // cellSelection={cellSelection}
                     pagination={true}
                     paginationPageSize={20}
                     paginationPageSizeSelector={[

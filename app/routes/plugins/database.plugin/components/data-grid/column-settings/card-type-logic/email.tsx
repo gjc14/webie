@@ -1,6 +1,7 @@
 import { cn } from '~/lib/utils'
+import { stringTypeMetaSchema } from '../../../../schema/column'
 import { DefaultValueInput } from './default-value-input'
-import { stringTypeMetaSchema, TypeLogicProps } from './type'
+import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
 export const EmailSettingCard = ({

@@ -17,8 +17,8 @@ import {
     APIMethods,
     ApiTypeMeta,
     apiTypeMetaSchema,
-    TypeLogicProps,
-} from './type'
+} from '../../../../schema/column'
+import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
 export const APISettingCard = ({

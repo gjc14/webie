@@ -9,7 +9,7 @@ export const getTableConfig = async (
 ): Promise<webieTableConfig> => {
     const columns: webieColumns = [
         {
-            _id: 'columnId1',
+            _id: 'A1',
             type: 'string',
             typeMeta: {},
             headerName: 'Make',
@@ -18,7 +18,7 @@ export const getTableConfig = async (
             sortable: true,
         },
         {
-            _id: 'columnId2',
+            _id: 'B1',
             type: 'api',
             typeMeta: {
                 url: '',
@@ -32,7 +32,7 @@ export const getTableConfig = async (
             sortable: true,
         },
         {
-            _id: 'columnId3',
+            _id: 'C1',
             type: 'number',
             typeMeta: {
                 defaultValue: 999,
@@ -43,7 +43,7 @@ export const getTableConfig = async (
             sortable: true,
         },
         {
-            _id: 'columnId4',
+            _id: 'D1',
             type: 'boolean',
             typeMeta: {},
             headerName: 'In Stock',
@@ -52,27 +52,27 @@ export const getTableConfig = async (
             sortable: true,
         },
         {
-            _id: 'columnId5',
+            _id: 'E1',
             type: 'calc',
             typeMeta: {},
             headerName: 'col1 + col3',
             editable: true,
             filter: true,
             sortable: true,
-            valueGetterCustomLogic: "row.columnId1 + ' ' + row.columnId3;",
+            valueGetterCustomLogic: "row.A1 + ' ' + row.C1;",
         },
         {
-            _id: 'columnId6',
+            _id: 'F1',
             type: 'calc',
             typeMeta: {},
             headerName: 'col3 * 3',
             editable: true,
             filter: true,
             sortable: true,
-            valueGetterCustomLogic: 'row.columnId3 * 3;',
+            valueGetterCustomLogic: 'row.C1 * 3;',
         },
         {
-            _id: 'columnId7',
+            _id: 'G1',
             type: 'calc',
             typeMeta: {},
             headerName: 'same col6',
@@ -82,24 +82,24 @@ export const getTableConfig = async (
             valueGetterCustomLogic: '',
         },
         {
-            _id: 'columnId8',
+            _id: 'H1',
             type: 'calc',
             typeMeta: {},
             headerName: 'col6 * col9',
             editable: true,
             filter: true,
             sortable: true,
-            valueGetterCustomLogic: 'row.columnId6 * row.columnId9;',
+            valueGetterCustomLogic: 'row.F1 * row.I1;',
         },
         {
-            _id: 'columnId9',
+            _id: 'I1',
             type: 'calc',
             typeMeta: {},
             headerName: 'same col6',
             editable: true,
             filter: true,
             sortable: true,
-            valueGetterCustomLogic: 'row.columnId8;',
+            valueGetterCustomLogic: 'row.H1;',
         },
     ]
 
@@ -110,24 +110,24 @@ export const getTableData = async (table: string): Promise<webieRowData[]> => {
     const data: webieRowData[] = [
         {
             _id: '211',
-            columnId1: 'Tesla',
-            columnId2: undefined,
-            columnId3: 64950,
-            columnId4: true,
+            A1: 'Tesla',
+            B1: undefined,
+            C1: 64950,
+            D1: true,
         },
         {
             _id: '213',
-            columnId1: 'Ford',
-            columnId2: undefined,
-            columnId3: 33850,
-            columnId4: false,
+            A1: 'Ford',
+            B1: undefined,
+            C1: 33850,
+            D1: false,
         },
         {
             _id: '212',
-            columnId1: 'Toyota',
-            columnId2: undefined,
-            columnId3: 29600,
-            columnId4: false,
+            A1: 'Toyota',
+            B1: undefined,
+            C1: 29600,
+            D1: false,
         },
     ]
 

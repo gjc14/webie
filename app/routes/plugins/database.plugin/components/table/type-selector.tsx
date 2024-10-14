@@ -4,11 +4,14 @@ import {
     CheckSquare2,
     CopyCheck,
     Earth,
+    File,
     FileDigitIcon,
     FileDown,
     FileJson,
+    FileText,
     FunctionSquare,
     Hash,
+    Image,
     Link,
     LucideIcon,
     Mail,
@@ -122,6 +125,21 @@ export const supportedTypes: TypeButtonArgs[] = [
         value: 'tableLookup',
         label: 'Table Lookup',
         icon: FileDigitIcon,
+    },
+    {
+        value: 'longText',
+        label: 'Long Text',
+        icon: FileText,
+    },
+    {
+        value: 'image',
+        label: 'Image',
+        icon: Image,
+    },
+    {
+        value: 'file',
+        label: 'File',
+        icon: File,
     },
 ]
 

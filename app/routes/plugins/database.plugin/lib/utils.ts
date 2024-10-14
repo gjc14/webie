@@ -1,7 +1,7 @@
 import { ObjectId } from 'bson'
 import { z, ZodTypeAny } from 'zod'
 
-import { typeDefaultColumnMetaValueMap } from '../components/data-grid/column-settings/card-type-logic/type'
+import { typeDefaultColumnMetaValueMap } from '../schema/column'
 import {
     typeDefaultValuesMap,
     webieColDef,

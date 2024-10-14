@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/ui/button'
 import { ColumnSettingsCardState } from '.'
 import { supportedTypes } from '../../../components/table/type-selector'
+import { typeDefaultColumnMetaValueMap } from '../../../schema/column'
 import { webieColDef, webieColType } from '../../../schema/table'
 import { ColumnTypePopover } from '../../table/tool-bar/column-type-popover'
 import { SettingSectionWrapper } from './setting-section'
-import { typeDefaultColumnMetaValueMap } from './card-type-logic/type'
 
 export const TypeSettingCard = ({
     colDefEditing,

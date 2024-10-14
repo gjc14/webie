@@ -1,7 +1,8 @@
 import { Label } from '~/components/ui/label'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import { selectTypeMetaSchema, TypeLogicProps } from './type'
+import { selectTypeMetaSchema } from '../../../../schema/column'
+import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
 export const SelectSettingCard = ({

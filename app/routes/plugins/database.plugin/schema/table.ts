@@ -7,7 +7,7 @@ import { z, ZodTypeAny } from 'zod'
  * -> Add a new type
  * -> update rest of this file
  * -> expose select button in components/table/type-selector.tsx
- * -> update table_.edit/components/column-settings.tsx SettingCard component
+ * -> update components/data-grid/column-settings component
  */
 export const webieColTypesSchema = z.enum([
     // primitive values
@@ -41,6 +41,11 @@ export const webieColTypesSchema = z.enum([
     // Cross table connections
     'table',
     'tableLookup',
+
+    // Others
+    'longText',
+    'image',
+    'file',
 ])
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
@@ -48,11 +53,11 @@ export type webieColType = z.infer<typeof webieColTypesSchema>
  * Define the default values for the column types.
  */
 export const typeDefaultValuesMap: { [key in webieColType]: any } = {
-    string: '',
-    number: 0,
+    string: null,
+    number: null,
     boolean: true,
     date: new Date().toLocaleString(),
-    email: '',
+    email: null,
 
     // void: `print("void")`,
     any: null,
@@ -61,12 +66,12 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     select: '',
     multipleSelect: [],
 
-    url: 'https://webie.dev',
-    ip: '',
+    url: null,
+    ip: null,
 
-    uuid: '',
-    cuid: '',
-    nanoId: '',
+    uuid: null,
+    cuid: null,
+    nanoId: null,
 
     json: '{}',
 
@@ -74,17 +79,21 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
 
     table: '',
     tableLookup: '',
+
+    longText: null,
+    image: null,
+    file: null,
 }
 
 /**
  * Map webieColType to the corresponding Zod types.
  */
 export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
-    string: z.string(),
-    number: z.number(),
+    string: z.string().nullable(),
+    number: z.number().nullable(),
     boolean: z.boolean(),
     date: z.date(),
-    email: z.string().email(),
+    email: z.string().email().nullable(),
 
     // void: z.void(),
     any: z.any(),
@@ -93,19 +102,23 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     select: z.string(),
     multipleSelect: z.array(z.string()),
 
-    url: z.string().url(),
-    ip: z.string().ip(),
+    url: z.string().url().nullable(),
+    ip: z.string().ip().nullable(),
 
-    uuid: z.string().uuid(),
-    cuid: z.string().cuid(),
-    nanoId: z.string().nanoid(),
+    uuid: z.string().uuid().nullable(),
+    cuid: z.string().cuid().nullable(),
+    nanoId: z.string().nanoid().nullable(),
 
     json: z.string(),
 
     calc: z.undefined(),
 
-    table: z.string(),
-    tableLookup: z.string(),
+    table: z.string().nullable(),
+    tableLookup: z.string().nullable(),
+
+    longText: z.string().nullable(),
+    image: z.string().nullable(),
+    file: z.string().nullable(),
 }
 
 /**
