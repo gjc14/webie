@@ -1,4 +1,5 @@
 import { themeQuartz } from '@ag-grid-community/theming'
+import './grid.css'
 
 import { useRevalidator } from '@remix-run/react'
 import { ColDef, GetRowIdParams } from 'ag-grid-community'
@@ -59,8 +60,6 @@ export interface webieDataGridProps {}
 
 export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
     (props: webieDataGridProps, ref) => {
-        const { tableConfigState, rowsState, updateRow } = useTable()
-
         // Theme: Sets the theme for the data grid based on Client Hints
         const { revalidate } = useRevalidator()
         const cookieTheme = useCookieTheme()
@@ -91,7 +90,8 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
         }, [themeContext])
 
         // Column Definitions: Defines the columns to be displayed.
-        // keyof webieRowData will map to the field (column ID)Ｏ
+        // keyof webieRowData will map to the field (column ID)
+        const { tableConfigState, rowsState, updateRow } = useTable()
         const [colDefs, setColDefs] = useState<ColDef<webieRowData>[]>([])
 
         const typeCalcColumns = useMemo(() => {
@@ -182,7 +182,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
         }, [])
 
         return (
-            <div className="h-full">
+            <div className="h-full no-scroll-smooth">
                 <AgGridReact<webieRowData>
                     ref={ref}
                     defaultColDef={defaultColDef}

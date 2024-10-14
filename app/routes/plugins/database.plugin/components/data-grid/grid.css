@@ -1,0 +1,4 @@
+/* Prevent heads and columns misalignment */
+.no-scroll-smooth * {
+    scroll-behavior: auto !important;
+}
