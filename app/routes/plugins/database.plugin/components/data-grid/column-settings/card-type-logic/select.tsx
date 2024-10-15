@@ -8,7 +8,7 @@ import {
 } from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import { selectTypeMetaSchema } from '../../../../schema/column'
+import { selectTypeMetaSchema } from '../../../../schema/column/type-meta'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 import { Checkbox } from '~/components/ui/checkbox'

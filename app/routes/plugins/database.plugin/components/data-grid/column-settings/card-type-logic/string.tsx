@@ -1,5 +1,5 @@
 import { cn } from '~/lib/utils'
-import { stringTypeMetaSchema } from '../../../../schema/column'
+import { stringTypeMetaSchema } from '../../../../schema/column/type-meta'
 import { DefaultValueInput } from './default-value-input'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'

@@ -1,8 +1,10 @@
 import { NewValueParams } from 'ag-grid-community'
-import { generateColumnSchema } from '../../lib/utils'
-import { webieColDef, webieColumns, webieRowData } from '../../schema/table'
-import { supportedTypes } from '../table/type-selector'
 import { toast } from 'sonner'
+
+import { generateColumnSchema } from '../../lib/utils'
+import { webieColDef, webieColumns } from '../../schema/column'
+import { webieRowData } from '../../schema/table'
+import { supportedTypes } from '../table/type-selector'
 
 export function checkCircular(calcColumns: webieColumns) {
     const eachDependencied = calcColumns.map(column => {

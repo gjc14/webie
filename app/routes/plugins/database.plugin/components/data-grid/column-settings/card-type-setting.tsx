@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+
 import { Button } from '~/components/ui/button'
 import { ColumnSettingsCardState } from '.'
 import { supportedTypes } from '../../../components/table/type-selector'
-import { typeDefaultColumnMetaValueMap } from '../../../schema/column'
-import { webieColDef, webieColType } from '../../../schema/table'
+import { typeDefaultColumnMetaValueMap } from '../../../schema/column/type-meta'
+import { webieColDef, webieColType } from '../../../schema/column/index'
 import { ColumnTypePopover } from '../../table/tool-bar/column-type-popover'
 import { SettingSectionWrapper } from './setting-section'
 

@@ -1,16 +1,15 @@
 import { ObjectId } from 'bson'
 import { z, ZodTypeAny } from 'zod'
 
-import { typeDefaultColumnMetaValueMap } from '../schema/column'
 import {
     typeDefaultValuesMap,
     webieColDef,
     webieColType,
     webieColumns,
-    webieRowData,
-    webieTableConfig,
     zodTypeMap,
-} from '../schema/table'
+} from '../schema/column'
+import { typeDefaultColumnMetaValueMap } from '../schema/column/type-meta'
+import { webieRowData, webieTableConfig } from '../schema/table'
 
 /**
  * Generate a schema based on columns for table validation.

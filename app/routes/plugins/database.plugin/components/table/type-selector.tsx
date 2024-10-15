@@ -27,7 +27,7 @@ import {
     CommandItem,
     CommandList,
 } from '~/components/ui/command'
-import { webieColType, webieColTypesSchema } from '../../schema/table'
+import { webieColType, webieColTypesSchema } from '../../schema/column'
 
 export type TypeButtonArgs = {
     value: webieColType
@@ -102,7 +102,7 @@ export const supportedTypes: TypeButtonArgs[] = [
         icon: Hash,
     },
     {
-        value: 'nanoId',
+        value: 'nanoid',
         label: 'Nano ID',
         icon: Hash,
     },

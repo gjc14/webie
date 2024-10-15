@@ -1,6 +1,6 @@
 import { Checkbox } from '~/components/ui/checkbox'
 import { cn } from '~/lib/utils'
-import { booleanTypeMetaSchema } from '../../../../schema/column'
+import { booleanTypeMetaSchema } from '../../../../schema/column/type-meta'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 

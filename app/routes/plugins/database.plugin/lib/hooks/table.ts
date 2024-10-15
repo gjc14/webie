@@ -3,12 +3,9 @@
  */
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import {
-    webieColDef,
-    webieColType,
-    webieRowData,
-    webieTableConfig,
-} from '../../schema/table'
+
+import { webieColDef, webieColType } from '../../schema/column'
+import { webieRowData, webieTableConfig } from '../../schema/table'
 import { generateNewColumn, generateNewRow } from '../utils'
 
 export type TableState = {

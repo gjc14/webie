@@ -17,7 +17,7 @@ import {
     APIMethods,
     ApiTypeMeta,
     apiTypeMetaSchema,
-} from '../../../../schema/column'
+} from '../../../../schema/column/type-meta'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 

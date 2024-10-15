@@ -18,7 +18,8 @@ import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
-import { webieColDef, webieRowData, webieTableConfig } from '../../schema/table'
+import { webieColDef } from '../../schema/column'
+import { webieRowData, webieTableConfig } from '../../schema/table'
 import { GridToolTip } from '../db-tooltip'
 import {
     checkCircular,

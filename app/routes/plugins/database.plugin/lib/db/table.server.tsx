@@ -1,8 +1,5 @@
-import {
-    webieColumns,
-    webieRowData,
-    webieTableConfig,
-} from '../../schema/table'
+import { webieRowData, webieTableConfig } from '../../schema/table'
+import { webieColumns } from '../../schema/column'
 
 export const getTableConfig = async (
     table: string

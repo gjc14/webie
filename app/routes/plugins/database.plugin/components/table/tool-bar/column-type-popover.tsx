@@ -6,7 +6,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '~/components/ui/popover'
-import { webieColType } from '../../../schema/table'
+import { webieColType } from '../../../schema/column'
 import { TypeSelector } from '../type-selector'
 
 interface ColumnTypePopoverProps {

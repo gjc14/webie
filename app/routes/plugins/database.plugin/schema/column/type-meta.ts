@@ -1,8 +1,5 @@
 import { z } from 'zod'
-import {
-    webieColType,
-    zodTypeMap,
-} from '~/routes/plugins/database.plugin/schema/table'
+import { webieColType, zodTypeMap } from '../column'
 
 // String
 export const stringTypeMetaSchema = z.object({
@@ -85,7 +82,7 @@ export const typeDefaultColumnMetaValueMap: {
     ip: undefined,
     uuid: undefined,
     cuid: undefined,
-    nanoId: undefined,
+    nanoid: undefined,
     json: undefined,
     calc: undefined,
     table: undefined,
