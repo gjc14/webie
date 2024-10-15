@@ -1,3 +1,4 @@
+import { ValueFormatterFunc } from 'ag-grid-community'
 import { z, ZodTypeAny } from 'zod'
 /**
  * Define supporting type for column of the data grid.
@@ -132,7 +133,7 @@ export const webieColDefSchema = z.object({
     typeMeta: z.any().optional(),
 
     // AG-Grid ColDef properties
-    headerName: z.string(),
+    headerName: z.string().optional(),
     editable: z.boolean().optional(),
     filter: z.boolean().optional(),
     sortable: z.boolean().optional(),
@@ -142,7 +143,9 @@ export const webieColDefSchema = z.object({
     // Meta data, used for storing additional information
     meta: z.any().optional(),
 })
-export type webieColDef = z.infer<typeof webieColDefSchema>
+export type webieColDef = z.infer<typeof webieColDefSchema> & {
+    valueFormatter?: string | ValueFormatterFunc
+}
 
 /**
  * Define the schema for the table columns.

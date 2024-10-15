@@ -8,6 +8,7 @@ import {
     webieColumns,
     zodTypeMap,
 } from '../schema/column'
+import { colDefMap } from '../schema/column/default-col-def'
 import { typeDefaultColumnMetaValueMap } from '../schema/column/type-meta'
 import { webieRowData, webieTableConfig } from '../schema/table'
 
@@ -42,14 +43,13 @@ export const generateColumnSchema = (column: webieColDef) => {
 
 export const generateNewColumn = (type: webieColType): webieColDef => {
     const defaultTypeColumnMeta = typeDefaultColumnMetaValueMap[type]
+    const defaultColDef = colDefMap[type]
+
     return {
         _id: new ObjectId().toString(),
         type: type,
+        ...defaultColDef,
         typeMeta: defaultTypeColumnMeta,
-        headerName: `New ${type}`,
-        editable: true,
-        filter: true,
-        sortable: true,
     }
 }
 
