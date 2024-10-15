@@ -43,7 +43,7 @@ export const webieColTypesSchema = z.enum([
     'tableLookup',
 
     // Others
-    // !!! Type could be a explicit type feature or a column feature.
+    // [!!!] Type could be a explicit type feature or a column feature.
     'longText',
     // Now percentage it's not a type feature, it's a number column feature.
     // Just add to type selector to be explicit and able to add directly in the column.

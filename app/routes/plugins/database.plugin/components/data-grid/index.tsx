@@ -18,7 +18,7 @@ import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
-import { webieColDef } from '../../schema/column'
+import { webieColDef, webieColType } from '../../schema/column'
 import { webieRowData, webieTableConfig } from '../../schema/table'
 import { GridToolTip } from '../db-tooltip'
 import {
@@ -28,6 +28,10 @@ import {
 } from './utils'
 import { CustomFilterSortSettingHeader } from './webie-header-component/filter-sort-setting-header'
 import { getWebieDefinedColumns } from './webie-system-columns'
+import {
+    webieDataTypeDefinitions,
+    webieTypeIsNotPredefined,
+} from './data-type-definitions'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -126,6 +130,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
             ])
         }, [tableConfigState])
 
+        // If moved outside as a function, the "typeCalcColumns" and "getCustomLogic" will not be memo and will run on every column render.
         const mappedColumns = useCallback(
             (tableConfigState: webieTableConfig): ColDef<webieRowData>[] => {
                 return tableConfigState.columns.map(column => {
@@ -134,7 +139,7 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                         field: column._id,
                         // Type could be a explicit type feature or a column feature.
                         // e.g. type percentage is under type number, and be defined below in dataTypeDefinitions.
-                        cellDataType: column.typeMeta.type ?? column.type,
+                        cellDataType: column.typeMeta?.type ?? column.type,
                         headerName: column.headerName,
                         editable: column.editable,
                         filter: column.filter,
@@ -195,34 +200,10 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
             }
         }, [])
 
-        const dataTypeDefinitions = useMemo<{
-            [cellDataType: string]: DataTypeDefinition
-        }>(() => {
-            return {
-                string: {
-                    extendsDataType: 'text',
-                    baseDataType: 'text',
-                },
-                api: {
-                    extendsDataType: 'text',
-                    baseDataType: 'text',
-                },
-                calc: {
-                    extendsDataType: 'text',
-                    baseDataType: 'text',
-                    dataTypeMatcher(value) {
-                        return String(value).startsWith('=')
-                    },
-                },
-                percentage: {
-                    extendsDataType: 'number',
-                    baseDataType: 'number',
-                    valueFormatter: params =>
-                        params.value == null
-                            ? ''
-                            : `${Math.round(params.value * 100)}%`,
-                },
-            }
+        const dataTypeDefinitions = useMemo<
+            Record<webieTypeIsNotPredefined, DataTypeDefinition>
+        >(() => {
+            return webieDataTypeDefinitions
         }, [])
 
         return (

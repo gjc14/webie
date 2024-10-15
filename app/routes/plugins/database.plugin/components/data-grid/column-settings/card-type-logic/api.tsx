@@ -92,15 +92,16 @@ export const APISettingCard = ({
                         <Label htmlFor="api-method">API Method</Label>
                         <Select
                             defaultValue={typeMeta.method}
-                            onValueChange={v =>
+                            onValueChange={v => {
+                                const newTypeMeta: typeof typeMeta = {
+                                    ...typeMeta,
+                                    method: v as ApiTypeMeta['method'],
+                                }
                                 setColDefEditing({
                                     ...colDefEditing,
-                                    typeMeta: {
-                                        ...typeMeta,
-                                        method: v as ApiTypeMeta['method'],
-                                    },
+                                    typeMeta: newTypeMeta,
                                 })
-                            }
+                            }}
                         >
                             <SelectTrigger
                                 className="w-[180px]"

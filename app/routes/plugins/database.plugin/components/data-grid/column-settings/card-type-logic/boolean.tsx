@@ -26,12 +26,13 @@ export const BooleanSettingCard = ({
                         id="default-value"
                         defaultChecked={typeMeta.defaultValue}
                         onCheckedChange={v => {
+                            const newTypeMeta: typeof typeMeta = {
+                                ...typeMeta,
+                                defaultValue: v,
+                            }
                             setColDefEditing({
                                 ...colDefEditing,
-                                typeMeta: {
-                                    ...typeMeta,
-                                    defaultValue: v,
-                                },
+                                typeMeta: newTypeMeta,
                             })
                         }}
                     />

@@ -76,7 +76,7 @@ export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
                     title={title}
                     description="Multiple select is used to store multiple predefined values."
                 >
-                    <SelectSettingCard {...props} />
+                    <SelectSettingCard {...props} multiple />
                 </SettingSectionWrapper>
             )
         }

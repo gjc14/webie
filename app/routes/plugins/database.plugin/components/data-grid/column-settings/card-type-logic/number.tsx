@@ -37,6 +37,8 @@ export const NumberSettingCard = ({
                         <Label htmlFor="number-type">Type (Coming soon)</Label>
                         <Select
                             onValueChange={v => {
+                                // None only appears in the dropdown
+                                if (v === 'none') return
                                 setColDefEditing({
                                     ...colDefEditing,
                                     typeMeta: {
@@ -51,6 +53,7 @@ export const NumberSettingCard = ({
                                 <SelectValue placeholder="Select default status" />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value={'none'}>None</SelectItem>
                                 {numberTypes.map(option => {
                                     return (
                                         <SelectItem key={option} value={option}>

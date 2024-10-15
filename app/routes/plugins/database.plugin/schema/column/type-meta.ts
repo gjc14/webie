@@ -16,7 +16,6 @@ export const numberTypes = [
     'decimal',
     'percentage',
     'currency',
-    'none',
 ] as const
 export const numberTypeMetaSchema = z.object({
     defaultValue: zodTypeMap.number.optional(),
@@ -25,7 +24,7 @@ export const numberTypeMetaSchema = z.object({
 export type NumberTypeMeta = z.infer<typeof numberTypeMetaSchema>
 const defaultNumberTypeMeta: NumberTypeMeta = {
     defaultValue: undefined,
-    type: 'none',
+    type: undefined,
     // TODO: Implement functionality number types
 }
 

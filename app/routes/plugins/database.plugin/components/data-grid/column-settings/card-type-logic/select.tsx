@@ -1,3 +1,6 @@
+import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
+import { MultiSelect } from '~/components/multi-select'
+import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
 import {
     Select,
@@ -11,13 +14,19 @@ import { cn } from '~/lib/utils'
 import { selectTypeMetaSchema } from '../../../../schema/column/type-meta'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
-import { Checkbox } from '~/components/ui/checkbox'
+
+type Checked = DropdownMenuCheckboxItemProps['checked']
+
+interface SelectSettingCardProps extends TypeLogicProps {
+    multiple?: boolean
+}
 
 export const SelectSettingCard = ({
     colDefEditing,
     setColDefEditing,
     className,
-}: TypeLogicProps) => {
+    multiple,
+}: SelectSettingCardProps) => {
     const {
         success,
         error,
@@ -27,46 +36,94 @@ export const SelectSettingCard = ({
         console.error('Invalid type meta:', error)
     }
 
+    const noOptionMsg = 'Please add an option'
+
+    const options =
+        typeMeta?.options.length && typeMeta.options.length > 0
+            ? typeMeta.options.split('\n').map(option => {
+                  return {
+                      label: option,
+                      value: option,
+                  }
+              })
+            : []
+
     return (
         <div className={cn('space-y-2', className)}>
             {success ? (
                 <>
                     <div>
                         <Label htmlFor="default-value">Default select</Label>
-                        <Select
-                            onValueChange={v => {
-                                setColDefEditing({
-                                    ...colDefEditing,
-                                    typeMeta: {
+                        {!multiple ? (
+                            <Select
+                                onValueChange={v => {
+                                    const newTypeMeta: typeof typeMeta = {
                                         ...typeMeta,
                                         defaultValue: v,
-                                    },
-                                })
-                            }}
-                            defaultValue={typeMeta?.defaultValue}
-                        >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select default status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {typeMeta?.options.split('\n').map(option => {
-                                    if (option.trim() === '')
-                                        return (
-                                            <p
-                                                key="default-value"
-                                                className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                                            >
-                                                Please add an option
-                                            </p>
-                                        )
-                                    return (
-                                        <SelectItem key={option} value={option}>
-                                            {option}
-                                        </SelectItem>
-                                    )
-                                })}
-                            </SelectContent>
-                        </Select>
+                                    }
+                                    setColDefEditing({
+                                        ...colDefEditing,
+                                        typeMeta: newTypeMeta,
+                                    })
+                                }}
+                                defaultValue={typeMeta?.defaultValue}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Define a default option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {typeMeta.options
+                                        .split('\n')
+                                        .map(option => {
+                                            if (option.trim() === '')
+                                                return (
+                                                    <p
+                                                        key="default-value"
+                                                        className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                                                    >
+                                                        {noOptionMsg}
+                                                    </p>
+                                                )
+                                            return (
+                                                <SelectItem
+                                                    key={option}
+                                                    value={option}
+                                                >
+                                                    {option}
+                                                </SelectItem>
+                                            )
+                                        })}
+                                </SelectContent>
+                            </Select>
+                        ) : (
+                            <MultiSelect
+                                defaultValue={
+                                    typeMeta.options.length > 0
+                                        ? typeMeta.options
+                                              .split('\n')
+                                              .map(option => {
+                                                  return {
+                                                      label: option,
+                                                      value: option,
+                                                  }
+                                              })
+                                        : undefined
+                                }
+                                placeholder="Define default options"
+                                options={options}
+                                onChange={v => {
+                                    const formattedValue = v.join('\n')
+                                    const newTypeMeta: typeof typeMeta = {
+                                        ...typeMeta,
+                                        defaultValue: formattedValue,
+                                    }
+                                    setColDefEditing({
+                                        ...colDefEditing,
+                                        typeMeta: newTypeMeta,
+                                    })
+                                }}
+                            />
+                        )}
                     </div>
 
                     <div>
@@ -75,12 +132,13 @@ export const SelectSettingCard = ({
                             id="option-input"
                             value={typeMeta.options}
                             onChange={e => {
+                                const newTypeMeta: typeof typeMeta = {
+                                    ...typeMeta,
+                                    options: e.target.value,
+                                }
                                 setColDefEditing({
                                     ...colDefEditing,
-                                    typeMeta: {
-                                        ...typeMeta,
-                                        options: e.target.value,
-                                    },
+                                    typeMeta: newTypeMeta,
                                 })
                             }}
                             placeholder="Enter options separated by new line"
@@ -93,12 +151,13 @@ export const SelectSettingCard = ({
                             id="default-value"
                             defaultChecked={typeMeta.allowNewOptions}
                             onCheckedChange={v => {
+                                const newTypeMeta: typeof typeMeta = {
+                                    ...typeMeta,
+                                    allowNewOptions: !!v,
+                                }
                                 setColDefEditing({
                                     ...colDefEditing,
-                                    typeMeta: {
-                                        ...typeMeta,
-                                        allowNewItemInCell: v,
-                                    },
+                                    typeMeta: newTypeMeta,
                                 })
                             }}
                         />
