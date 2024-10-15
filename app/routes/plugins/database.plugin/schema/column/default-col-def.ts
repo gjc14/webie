@@ -70,6 +70,9 @@ export const colDefMap: Record<webieColType, DefaultColDef> = {
     longText: {
         ...defaultColDef('longText'),
     },
+    percentage: {
+        ...defaultColDef('percentage'),
+    },
     image: {
         ...defaultColDef('image'),
     },

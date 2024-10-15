@@ -11,12 +11,22 @@ const defaultStringTypeMeta: StringTypeMeta = {
 }
 
 // Number
+export const numberTypes = [
+    'integer',
+    'decimal',
+    'percentage',
+    'currency',
+    'none',
+] as const
 export const numberTypeMetaSchema = z.object({
     defaultValue: zodTypeMap.number.optional(),
+    type: z.enum(numberTypes).optional(),
 })
 export type NumberTypeMeta = z.infer<typeof numberTypeMetaSchema>
 const defaultNumberTypeMeta: NumberTypeMeta = {
     defaultValue: undefined,
+    type: 'none',
+    // TODO: Implement functionality number types
 }
 
 // Boolean
@@ -88,6 +98,7 @@ export const typeDefaultColumnMetaValueMap: {
     table: undefined,
     tableLookup: undefined,
     longText: undefined,
+    percentage: { ...defaultNumberTypeMeta, type: 'percentage' },
     image: undefined,
     file: undefined,
 }

@@ -1,6 +1,5 @@
 import {
     Calendar,
-    CheckCheck,
     CheckSquare2,
     CopyCheck,
     Earth,
@@ -16,6 +15,7 @@ import {
     LucideIcon,
     Mail,
     Router,
+    SquareChevronDown,
     Text,
     Webhook,
 } from 'lucide-react'
@@ -49,12 +49,12 @@ export const supportedTypes: TypeButtonArgs[] = [
     {
         value: 'boolean',
         label: 'Checkbox',
-        icon: CheckCheck,
+        icon: CheckSquare2,
     },
     {
         value: 'select',
         label: 'Select',
-        icon: CheckSquare2,
+        icon: SquareChevronDown,
     },
     {
         value: 'multipleSelect',
@@ -141,6 +141,12 @@ export const supportedTypes: TypeButtonArgs[] = [
         label: 'File',
         icon: File,
     },
+    // Could be added for explicit percentage type instead of feature in number with percentage option
+    // {
+    //     value: 'percentage',
+    //     label: 'Percentage',
+    //     icon: Hash,
+    // },
 ]
 
 export const TypeSelector = ({

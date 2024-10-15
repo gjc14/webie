@@ -43,7 +43,11 @@ export const webieColTypesSchema = z.enum([
     'tableLookup',
 
     // Others
+    // !!! Type could be a explicit type feature or a column feature.
     'longText',
+    // Now percentage it's not a type feature, it's a number column feature.
+    // Just add to type selector to be explicit and able to add directly in the column.
+    'percentage',
     'image',
     'file',
 ])
@@ -81,6 +85,7 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
     tableLookup: '',
 
     longText: null,
+    percentage: null,
     image: null,
     file: null,
 }
@@ -119,6 +124,7 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     tableLookup: z.string().nullable(),
 
     longText: z.string().nullable(),
+    percentage: z.number().nullable(),
     image: z.string().nullable(),
     file: z.string().nullable(),
 }

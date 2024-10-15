@@ -2,7 +2,7 @@ import { themeQuartz } from '@ag-grid-community/theming'
 import './grid.css'
 
 import { useRevalidator } from '@remix-run/react'
-import { ColDef, GetRowIdParams } from 'ag-grid-community'
+import { ColDef, DataTypeDefinition, GetRowIdParams } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { parse } from 'cookie'
 import {
@@ -132,6 +132,9 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                     return {
                         colId: column._id,
                         field: column._id,
+                        // Type could be a explicit type feature or a column feature.
+                        // e.g. type percentage is under type number, and be defined below in dataTypeDefinitions.
+                        cellDataType: column.typeMeta.type ?? column.type,
                         headerName: column.headerName,
                         editable: column.editable,
                         filter: column.filter,
@@ -192,6 +195,36 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
             }
         }, [])
 
+        const dataTypeDefinitions = useMemo<{
+            [cellDataType: string]: DataTypeDefinition
+        }>(() => {
+            return {
+                string: {
+                    extendsDataType: 'text',
+                    baseDataType: 'text',
+                },
+                api: {
+                    extendsDataType: 'text',
+                    baseDataType: 'text',
+                },
+                calc: {
+                    extendsDataType: 'text',
+                    baseDataType: 'text',
+                    dataTypeMatcher(value) {
+                        return String(value).startsWith('=')
+                    },
+                },
+                percentage: {
+                    extendsDataType: 'number',
+                    baseDataType: 'number',
+                    valueFormatter: params =>
+                        params.value == null
+                            ? ''
+                            : `${Math.round(params.value * 100)}%`,
+                },
+            }
+        }, [])
+
         return (
             <div className="h-full no-scroll-smooth">
                 <AgGridReact<webieRowData>
@@ -219,6 +252,11 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                     }}
                     theme={gridTheme}
                     loadThemeGoogleFonts={true}
+                    // Custom Cell Data Types
+                    dataTypeDefinitions={dataTypeDefinitions}
+                    onCellKeyDown={e => {
+                        console.log('key down', e)
+                    }}
                 />
             </div>
         )
