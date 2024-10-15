@@ -71,7 +71,7 @@ export function generateCustomLogic(
 ): Function {
     const currentColumnId = column._id
     if (circulatedColumns?.includes(currentColumnId)) {
-        return () => '#CIRCULAR'
+        return () => '#CIRCULAR!'
     }
 
     const logicStr = column.valueGetterCustomLogic

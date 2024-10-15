@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 import { ZodType } from 'zod'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
@@ -36,6 +36,8 @@ export const DefaultValueInput = forwardRef<
         },
         ref
     ) => {
+        const [errors, setErrors] = useState<string[]>([])
+
         return (
             <div className={divClassName}>
                 <Label htmlFor="default-value">Default value</Label>
@@ -58,9 +60,14 @@ export const DefaultValueInput = forwardRef<
 
                         const validated = zodSchema.safeParse(updatedTypeMeta)
                         if (!validated.success) {
-                            console.error('Invalid type meta:', validated.error)
+                            const errors = validated.error.errors.map(
+                                e => e.message
+                            )
+                            console.error('Invalid type meta:', errors)
+                            setErrors(errors)
                             return
                         } else {
+                            setErrors([])
                             setColDefEditing({
                                 ...colDefEditing,
                                 typeMeta: validated.data,
@@ -68,6 +75,11 @@ export const DefaultValueInput = forwardRef<
                         }
                     }}
                 />
+                {errors.length > 0 && (
+                    <p className="mt-1.5 px-1.5 py-0.5 bg-destructive rounded-md text-sm">
+                        Error! {errors.join(', ')}
+                    </p>
+                )}
             </div>
         )
     }

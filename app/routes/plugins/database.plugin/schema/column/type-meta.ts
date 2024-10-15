@@ -76,6 +76,24 @@ const defaultApiTypeMeta: ApiTypeMeta = {
     header: {},
 }
 
+// Url
+export const urlTypeMetaSchema = z.object({
+    defaultValue: zodTypeMap.url.optional(),
+})
+export type UrlTypeMeta = z.infer<typeof urlTypeMetaSchema>
+const defaulUrlTypeMeta: UrlTypeMeta = {
+    defaultValue: undefined,
+}
+
+// Ip
+export const ipTypeMetaSchema = z.object({
+    defaultValue: zodTypeMap.ip.optional(),
+})
+export type IpTypeMeta = z.infer<typeof ipTypeMetaSchema>
+const defaultIpTypeMeta: IpTypeMeta = {
+    defaultValue: undefined,
+}
+
 export const typeDefaultColumnMetaValueMap: {
     [type in webieColType]: undefined | Record<string, any>
 } = {
@@ -88,8 +106,8 @@ export const typeDefaultColumnMetaValueMap: {
     api: defaultApiTypeMeta,
     select: defaultSelectTypeMeta,
     multipleSelect: defaultSelectTypeMeta,
-    url: undefined,
-    ip: undefined,
+    url: defaulUrlTypeMeta,
+    ip: defaultIpTypeMeta,
     uuid: undefined,
     cuid: undefined,
     nanoid: undefined,

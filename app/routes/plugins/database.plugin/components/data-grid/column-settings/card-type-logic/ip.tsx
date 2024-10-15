@@ -1,10 +1,10 @@
 import { cn } from '~/lib/utils'
-import { emailTypeMetaSchema } from '../../../../schema/column/type-meta'
+import { ipTypeMetaSchema } from '../../../../schema/column/type-meta'
 import { DefaultValueInput } from './default-value-input'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
-export const EmailSettingCard = ({
+export const IpSettingCard = ({
     colDefEditing,
     setColDefEditing,
     className,
@@ -13,7 +13,7 @@ export const EmailSettingCard = ({
         success,
         error,
         data: typeMeta,
-    } = emailTypeMetaSchema.safeParse(colDefEditing.typeMeta)
+    } = ipTypeMetaSchema.safeParse(colDefEditing.typeMeta)
     if (!success) {
         console.error('Invalid type meta:', error)
     }
@@ -22,9 +22,9 @@ export const EmailSettingCard = ({
         <div className={cn('space-y-2', className)}>
             {success ? (
                 <DefaultValueInput
-                    type="email"
+                    type="text"
                     typeMetaData={typeMeta}
-                    zodSchema={emailTypeMetaSchema}
+                    zodSchema={ipTypeMetaSchema}
                     colDefEditing={colDefEditing}
                     setColDefEditing={setColDefEditing}
                 />

@@ -7,9 +7,11 @@ import { SettingSectionWrapper } from '../setting-section'
 import { APISettingCard } from './api'
 import { BooleanSettingCard } from './boolean'
 import { EmailSettingCard } from './email'
+import { IpSettingCard } from './ip'
 import { NumberSettingCard } from './number'
 import { SelectSettingCard } from './select'
 import { StringSettingCard } from './string'
+import { UrlSettingCard } from './url'
 
 export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
     const currentType = props.colDefEditing.type
@@ -96,6 +98,26 @@ export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
                     be fetched when the table is loaded or button clicked."
                 >
                     <APISettingCard {...props} />
+                </SettingSectionWrapper>
+            )
+        }
+        case 'url': {
+            return (
+                <SettingSectionWrapper
+                    title={title}
+                    description="Safe any url address and click to open externally."
+                >
+                    <UrlSettingCard {...props} />
+                </SettingSectionWrapper>
+            )
+        }
+        case 'ip': {
+            return (
+                <SettingSectionWrapper
+                    title={title}
+                    description="Store an ip address. e.g. 192.0.0.1"
+                >
+                    <IpSettingCard {...props} />
                 </SettingSectionWrapper>
             )
         }
