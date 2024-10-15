@@ -45,7 +45,9 @@ export const getTableConfig = async (
         {
             _id: 'D1',
             type: 'boolean',
-            typeMeta: {},
+            typeMeta: {
+                defaultValue: false,
+            },
             headerName: 'In Stock',
             editable: true,
             filter: true,

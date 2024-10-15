@@ -33,13 +33,15 @@ const defaultBooleanTypeMeta: BooleanTypeMeta = {
 
 // Select & Multiple Select
 export const selectTypeMetaSchema = z.object({
-    options: z.array(z.string()),
-    defaultSelection: z.array(z.string()),
+    allowNewOptions: z.boolean().optional(),
+    options: z.string(),
+    defaultValue: z.string().optional(),
 })
 export type SelectTypeMeta = z.infer<typeof selectTypeMetaSchema>
 const defaultSelectTypeMeta: SelectTypeMeta = {
-    options: [],
-    defaultSelection: [],
+    allowNewOptions: false,
+    options: '',
+    defaultValue: undefined,
 }
 
 // Email

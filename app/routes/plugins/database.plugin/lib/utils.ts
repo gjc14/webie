@@ -61,7 +61,7 @@ export const generateNewRow = (tableConfig: webieTableConfig): webieRowData => {
             (acc: { [columnId: string]: any }, column) => {
                 const customedDefaultValue = column.typeMeta?.defaultValue
 
-                if (customedDefaultValue) {
+                if (customedDefaultValue !== undefined) {
                     acc[column._id] = customedDefaultValue
                     return acc
                 }

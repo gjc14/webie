@@ -5,6 +5,7 @@ import { SettingSectionWrapper } from '../setting-section'
 
 // All supported column types
 import { APISettingCard } from './api'
+import { BooleanSettingCard } from './boolean'
 import { EmailSettingCard } from './email'
 import { NumberSettingCard } from './number'
 import { SelectSettingCard } from './select'
@@ -53,6 +54,7 @@ export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
                     description="Checkbox is used to store true or false value."
                 >
                     {/* TODO: Customizable check icon */}
+                    <BooleanSettingCard {...props} />
                 </SettingSectionWrapper>
             )
         }

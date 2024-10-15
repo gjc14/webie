@@ -159,7 +159,7 @@ const ColumnSettingPopover = ({ onTriggered }: { onTriggered: () => void }) => {
             </PopoverTrigger>
             <PopoverContent
                 side="right"
-                className="w-96 max-h-[75vh] mt-5 overflow-auto"
+                className="w-96 max-h-[88vh] mt-5 overflow-auto"
             >
                 <PopoverClose ref={triggerRef} hidden />
                 <ColumnSettings

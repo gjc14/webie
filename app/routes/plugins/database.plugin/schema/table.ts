@@ -87,6 +87,8 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
 
 /**
  * Map webieColType to the corresponding Zod types.
+ * AG-Grid only supports 'text', 'number', 'boolean', 'date', 'dateString' and 'object'.
+ * @see https://www.ag-grid.com/react-data-grid/cell-data-types/
  */
 export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     string: z.string().nullable(),
@@ -100,7 +102,7 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
 
     api: z.undefined(),
     select: z.string(),
-    multipleSelect: z.array(z.string()),
+    multipleSelect: z.string(),
 
     url: z.string().url().nullable(),
     ip: z.string().ip().nullable(),
