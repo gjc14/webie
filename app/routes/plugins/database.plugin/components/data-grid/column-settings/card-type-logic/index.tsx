@@ -8,6 +8,7 @@ import { APISettingCard } from './api'
 import { BooleanSettingCard } from './boolean'
 import { EmailSettingCard } from './email'
 import { IpSettingCard } from './ip'
+import { JsonSettingCard } from './json'
 import { LongTextSettingCard } from './longText'
 import { NumberSettingCard } from './number'
 import { SelectSettingCard } from './select'
@@ -130,6 +131,16 @@ export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
                     description="Unique id generator default uses NanoId. Which is short and url-friendly unique id."
                 >
                     <UniqueIdSettingCard {...props} />
+                </SettingSectionWrapper>
+            )
+        }
+        case 'json': {
+            return (
+                <SettingSectionWrapper
+                    title={title}
+                    description='JSON could store any type of data. In format { "key": "value" }'
+                >
+                    <JsonSettingCard {...props} />
                 </SettingSectionWrapper>
             )
         }

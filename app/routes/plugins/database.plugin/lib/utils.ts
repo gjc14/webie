@@ -105,6 +105,7 @@ export const generateNewRow = (tableConfig: webieTableConfig): webieRowData => {
 /**
  * Generate a Json type schema.
  * @see https://zod.dev/?id=json-type
+ * @see https://github.com/colinhacks/zod/discussions/2215
  */
 const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()])
 type Literal = z.infer<typeof literalSchema>
@@ -112,3 +113,18 @@ export type Json = Literal | { [key: string]: Json } | Json[]
 export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
     z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)])
 )
+const json = () => jsonSchema
+
+export const stringToJSONSchema = z
+    .string()
+    .transform((str, ctx): z.infer<ReturnType<typeof json>> => {
+        try {
+            return JSON.parse(str)
+        } catch (e) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Invalid JSON',
+            })
+            return z.NEVER
+        }
+    })

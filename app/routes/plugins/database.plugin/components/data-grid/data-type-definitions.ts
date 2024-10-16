@@ -56,8 +56,8 @@ export const webieDataTypeDefinitions: Record<
         baseDataType: 'text',
     },
     json: {
-        extendsDataType: 'object',
-        baseDataType: 'object',
+        extendsDataType: 'text',
+        baseDataType: 'text',
     },
     calc: {
         extendsDataType: 'text',

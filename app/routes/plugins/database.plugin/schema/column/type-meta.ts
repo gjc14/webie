@@ -125,6 +125,15 @@ const defaultCUIDTypeMeta: IDTypeMeta = {
     idType: 'cuid',
 }
 
+// Json
+export const jsonTypeMetaSchema = z.object({
+    defaultValue: zodTypeMap.json.optional(),
+})
+export type JsonTypeMeta = z.infer<typeof jsonTypeMetaSchema>
+const defaultJsonTypeMeta: JsonTypeMeta = {
+    defaultValue: undefined,
+}
+
 // LongText
 export const longTextTypeMetaSchema = z.object({
     defaultValue: zodTypeMap.longText.optional(),
@@ -148,7 +157,7 @@ export const typeDefaultColumnMetaValueMap = {
     uuid: defaultUUIDTypeMeta,
     cuid: defaultCUIDTypeMeta,
     nanoid: defaultNanoIDTypeMeta,
-    json: undefined,
+    json: defaultJsonTypeMeta,
     calc: undefined,
     table: undefined,
     tableLookup: undefined,

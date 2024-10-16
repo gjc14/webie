@@ -1,10 +1,10 @@
 import { cn } from '~/lib/utils'
-import { longTextTypeMetaSchema } from '../../../../schema/column/type-meta'
+import { jsonTypeMetaSchema } from '../../../../schema/column/type-meta'
 import { DefaultValueTextArea } from './default-value-textarea'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
-export const LongTextSettingCard = ({
+export const JsonSettingCard = ({
     colDefEditing,
     setColDefEditing,
     className,
@@ -13,7 +13,7 @@ export const LongTextSettingCard = ({
         success,
         error,
         data: typeMeta,
-    } = longTextTypeMetaSchema.safeParse(colDefEditing.typeMeta)
+    } = jsonTypeMetaSchema.safeParse(colDefEditing.typeMeta)
     if (!success) {
         console.error('Invalid type meta:', error)
     }
@@ -23,7 +23,7 @@ export const LongTextSettingCard = ({
             {success ? (
                 <DefaultValueTextArea
                     typeMetaData={typeMeta}
-                    zodSchema={longTextTypeMetaSchema}
+                    zodSchema={jsonTypeMetaSchema}
                     colDefEditing={colDefEditing}
                     setColDefEditing={setColDefEditing}
                 />

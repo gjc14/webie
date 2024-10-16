@@ -64,6 +64,12 @@ export const colDefMap: Record<
     },
     json: {
         ...webieDefaultColDef('json'),
+        cellEditor: 'agLargeTextCellEditor',
+        cellEditorPopup: true,
+        cellEditorParams: {
+            rows: 15,
+            cols: 50,
+        },
     },
     calc: {
         ...webieDefaultColDef('calc'),
