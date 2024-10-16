@@ -1,5 +1,6 @@
 import { ValueFormatterFunc } from 'ag-grid-community'
-import { z, ZodTypeAny } from 'zod'
+import { z } from 'zod'
+import { TypeMetaFor } from './type-meta'
 /**
  * Define supporting type for column of the data grid.
  * It could be directly selected by end user
@@ -95,19 +96,19 @@ export const typeDefaultValuesMap: { [key in webieColType]: any } = {
  * AG-Grid only supports 'text', 'number', 'boolean', 'date', 'dateString' and 'object'.
  * @see https://www.ag-grid.com/react-data-grid/cell-data-types/
  */
-export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
+export const zodTypeMap = {
     string: z.string().nullable(),
     number: z.number().nullable(),
     boolean: z.boolean(),
-    date: z.date(),
+    date: z.date().nullable(),
     email: z.string().email().nullable(),
 
     // void: z.void(),
     any: z.any(),
 
     api: z.undefined(),
-    select: z.string(),
-    multipleSelect: z.string(),
+    select: z.string().nullable(),
+    multipleSelect: z.string().nullable(),
 
     url: z.string().url().nullable(),
     ip: z.string().ip().nullable(),
@@ -116,7 +117,7 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     cuid: z.string().cuid().nullable(),
     nanoid: z.string().nanoid().nullable(),
 
-    json: z.string(),
+    json: z.string().nullable(),
 
     calc: z.undefined(),
 
@@ -127,7 +128,9 @@ export const zodTypeMap: Record<webieColType, ZodTypeAny> = {
     percentage: z.number().nullable(),
     image: z.string().nullable(),
     file: z.string().nullable(),
-}
+} as const
+// type ZodTypeMap = typeof zodTypeMap
+// type ZodTypeOf<K extends keyof ZodTypeMap> = ZodTypeMap[K]
 
 /**
  * Define the schema for the column definition.
@@ -150,6 +153,12 @@ export const webieColDefSchema = z.object({
     meta: z.any().optional(),
 })
 export type webieColDef = z.infer<typeof webieColDefSchema> & {
+    valueFormatter?: string | ValueFormatterFunc
+}
+export interface webieColDefGeneric<T extends webieColType>
+    extends z.infer<typeof webieColDefSchema> {
+    type: T
+    typeMeta: TypeMetaFor<T>
     valueFormatter?: string | ValueFormatterFunc
 }
 

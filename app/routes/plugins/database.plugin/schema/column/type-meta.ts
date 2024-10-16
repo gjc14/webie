@@ -93,9 +93,7 @@ const defaultIpTypeMeta: IpTypeMeta = {
     defaultValue: undefined,
 }
 
-export const typeDefaultColumnMetaValueMap: {
-    [type in webieColType]: undefined | Record<string, any>
-} = {
+export const typeDefaultColumnMetaValueMap = {
     string: defaultStringTypeMeta,
     number: defaultNumberTypeMeta,
     boolean: defaultBooleanTypeMeta,
@@ -118,4 +116,8 @@ export const typeDefaultColumnMetaValueMap: {
     percentage: { ...defaultNumberTypeMeta, type: 'percentage' },
     image: undefined,
     file: undefined,
-}
+} as const
+
+type TypeDefaultColumnMetaValueMap = typeof typeDefaultColumnMetaValueMap
+export type TypeMetaFor<T extends webieColType> =
+    TypeDefaultColumnMetaValueMap[T]
