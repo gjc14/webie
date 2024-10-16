@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/ui/button'
 import { ColumnSettingsCardState } from '.'
 import { supportedTypes } from '../../../components/table/type-selector'
-import { typeDefaultColumnMetaValueMap } from '../../../schema/column/type-meta'
+import { generateNewColumn } from '../../../lib/utils'
 import { webieColDef, webieColType } from '../../../schema/column/index'
 import { ColumnTypePopover } from '../../table/tool-bar/column-type-popover'
 import { SettingSectionWrapper } from './setting-section'
@@ -27,12 +27,10 @@ export const TypeSettingCard = ({
     )
 
     const onTypeSelect = (typeSelected: webieColType) => {
-        const defaultTypeColumnMetaValue =
-            typeDefaultColumnMetaValueMap[typeSelected]
+        const newColGenerated = generateNewColumn(typeSelected)
         const newColDef: webieColDef = {
-            ...colDefEditing,
-            type: typeSelected,
-            typeMeta: defaultTypeColumnMetaValue,
+            ...newColGenerated,
+            _id: colDefEditing._id, // Keep the same id
         }
         setColDefEditing(newColDef)
     }
