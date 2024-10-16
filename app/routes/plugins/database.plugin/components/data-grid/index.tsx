@@ -238,11 +238,18 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                     loadThemeGoogleFonts={true}
                     // Custom Cell Data Types
                     dataTypeDefinitions={dataTypeDefinitions}
-                    onCellKeyDown={e => {
-                        // TODO: Fix edge browser issue when using key down to navigate between cells.
-                        // Uncaught TypeError: Cannot read properties of null (reading 'ControlLooksLikePasswordCredentialField')
-                        console.log('key down', e)
-                    }}
+                    // onCellKeyDown={e => {
+                    //     // TODO: Fix edge browser issue when using key down to navigate between cells.
+                    //     // Uncaught TypeError: Cannot read properties of null (reading 'ControlLooksLikePasswordCredentialField')
+                    //     console.log('key down', e)
+                    // }}
+
+                    // TODO: Implement undo redo cell editing by manually tracking changes
+                    // This Undo / Redo feature is designed to be a recovery mechanism for user editing mistakes.
+                    // Performing data updates (except for cell edits), or grid operations that change the row / column order, e.g. sorting, filtering and grouping, will clear the undo / redo stacks.
+                    // => thus when updating the row using "updateRow", the undo / redo stack will be cleared.
+                    // undoRedoCellEditing={true}
+                    // undoRedoCellEditingLimit={5}
                 />
             </div>
         )
