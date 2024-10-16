@@ -51,8 +51,8 @@ export const generateNewColumn = (type: webieColType): webieColDef => {
 
     return {
         _id: new ObjectId().toString(),
-        type: type,
         ...defaultColDef,
+        type: type,
         typeMeta: defaultTypeColumnMeta,
     }
 }

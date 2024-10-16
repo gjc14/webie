@@ -19,10 +19,10 @@ export const webieDataTypeDefinitions: Record<
         extendsDataType: 'text',
         baseDataType: 'text',
     },
-    any: {
-        extendsDataType: 'text',
-        baseDataType: 'text',
-    },
+    // any: {
+    //     extendsDataType: 'text',
+    //     baseDataType: 'text',
+    // },
     api: {
         extendsDataType: 'text',
         baseDataType: 'text',

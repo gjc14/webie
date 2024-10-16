@@ -1,82 +1,95 @@
+import { ColDef } from 'ag-grid-community'
+
 import { webieColDef, webieColType } from '.'
+import { webieRowData } from '../table'
 
 type DefaultColDef = Omit<webieColDef, '_id' | 'type'>
 
-const defaultColDef = (type: webieColType): DefaultColDef => {
+const webieDefaultColDef = (
+    type: webieColType
+): ColDef<webieRowData> & DefaultColDef => {
     return {
         headerName: `New ${type}`,
         editable: true,
         filter: true,
         sortable: true,
-        valueFormatter: undefined,
     }
 }
 
-export const colDefMap: Record<webieColType, DefaultColDef> = {
+export const colDefMap: Record<
+    webieColType,
+    ColDef<webieRowData> & DefaultColDef
+> = {
     string: {
-        ...defaultColDef('string'),
+        ...webieDefaultColDef('string'),
     },
     number: {
-        ...defaultColDef('number'),
+        ...webieDefaultColDef('number'),
     },
     boolean: {
-        ...defaultColDef('boolean'),
+        ...webieDefaultColDef('boolean'),
     },
     date: {
-        ...defaultColDef('date'),
+        ...webieDefaultColDef('date'),
     },
     email: {
-        ...defaultColDef('email'),
+        ...webieDefaultColDef('email'),
     },
-    any: {
-        ...defaultColDef('any'),
-    },
+    // any: {
+    //     ...webieDefaultColDef('any'),
+    // },
     api: {
-        ...defaultColDef('api'),
+        ...webieDefaultColDef('api'),
     },
     select: {
-        ...defaultColDef('select'),
+        ...webieDefaultColDef('select'),
     },
     multipleSelect: {
-        ...defaultColDef('multipleSelect'),
+        ...webieDefaultColDef('multipleSelect'),
     },
     url: {
-        ...defaultColDef('url'),
+        ...webieDefaultColDef('url'),
     },
     ip: {
-        ...defaultColDef('ip'),
+        ...webieDefaultColDef('ip'),
     },
     uuid: {
-        ...defaultColDef('uuid'),
+        ...webieDefaultColDef('uuid'),
     },
     cuid: {
-        ...defaultColDef('cuid'),
+        ...webieDefaultColDef('cuid'),
     },
     nanoid: {
-        ...defaultColDef('nanoid'),
+        ...webieDefaultColDef('nanoid'),
     },
     json: {
-        ...defaultColDef('json'),
+        ...webieDefaultColDef('json'),
     },
     calc: {
-        ...defaultColDef('calc'),
+        ...webieDefaultColDef('calc'),
     },
     table: {
-        ...defaultColDef('table'),
+        ...webieDefaultColDef('table'),
     },
     tableLookup: {
-        ...defaultColDef('tableLookup'),
+        ...webieDefaultColDef('tableLookup'),
     },
     longText: {
-        ...defaultColDef('longText'),
+        ...webieDefaultColDef('longText'),
+        cellEditor: 'agLargeTextCellEditor',
+        cellEditorPopup: true,
+        cellEditorParams: {
+            rows: 15,
+            cols: 50,
+        },
     },
     percentage: {
-        ...defaultColDef('percentage'),
+        ...webieDefaultColDef('percentage'),
     },
     image: {
-        ...defaultColDef('image'),
+        ...webieDefaultColDef('image'),
     },
     file: {
-        ...defaultColDef('file'),
+        ...webieDefaultColDef('file'),
     },
 }

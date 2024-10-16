@@ -125,13 +125,21 @@ const defaultCUIDTypeMeta: IDTypeMeta = {
     idType: 'cuid',
 }
 
+// LongText
+export const longTextTypeMetaSchema = z.object({
+    defaultValue: zodTypeMap.longText.optional(),
+})
+export type LongTextTypeMeta = z.infer<typeof longTextTypeMetaSchema>
+const defaultLongTextTypeMeta: LongTextTypeMeta = {
+    defaultValue: undefined,
+}
+
 export const typeDefaultColumnMetaValueMap = {
     string: defaultStringTypeMeta,
     number: defaultNumberTypeMeta,
     boolean: defaultBooleanTypeMeta,
     date: undefined,
     email: defaultEmailTypeMeta,
-    any: undefined,
     api: defaultApiTypeMeta,
     select: defaultSelectTypeMeta,
     multipleSelect: defaultSelectTypeMeta,
@@ -144,7 +152,7 @@ export const typeDefaultColumnMetaValueMap = {
     calc: undefined,
     table: undefined,
     tableLookup: undefined,
-    longText: undefined,
+    longText: defaultLongTextTypeMeta,
     percentage: { ...defaultNumberTypeMeta, type: 'percentage' },
     image: undefined,
     file: undefined,

@@ -4,7 +4,6 @@ import {
     CheckSquare2,
     ChevronDownCircle,
     CopyCheck,
-    Earth,
     File,
     FileDigitIcon,
     FileDown,
@@ -78,11 +77,11 @@ export const supportedTypes: TypeButtonArgs[] = [
         label: 'API',
         icon: Webhook,
     },
-    {
-        value: 'any',
-        label: 'Any',
-        icon: Earth,
-    },
+    // {
+    //     value: 'any',
+    //     label: 'Any',
+    //     icon: Earth,
+    // },
     {
         value: 'url',
         label: 'URL',

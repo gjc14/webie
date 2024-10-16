@@ -8,6 +8,7 @@ import { APISettingCard } from './api'
 import { BooleanSettingCard } from './boolean'
 import { EmailSettingCard } from './email'
 import { IpSettingCard } from './ip'
+import { LongTextSettingCard } from './longText'
 import { NumberSettingCard } from './number'
 import { SelectSettingCard } from './select'
 import { StringSettingCard } from './string'
@@ -129,6 +130,16 @@ export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
                     description="Unique id generator default uses NanoId. Which is short and url-friendly unique id."
                 >
                     <UniqueIdSettingCard {...props} />
+                </SettingSectionWrapper>
+            )
+        }
+        case 'longText': {
+            return (
+                <SettingSectionWrapper
+                    title={title}
+                    description="Long Text could store any length of text data."
+                >
+                    <LongTextSettingCard {...props} />
                 </SettingSectionWrapper>
             )
         }

@@ -24,7 +24,7 @@ export const webieColTypesSchema = z.enum([
 
     // 'void', // accepts undefined
 
-    'any',
+    // 'any', // any will display as "text" in the grid, so just use string
 
     // complex or nested types
     'api',
@@ -86,7 +86,7 @@ export const typeDefaultValuesMap = {
     email: null,
 
     // void: `print("void")`,
-    any: null,
+    // any: null,
 
     // No cell value, should be cellRenderer
     api: undefined,
@@ -127,7 +127,7 @@ export const zodTypeMap = {
     email: z.string().email().nullable(),
 
     // void: z.void(),
-    any: z.any(),
+    // any: z.any(),
 
     api: z.undefined(),
     select: z.string().nullable(),
@@ -171,6 +171,9 @@ export const webieColDefSchema = z.object({
     sortable: z.boolean().optional(),
     width: z.number().optional(),
     valueGetterCustomLogic: z.string().optional(),
+    cellEditor: z.string().optional(),
+    cellEditorPopup: z.boolean().optional(),
+    cellEditorParams: z.any().optional(),
 
     // Meta data, used for storing additional information
     meta: z.any().optional(),

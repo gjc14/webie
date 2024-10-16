@@ -18,9 +18,13 @@ import { subscribeToSchemeChange } from '~/lib/client-hints/color-schema'
 import { customThemeCookieName, useTheme } from '~/lib/hooks/theme-provider'
 import { useCookieTheme } from '~/lib/hooks/use-cookie-theme'
 import { useTable } from '../../lib/hooks/table'
-import { webieColDef, webieColType } from '../../schema/column'
+import { webieColDef } from '../../schema/column'
 import { webieRowData, webieTableConfig } from '../../schema/table'
 import { GridToolTip } from '../db-tooltip'
+import {
+    webieDataTypeDefinitions,
+    webieTypeIsNotPredefined,
+} from './data-type-definitions'
 import {
     checkCircular,
     generateCustomLogic,
@@ -28,10 +32,6 @@ import {
 } from './utils'
 import { CustomFilterSortSettingHeader } from './webie-header-component/filter-sort-setting-header'
 import { getWebieDefinedColumns } from './webie-system-columns'
-import {
-    webieDataTypeDefinitions,
-    webieTypeIsNotPredefined,
-} from './data-type-definitions'
 
 const customTheme = themeQuartz.withParams({
     accentColor: '#51B1FF',
@@ -145,6 +145,9 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                         filter: column.filter,
                         sortable: column.sortable,
                         width: column.width,
+                        cellEditor: column.cellEditor,
+                        cellEditorPopup: column.cellEditorPopup,
+                        cellEditorParams: column.cellEditorParams,
                         onCellValueChanged: e => {
                             const updateValue = handleCellValueChanged({
                                 e,
@@ -236,6 +239,8 @@ export const DataGrid = forwardRef<AgGridReact<webieRowData>>(
                     // Custom Cell Data Types
                     dataTypeDefinitions={dataTypeDefinitions}
                     onCellKeyDown={e => {
+                        // TODO: Fix edge browser issue when using key down to navigate between cells.
+                        // Uncaught TypeError: Cannot read properties of null (reading 'ControlLooksLikePasswordCredentialField')
                         console.log('key down', e)
                     }}
                 />

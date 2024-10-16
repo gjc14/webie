@@ -46,7 +46,7 @@ export const DefaultValueInput = forwardRef<
                     id="default-value"
                     type={type}
                     placeholder={
-                        props.placeholder || 'Define a default value for row'
+                        props.placeholder || 'Define default value for rows'
                     }
                     defaultValue={typeMetaData?.defaultValue}
                     onChange={e => {
