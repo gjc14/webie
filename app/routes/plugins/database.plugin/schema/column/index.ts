@@ -1,6 +1,10 @@
 import { ValueFormatterFunc } from 'ag-grid-community'
+import { UUID } from 'bson'
+import cuid from 'cuid'
+import { nanoid } from 'nanoid'
 import { z } from 'zod'
-import { TypeMetaFor } from './type-meta'
+
+import { idTypes, TypeMetaFor } from './type-meta'
 /**
  * Define supporting type for column of the data grid.
  * It could be directly selected by end user
@@ -55,41 +59,60 @@ export const webieColTypesSchema = z.enum([
 export type webieColType = z.infer<typeof webieColTypesSchema>
 
 /**
+ * Default value generater for unique id (nanoid)
+ * Webie only explicitly open option Unique ID (default nanoID), user could set typeMeta to type UUID or CUID.
+ */
+export const generateID = (type: (typeof idTypes)[number]) => {
+    switch (type) {
+        case 'uuid':
+            return new UUID(UUID.generate()).toString()
+        case 'cuid':
+            return cuid()
+        case 'nanoid':
+            return nanoid()
+        default:
+            throw new Error(`Unsupported ID type: ${type}`)
+    }
+}
+
+/**
  * Define the default values for the column types.
  */
-export const typeDefaultValuesMap: { [key in webieColType]: any } = {
+export const typeDefaultValuesMap = {
     string: null,
     number: null,
     boolean: true,
-    date: new Date().toLocaleString(),
+    date: new Date(),
     email: null,
 
     // void: `print("void")`,
     any: null,
 
+    // No cell value, should be cellRenderer
     api: undefined,
-    select: '',
-    multipleSelect: [],
+    select: null,
+    multipleSelect: null,
 
     url: null,
     ip: null,
 
-    uuid: null,
-    cuid: null,
-    nanoid: null,
+    uuid: () => generateID('uuid'),
+    cuid: () => generateID('cuid'),
+    nanoid: () => generateID('nanoid'),
 
-    json: '{}',
+    json: null,
 
+    // No cell value, should be valueGetter
     calc: undefined,
 
-    table: '',
-    tableLookup: '',
+    table: null,
+    tableLookup: null,
 
     longText: null,
     percentage: null,
     image: null,
     file: null,
-}
+} as const
 
 /**
  * Map webieColType to the corresponding Zod types.
@@ -155,6 +178,11 @@ export const webieColDefSchema = z.object({
 export type webieColDef = z.infer<typeof webieColDefSchema> & {
     valueFormatter?: string | ValueFormatterFunc
 }
+
+/**
+ * Generic webieColDef
+ * @example type uuidTypeMeta = webieColDefGeneric<'uuid'>['typeMeta']
+ */
 export interface webieColDefGeneric<T extends webieColType>
     extends z.infer<typeof webieColDefSchema> {
     type: T

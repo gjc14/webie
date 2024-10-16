@@ -93,6 +93,38 @@ const defaultIpTypeMeta: IpTypeMeta = {
     defaultValue: undefined,
 }
 
+// ID
+export const idTypes = ['uuid', 'cuid', 'nanoid'] as const
+const createIdSchema = (
+    idType: (typeof idTypes)[number],
+    validator: z.ZodNullable<z.ZodString>
+) =>
+    z.object({
+        idType: z.literal(idType),
+        defaultValue: validator.optional(),
+    })
+const uuidSchema = createIdSchema('uuid', zodTypeMap.uuid)
+const cuidSchema = createIdSchema('cuid', zodTypeMap.cuid)
+const nanoidSchema = createIdSchema('nanoid', zodTypeMap.nanoid)
+export const idTypeMetaSchema = z.discriminatedUnion('idType', [
+    uuidSchema,
+    cuidSchema,
+    nanoidSchema,
+])
+export type IDTypeMeta = z.infer<typeof idTypeMetaSchema>
+const defaultNanoIDTypeMeta: IDTypeMeta = {
+    defaultValue: undefined,
+    idType: 'nanoid',
+}
+const defaultUUIDTypeMeta: IDTypeMeta = {
+    defaultValue: undefined,
+    idType: 'uuid',
+}
+const defaultCUIDTypeMeta: IDTypeMeta = {
+    defaultValue: undefined,
+    idType: 'cuid',
+}
+
 export const typeDefaultColumnMetaValueMap = {
     string: defaultStringTypeMeta,
     number: defaultNumberTypeMeta,
@@ -105,9 +137,9 @@ export const typeDefaultColumnMetaValueMap = {
     multipleSelect: defaultSelectTypeMeta,
     url: defaulUrlTypeMeta,
     ip: defaultIpTypeMeta,
-    uuid: undefined,
-    cuid: undefined,
-    nanoid: undefined,
+    uuid: defaultUUIDTypeMeta,
+    cuid: defaultCUIDTypeMeta,
+    nanoid: defaultNanoIDTypeMeta,
     json: undefined,
     calc: undefined,
     table: undefined,

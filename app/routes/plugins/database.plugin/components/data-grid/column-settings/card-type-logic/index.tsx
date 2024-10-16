@@ -11,6 +11,7 @@ import { IpSettingCard } from './ip'
 import { NumberSettingCard } from './number'
 import { SelectSettingCard } from './select'
 import { StringSettingCard } from './string'
+import { UniqueIdSettingCard } from './unique-id'
 import { UrlSettingCard } from './url'
 
 export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
@@ -118,6 +119,16 @@ export const TypeLogicSettingCard = (props: ColumnSettingsCardState) => {
                     description="Store an ip address. e.g. 192.0.0.1"
                 >
                     <IpSettingCard {...props} />
+                </SettingSectionWrapper>
+            )
+        }
+        case 'nanoid': {
+            return (
+                <SettingSectionWrapper
+                    title={title}
+                    description="Unique id generator default uses NanoId. Which is short and url-friendly unique id."
+                >
+                    <UniqueIdSettingCard {...props} />
                 </SettingSectionWrapper>
             )
         }

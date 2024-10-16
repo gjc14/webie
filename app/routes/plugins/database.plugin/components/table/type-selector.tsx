@@ -1,6 +1,8 @@
+import { IdCardIcon } from '@radix-ui/react-icons'
 import {
     Calendar,
     CheckSquare2,
+    ChevronDownCircle,
     CopyCheck,
     Earth,
     File,
@@ -15,7 +17,6 @@ import {
     LucideIcon,
     Mail,
     Router,
-    SquareChevronDown,
     Text,
     Webhook,
 } from 'lucide-react'
@@ -27,6 +28,7 @@ import {
     CommandItem,
     CommandList,
 } from '~/components/ui/command'
+import { convertRadixToLucideIcon } from '~/components/utils'
 import { webieColType, webieColTypesSchema } from '../../schema/column'
 
 export type TypeButtonArgs = {
@@ -54,7 +56,7 @@ export const supportedTypes: TypeButtonArgs[] = [
     {
         value: 'select',
         label: 'Select',
-        icon: SquareChevronDown,
+        icon: ChevronDownCircle,
     },
     {
         value: 'multipleSelect',
@@ -91,20 +93,21 @@ export const supportedTypes: TypeButtonArgs[] = [
         label: 'IP Address',
         icon: Router,
     },
-    {
-        value: 'uuid',
-        label: 'UUID',
-        icon: Hash,
-    },
-    {
-        value: 'cuid',
-        label: 'CUID',
-        icon: Hash,
-    },
+    // Could be added for explicit id types instead of feature in nanoid (default) with options
+    // {
+    //     value: 'uuid',
+    //     label: 'Unique ID (UUID)',
+    //     icon: Hash,
+    // },
+    // {
+    //     value: 'cuid',
+    //     label: 'Unique ID (CUID)',
+    //     icon: Hash,
+    // },
     {
         value: 'nanoid',
-        label: 'Nano ID',
-        icon: Hash,
+        label: 'Unique ID',
+        icon: convertRadixToLucideIcon(IdCardIcon),
     },
     {
         value: 'json',

@@ -53,7 +53,7 @@ export const SelectSettingCard = ({
             {success ? (
                 <>
                     <div>
-                        <Label htmlFor="default-value">Default select</Label>
+                        <Label htmlFor="default-select">Default select</Label>
                         {!multiple ? (
                             <Select
                                 onValueChange={v => {
@@ -68,7 +68,10 @@ export const SelectSettingCard = ({
                                 }}
                                 defaultValue={typeMeta?.defaultValue}
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger
+                                    className="w-full"
+                                    id="default-select"
+                                >
                                     <SelectValue placeholder="Define a default option" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -78,7 +81,7 @@ export const SelectSettingCard = ({
                                             if (option.trim() === '')
                                                 return (
                                                     <p
-                                                        key="default-value"
+                                                        key="no-options"
                                                         className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                                                     >
                                                         {noOptionMsg}
@@ -97,22 +100,27 @@ export const SelectSettingCard = ({
                             </Select>
                         ) : (
                             <MultiSelect
-                                defaultValue={
-                                    typeMeta.options.length > 0
-                                        ? typeMeta.options
-                                              .split('\n')
-                                              .map(option => {
+                                defaultSelected={
+                                    // From database, formatted "op1, op2, op3"
+                                    typeMeta.defaultValue
+                                        ? typeMeta.defaultValue
+                                              .split(', ')
+                                              .map(v => {
                                                   return {
-                                                      label: option,
-                                                      value: option,
+                                                      label: v,
+                                                      value: v,
                                                   }
                                               })
                                         : undefined
                                 }
                                 placeholder="Define default options"
                                 options={options}
-                                onChange={v => {
-                                    const formattedValue = v.join('\n')
+                                onSelectedChange={v => {
+                                    // To database, formatted "op1, op2, op3"
+                                    const formattedValue = v
+                                        .map(v => v.value)
+                                        .join(', ')
+
                                     const newTypeMeta: typeof typeMeta = {
                                         ...typeMeta,
                                         defaultValue: formattedValue,

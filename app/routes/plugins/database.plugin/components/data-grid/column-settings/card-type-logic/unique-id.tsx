@@ -7,15 +7,12 @@ import {
     SelectValue,
 } from '~/components/ui/select'
 import { cn } from '~/lib/utils'
-import {
-    numberTypeMetaSchema,
-    numberTypes,
-} from '../../../../schema/column/type-meta'
-import { DefaultValueInput } from './default-value-input'
+import { isIdType } from '~/routes/plugins/database.plugin/lib/utils'
+import { idTypeMetaSchema, idTypes } from '../../../../schema/column/type-meta'
 import { TypeLogicProps } from './type'
 import { WebieTypeSettingErrorConstructor } from './type-meta-error-constructor'
 
-export const NumberSettingCard = ({
+export const UniqueIdSettingCard = ({
     colDefEditing,
     setColDefEditing,
     className,
@@ -24,7 +21,7 @@ export const NumberSettingCard = ({
         success,
         error,
         data: typeMeta,
-    } = numberTypeMetaSchema.safeParse(colDefEditing.typeMeta)
+    } = idTypeMetaSchema.safeParse(colDefEditing.typeMeta)
     if (!success) {
         console.error('Invalid type meta:', error)
     }
@@ -34,46 +31,42 @@ export const NumberSettingCard = ({
             {success ? (
                 <>
                     <div>
-                        <Label htmlFor="number-type">Type</Label>
+                        <Label htmlFor="id-type">ID Type</Label>
                         <Select
                             onValueChange={v => {
-                                // None only appears in the dropdown
-                                if (v === 'none') return
+                                if (!isIdType(v)) return
+
+                                const newTypeMeta: typeof typeMeta = {
+                                    ...typeMeta,
+                                    idType: v,
+                                }
                                 setColDefEditing({
                                     ...colDefEditing,
-                                    typeMeta: {
-                                        ...typeMeta,
-                                        type: v,
-                                    },
+                                    typeMeta: newTypeMeta,
                                 })
                             }}
-                            defaultValue={typeMeta?.type ?? 'none'}
+                            defaultValue={typeMeta?.idType}
                         >
-                            <SelectTrigger className="w-full" id="number-type">
+                            <SelectTrigger className="w-full" id="id-type">
                                 <SelectValue placeholder="Select default status" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={'none'}>None</SelectItem>
-                                {numberTypes.map(option => {
+                                {idTypes.map(option => {
                                     return (
                                         <SelectItem key={option} value={option}>
-                                            {option.charAt(0).toUpperCase() +
-                                                option.slice(1).toLowerCase()}
+                                            {option.toUpperCase()}
                                         </SelectItem>
                                     )
                                 })}
                             </SelectContent>
                         </Select>
-                        {/* TODO: Implement functionality number types */}
-                    </div>
-                    <div>
-                        <DefaultValueInput
-                            type="number"
-                            typeMetaData={typeMeta}
-                            zodSchema={numberTypeMetaSchema}
-                            colDefEditing={colDefEditing}
-                            setColDefEditing={setColDefEditing}
-                        />
+                        <p className="px-1 py-0.5 text-xs text-muted-foreground">
+                            Webie do have an unique id for identyfying all rows,
+                            this will be an additional identifyer. NanoId
+                            generates most efficient of all methods, where as
+                            UUID is more complex and secure but takes up more
+                            storage, and CUID offers a balance between.
+                        </p>
                     </div>
                 </>
             ) : (

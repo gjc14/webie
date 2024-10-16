@@ -9,7 +9,11 @@ import {
     zodTypeMap,
 } from '../schema/column'
 import { colDefMap } from '../schema/column/default-col-def'
-import { typeDefaultColumnMetaValueMap } from '../schema/column/type-meta'
+import {
+    idTypeMetaSchema,
+    idTypes,
+    typeDefaultColumnMetaValueMap,
+} from '../schema/column/type-meta'
 import { webieRowData, webieTableConfig } from '../schema/table'
 
 /**
@@ -53,6 +57,10 @@ export const generateNewColumn = (type: webieColType): webieColDef => {
     }
 }
 
+export function isIdType(value: any): value is (typeof idTypes)[number] {
+    return idTypes.includes(value)
+}
+
 export const generateNewRow = (tableConfig: webieTableConfig): webieRowData => {
     const newRow: webieRowData = {
         _id: new ObjectId().toString(),
@@ -62,6 +70,25 @@ export const generateNewRow = (tableConfig: webieTableConfig): webieRowData => {
 
                 if (customedDefaultValue !== undefined) {
                     acc[column._id] = customedDefaultValue
+                    return acc
+                }
+
+                // For generating unique id, UUID and CUID is an option under unique id (default to nanoid)
+                // If you'd like to provide UUID and CUID option as a main type, change to if (isIdType(column.type))
+                if (column.type === 'nanoid') {
+                    const result = idTypeMetaSchema.safeParse(column.typeMeta)
+                    if (!result.success) {
+                        console.error(
+                            `Invalid id type meta for ${column.type}: ${result.error}`
+                        )
+                        acc[column._id] = '#ERROR!'
+                        return acc
+                    }
+
+                    const idTypeMeta = result.data
+                    const generateRespectiveID =
+                        typeDefaultValuesMap[idTypeMeta.idType]
+                    acc[column._id] = generateRespectiveID()
                     return acc
                 }
 
