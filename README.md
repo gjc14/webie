@@ -63,24 +63,25 @@ Run this in `/` shell.
 mv .env.sample .env
 ```
 
-1. `DATABASE_URL`: We are using MongoDB, please replace your Username, Password,
+1. `SUPER_EMAIL`: Your super admin email.
+2. `DATABASE_URL`: We are using MongoDB, please replace your Username, Password,
    and name your Database Name.
-2. (optional) `VITE_TURNSTILE_SITE_KEY`: This key is used to
+3. (optional) `VITE_TURNSTILE_SITE_KEY`: This key is used to
    [get Turnstile token](https://developers.cloudflare.com/turnstile/get-started/)
    in client, if you use
    [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) as
    captcha, so should be exposed in the frontend with _VITE_\_ prefix.
-3. (optional) `TURNSTILE_SECRET_KEY`: Used to
+4. (optional) `TURNSTILE_SECRET_KEY`: Used to
    [verify Turnstile token](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/)
    get in the frontend in the backend
-4. `AED_SECRET`: Used to encrypt your magic link for authentication flow. Run
+5. `AED_SECRET`: Used to encrypt your magic link for authentication flow. Run
    `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` to
    get one.
-5. `COOKIE_SECRET`: Used to make your cookies secure. Run
+6. `COOKIE_SECRET`: Used to make your cookies secure. Run
    `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to
    get one
-6. `RESEND_API_KEY`: Send emails via Resend.
-7. `BASE_URL`: This is the domain where you're hosting your Webie. e.g.
+7. `RESEND_API_KEY`: Send emails via Resend.
+8. `BASE_URL`: This is the domain where you're hosting your Webie. e.g.
    `BASE_URL=webie.dev`
 
 <!-- prettier-ignore -->
@@ -98,17 +99,20 @@ npm i && npx prisma generate && npx prisma db push
 
 ### 3. Start in dev mode
 
+> For first time ever, you should set super admin email address in `.env` file,
+> and make sure your email server has set (fill in your `RESEND_API_KEY`). Then
+> run `npm run check-admin && npm run dev`, it will send a verification email to
+> you. After verify, webie will create an ADMIN role user and you will see
+> `role : "ADMIN"` in the database **User** table.
+
 Run this in `/` shell to start in dev mode, press `q` to exit application, `r`
 to restart.
 
-> For first time ever, you should pass in your email to set as admin, after
-> verify, you will see `role : "ADMIN"` in the database **User** table.
-
 ```sh
-npm run dev --email=your@ema.il
+npm run check-admin && npm run dev
 ```
 
-If you have already created admin:
+If you sure have already created admin:
 
 ```sh
 npm run dev

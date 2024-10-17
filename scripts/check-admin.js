@@ -4,39 +4,24 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-function parseArgs() {
-    const args = process.argv.slice(2) // Slice node and script, only get the arguments
-
-    let email = undefined
-    args.forEach(arg => {
-        if (arg.startsWith('--email=')) {
-            email = arg.split('=')[1]
-        }
-    })
-    return { email }
-}
-
 function isEmailValid(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
 async function checkAndCreateAdmin() {
     try {
-        // 查詢是否已經存在 admin
+        // Check if admin exists
         const admin = await prisma.user.findFirst({
             where: { role: 'ADMIN' },
         })
 
         if (!admin) {
-            console.log('CheckAdmin: Admin user does not exist. Creating...')
-
-            // Get email from arguments
-            const args = parseArgs()
+            console.log('Check Admin: Admin user does not exist. Creating...')
 
             // Check if email exists
-            const email = args.email || process.env.EMAIL
+            const email = process.env.SUPER_EMAIL
             if (!email) {
-                console.error('CheckAdmin: Fail to create first admin user.')
+                console.error('Check Admin: Fail to create first admin user.')
                 console.warn(
                     'You should provide your email via "--".\nRun: "npm run dev --email=your@ema.il" instead.'
                 )
@@ -45,7 +30,7 @@ async function checkAndCreateAdmin() {
 
             // Check if email is valid
             if (!isEmailValid(email)) {
-                console.error('CheckAdmin: Invalid email format.')
+                console.error('Check Admin: Invalid email format.')
                 return process.exit(1)
             }
 
@@ -74,10 +59,10 @@ async function checkAndCreateAdmin() {
                 `\n* * * \nAdmin user created! Sign in with ${newAdmin.email}.\n* * *\n`
             )
         } else {
-            console.log('CheckAdmin: Admin user already exists.\n')
+            console.log('Check Admin: Admin user already exists.\n')
         }
     } catch (error) {
-        console.error('CheckAdmin: Error checking/creating admin user:', error)
+        console.error('Check Admin: Error checking/creating admin user:', error)
     } finally {
         await prisma.$disconnect()
     }
