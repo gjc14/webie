@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
 import { Form, Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { ExternalLink, Loader2, Save, Trash } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { z } from 'zod'
 
 import {
@@ -114,18 +114,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function AdminPost() {
     const fetcher = useFetcher()
     const { post } = useLoaderData<typeof loader>()
-    const [postContent, setPostContent] = useState({
-        ...post,
-        createdAt: new Date(post.createdAt),
-        updatedAt: new Date(post.updatedAt),
-    })
-
     const [isDirty, setIsDirty] = useState(false)
-    const isSubmitting = fetcher.state === 'submitting'
 
-    const handlePostContentChange = () => {
-        setIsDirty(true)
-    }
+    const postContent = useMemo(() => {
+        return {
+            ...post,
+            createdAt: new Date(post.createdAt),
+            updatedAt: new Date(post.updatedAt),
+        }
+    }, [post])
+
+    const isSubmitting = fetcher.state === 'submitting'
 
     return (
         <AdminSectionWrapper
@@ -201,9 +200,7 @@ export default function AdminPost() {
                 <input hidden name="id" defaultValue={post.id} />
                 <PostContent
                     post={postContent}
-                    onPostContentChange={postContent => {
-                        setPostContent(postContent)
-                    }}
+                    onPostChange={(_, dirty) => setIsDirty(dirty)}
                 />
             </Form>
         </AdminSectionWrapper>

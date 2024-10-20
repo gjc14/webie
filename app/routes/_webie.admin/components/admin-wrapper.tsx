@@ -43,7 +43,9 @@ const AdminSectionWrapper = ({
                     size={16}
                     className="absolute top-3.5 cursor-pointer"
                     onClick={() =>
-                        shouldConfirm ? setOpen(true) : navigate(-1)
+                        shouldConfirm
+                            ? setOpen(true)
+                            : navigate('..', { relative: 'path' })
                     }
                     aria-label="return to last page"
                 />

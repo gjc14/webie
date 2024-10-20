@@ -104,10 +104,6 @@ export default function AdminPost() {
     const [isDirty, setIsDirty] = useState(false)
     const isSubmitting = fetcher.state === 'submitting'
 
-    const handlePostContentChange = () => {
-        setIsDirty(true)
-    }
-
     return (
         <AdminSectionWrapper
             promptTitle="Discard Post"
@@ -167,7 +163,7 @@ export default function AdminPost() {
                     setIsDirty(false)
                 }}
             >
-                <PostContent onPostContentChange={handlePostContentChange} />
+                <PostContent onPostChange={(_, dirty) => setIsDirty(dirty)} />
             </Form>
         </AdminSectionWrapper>
     )
