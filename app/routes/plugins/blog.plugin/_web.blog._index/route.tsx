@@ -1,5 +1,10 @@
-import { json, LoaderFunctionArgs, type MetaFunction } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import {
+    json,
+    LoaderFunctionArgs,
+    SerializeFrom,
+    type MetaFunction,
+} from '@remix-run/node'
+import { ClientLoaderFunctionArgs, useLoaderData } from '@remix-run/react'
 
 import { getSEO } from '~/lib/db/seo.server'
 import { SectionWrapper } from '../_web.blog/components/max-width-wrapper'
@@ -26,6 +31,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         return json({ seo, posts: [] })
     }
 }
+
+let cache: SerializeFrom<typeof loader>
+export const clientLoader = async ({
+    serverLoader,
+}: ClientLoaderFunctionArgs) => {
+    if (cache) {
+        return cache
+    }
+
+    cache = await serverLoader()
+    return cache
+}
+
+clientLoader.hydrate = true
 
 export default function Index() {
     const { seo, posts } = useLoaderData<typeof loader>()

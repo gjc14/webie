@@ -1,7 +1,11 @@
 import 'highlight.js/styles/base16/atelier-dune.min.css'
 
 import { json, LoaderFunctionArgs, SerializeFrom } from '@remix-run/node'
-import { useLoaderData, useNavigate } from '@remix-run/react'
+import {
+    ClientLoaderFunctionArgs,
+    useLoaderData,
+    useNavigate,
+} from '@remix-run/react'
 import { generateHTML } from '@tiptap/react'
 import { common, createLowlight } from 'lowlight'
 import { ArrowLeft } from 'lucide-react'
@@ -32,6 +36,27 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 }
 
 export type SerializedLoader = SerializeFrom<typeof loader>
+
+let cache: Record<string, SerializeFrom<typeof loader> | undefined> = {}
+export const clientLoader = async ({
+    serverLoader,
+    params,
+}: ClientLoaderFunctionArgs) => {
+    const postSlug = params.postSlug
+    if (!postSlug) throw new Response('Post not found', { status: 404 })
+
+    const cachedPost = cache[postSlug]
+
+    if (cache && cachedPost) {
+        return cachedPost
+    }
+
+    const postData = await serverLoader<typeof loader>()
+    cache = { ...cache, [postSlug]: postData }
+    return postData
+}
+
+clientLoader.hydrate = true
 
 export default function BlogPost() {
     const navigate = useNavigate()
