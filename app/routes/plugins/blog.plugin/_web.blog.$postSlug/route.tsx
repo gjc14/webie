@@ -66,9 +66,7 @@ export default function BlogPost() {
     const languages = lowlight.listLanguages()
 
     useEffect(() => {
-        setHtml(
-            generateHTML(JSON.parse(post.content || ''), [...ExtensionKit()])
-        )
+        setHtml(generateHTML(JSON.parse(post.content || ''), [...ExtensionKit]))
     }, [])
 
     useEffect(() => {

@@ -13,7 +13,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import { common, createLowlight } from 'lowlight'
 
-export const ExtensionKit = () => [
+export const ExtensionKit = [
     StarterKit.configure({
         heading: {
             levels: [2, 3, 4, 5],

@@ -28,22 +28,15 @@ import { PostContent } from '~/routes/plugins/blog.plugin/components/post-conten
 import { PostStatus } from '~/schema/database'
 import { createPost } from '../lib/db/post.server'
 
-const PostCreateSchema = z
-    .object({
-        title: z.string(),
-        content: z.string(),
-        excerpt: z.string().optional().default(''),
-        slug: z.string(),
-        status: PostStatus,
-        'seo-title': z.string(),
-        'seo-description': z.string(),
-    })
-    .refine(data => {
-        if (!data.excerpt) {
-            data.excerpt = data.content.slice(0, 100)
-        }
-        return true
-    })
+const PostCreateSchema = z.object({
+    title: z.string(),
+    content: z.string(),
+    excerpt: z.string(),
+    slug: z.string(),
+    status: PostStatus,
+    'seo-title': z.string(),
+    'seo-description': z.string(),
+})
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const admin = await userIs(

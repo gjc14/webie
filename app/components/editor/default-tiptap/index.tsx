@@ -9,13 +9,21 @@ import ExtensionKit from '../extensions/extension-kit'
 
 export default (props: {
     content?: string
-    onUpdate?: (content: string) => void
+    onUpdate?: ({
+        toJSON,
+        toHTML,
+        toText,
+    }: {
+        toJSON: () => string
+        toHTML: () => string
+        toText: () => string
+    }) => void
     onFocus?: () => void
     onBlur?: () => void
 }) => {
     const editor = useEditor({
         immediatelyRender: false,
-        extensions: [...ExtensionKit()],
+        extensions: [...ExtensionKit],
         content: props.content ? JSON.parse(props.content) : undefined,
         onFocus: () => {
             props.onFocus && props.onFocus()
@@ -24,7 +32,12 @@ export default (props: {
             props.onBlur && props.onBlur()
         },
         onUpdate({ editor }) {
-            props.onUpdate && props.onUpdate(JSON.stringify(editor.getJSON()))
+            props.onUpdate &&
+                props.onUpdate({
+                    toJSON: () => JSON.stringify(editor.getJSON()),
+                    toHTML: () => editor.getHTML(),
+                    toText: () => editor.getText(),
+                })
         },
         editorProps: {
             attributes: {

@@ -1,7 +1,9 @@
 import { Post, Seo } from '@prisma/client'
+import { generateText } from '@tiptap/react'
 import { useEffect, useRef, useState } from 'react'
 
 import DefaultTipTap from '~/components/editor/default-tiptap'
+import ExtensionKit from '~/components/editor/extensions/extension-kit'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
@@ -90,11 +92,11 @@ export const PostContent = ({
                         />
                         <DefaultTipTap
                             content={postContent.content}
-                            onUpdate={updateContent => {
+                            onUpdate={({ toJSON, toText }) => {
                                 setPostContent(prev => {
                                     const newPost = {
                                         ...prev,
-                                        content: updateContent,
+                                        content: toJSON(),
                                     }
                                     return newPost
                                 })
@@ -164,7 +166,7 @@ export const PostContent = ({
                         />
                         <Button
                             type="button"
-                            variant={'outline'}
+                            variant={'secondary'}
                             onClick={() => {
                                 const slug = postContent.title
                                     .replace(/^\s+|\s+$/g, '')
@@ -193,7 +195,7 @@ export const PostContent = ({
                         id="excerpt"
                         name="excerpt"
                         rows={3}
-                        placeholder="If empty, the first 50 caracteres of the content will be used."
+                        placeholder="Short description about your post..."
                         value={postContent.excerpt}
                         onChange={e => {
                             setPostContent(prev => {
@@ -205,6 +207,26 @@ export const PostContent = ({
                             })
                         }}
                     />
+                    <Button
+                        type="button"
+                        variant={'secondary'}
+                        className="mt-2"
+                        onClick={() => {
+                            setPostContent(prev => {
+                                const text = generateText(
+                                    JSON.parse(postContent.content),
+                                    ExtensionKit
+                                )
+                                const newPost = {
+                                    ...prev,
+                                    excerpt: text.slice(0, 150).trim() || '',
+                                }
+                                return newPost
+                            })
+                        }}
+                    >
+                        Generate Excerpt
+                    </Button>
                 </div>
 
                 <Separator />
@@ -233,7 +255,7 @@ export const PostContent = ({
                         />
                         <Button
                             type="button"
-                            variant={'outline'}
+                            variant={'secondary'}
                             onClick={() => {
                                 setPostContent(prev => {
                                     const newPost = {
@@ -272,6 +294,30 @@ export const PostContent = ({
                             })
                         }}
                     />
+                    <Button
+                        type="button"
+                        variant={'secondary'}
+                        className="mt-2"
+                        onClick={() => {
+                            setPostContent(prev => {
+                                const text = generateText(
+                                    JSON.parse(postContent.content),
+                                    ExtensionKit
+                                )
+                                const newPost = {
+                                    ...prev,
+                                    seo: {
+                                        ...prev.seo,
+                                        description:
+                                            text.slice(0, 150).trim() || '',
+                                    },
+                                }
+                                return newPost
+                            })
+                        }}
+                    >
+                        Generate SEO Description
+                    </Button>
                 </div>
             </section>
         </div>
