@@ -24,7 +24,7 @@ import {
     AdminSectionWrapper,
     AdminTitle,
 } from '~/routes/_webie.admin/components/admin-wrapper'
-import { PostContent } from '~/routes/_webie.admin/components/post-content'
+import { PostContent } from '~/routes/plugins/blog.plugin/components/post-content'
 import { PostStatus } from '~/schema/database'
 import { createPost } from '../lib/db/post.server'
 
