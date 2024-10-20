@@ -27,7 +27,7 @@ import { PostContent } from '~/routes/_webie.admin/components/post-content'
 import { PostStatus } from '~/schema/database'
 import { getPost, updatePost } from '../lib/db/post.server'
 
-const PostUpdateSchema = z
+const PostContentUpdateSchema = z
     .object({
         id: z.string(),
         title: z.string(),
@@ -48,7 +48,11 @@ const PostUpdateSchema = z
     })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
+    const admin = await userIs(
+        request.headers.get('Cookie'),
+        'ADMIN',
+        '/admin/signin'
+    )
 
     if (request.method !== 'PUT') {
         throw new Response('Method not allowed', { status: 405 })
@@ -57,7 +61,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
     const updatePostData = Object.fromEntries(formData)
 
-    const zResult = PostUpdateSchema.safeParse(updatePostData)
+    const zResult = PostContentUpdateSchema.safeParse(updatePostData)
 
     if (!zResult.success || !zResult.data) {
         console.log('updatePostData', zResult.error.issues)
@@ -75,6 +79,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             excerpt: zResult.data.excerpt,
             slug: zResult.data.slug,
             status: zResult.data.status,
+            authorId: admin.id,
             seo: {
                 metaTitle: zResult.data['seo-title'],
                 metaDescription: zResult.data['seo-description'],
@@ -107,12 +112,18 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 }
 
 export default function AdminPost() {
-    const { post } = useLoaderData<typeof loader>()
     const fetcher = useFetcher()
+    const { post } = useLoaderData<typeof loader>()
+    const [postContent, setPostContent] = useState({
+        ...post,
+        createdAt: new Date(post.createdAt),
+        updatedAt: new Date(post.updatedAt),
+    })
+
     const [isDirty, setIsDirty] = useState(false)
     const isSubmitting = fetcher.state === 'submitting'
 
-    const handleInputChange = () => {
+    const handlePostContentChange = () => {
         setIsDirty(true)
     }
 
@@ -189,16 +200,10 @@ export default function AdminPost() {
             >
                 <input hidden name="id" defaultValue={post.id} />
                 <PostContent
-                    post={
-                        post
-                            ? {
-                                  ...post,
-                                  createdAt: new Date(post.createdAt),
-                                  updatedAt: new Date(post.updatedAt),
-                              }
-                            : undefined
-                    }
-                    onInputChange={handleInputChange}
+                    post={postContent}
+                    onPostContentChange={postContent => {
+                        setPostContent(postContent)
+                    }}
                 />
             </Form>
         </AdminSectionWrapper>

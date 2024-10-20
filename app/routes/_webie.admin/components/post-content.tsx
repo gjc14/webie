@@ -1,5 +1,6 @@
 import { Post, Seo } from '@prisma/client'
 import { useRef, useState } from 'react'
+
 import DefaultTipTap from '~/components/editor/default-tiptap'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
@@ -15,23 +16,27 @@ import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { PostStatus } from '~/schema/database'
 
-export const PostContent = ({
-    post,
-    onInputChange,
-}: {
-    post?: Post & {
-        seo: {
-            title: Seo['title']
-            description: Seo['description']
-        }
+export type EditPost = Post & {
+    seo: {
+        title: Seo['title']
+        description: Seo['description']
     }
-    onInputChange?: () => void
-}) => {
+}
+
+interface PostContentProps {
+    post?: EditPost
+    onPostContentChange: (post: EditPost) => void
+}
+
+export const PostContent = ({
+    post = newPost,
+    onPostContentChange,
+}: PostContentProps) => {
     const titleRef = useRef<HTMLInputElement>(null)
     const slugRef = useRef<HTMLInputElement>(null)
     const seoTitleRef = useRef<HTMLInputElement>(null)
     const contentWrapperRef = useRef<HTMLDivElement>(null)
-    const [content, setContent] = useState(post?.content)
+    const [content, setContent] = useState(post.content)
 
     return (
         <div className="w-full flex flex-col md:flex-row gap-5">
@@ -44,8 +49,13 @@ export const PostContent = ({
                         name="title"
                         type="text"
                         placeholder="What is your post title?"
-                        defaultValue={post?.title}
-                        onChange={onInputChange}
+                        defaultValue={post.title}
+                        onChange={e =>
+                            onPostContentChange({
+                                ...post,
+                                title: e.target.value,
+                            })
+                        }
                     />
                 </div>
                 <div>
@@ -65,7 +75,11 @@ export const PostContent = ({
                             content={content}
                             onUpdate={updateContent => {
                                 setContent(updateContent)
-                                onInputChange?.()
+
+                                onPostContentChange({
+                                    ...post,
+                                    content: updateContent,
+                                })
                             }}
                             onFocus={() => {
                                 contentWrapperRef.current?.classList.add(
@@ -86,9 +100,11 @@ export const PostContent = ({
                 <div>
                     <Label htmlFor="status">Status</Label>
                     <Select
-                        defaultValue={post?.status || 'DRAFT'}
+                        defaultValue={post.status}
                         name="status"
-                        onValueChange={onInputChange}
+                        onValueChange={v =>
+                            onPostContentChange({ ...post, status: v })
+                        }
                     >
                         <SelectTrigger id="status" className="w-[180px]">
                             <SelectValue placeholder="Status" />
@@ -112,8 +128,13 @@ export const PostContent = ({
                             name="slug"
                             type="text"
                             placeholder="How to display your post in the URL?"
-                            defaultValue={post?.slug}
-                            onChange={onInputChange}
+                            defaultValue={post.slug}
+                            onChange={e =>
+                                onPostContentChange({
+                                    ...post,
+                                    slug: e.target.value,
+                                })
+                            }
                         />
                         <Button
                             type="button"
@@ -143,8 +164,13 @@ export const PostContent = ({
                         name="excerpt"
                         rows={3}
                         placeholder="If empty, the first 50 caracteres of the content will be used."
-                        defaultValue={post?.excerpt}
-                        onChange={onInputChange}
+                        defaultValue={post.excerpt}
+                        onChange={e =>
+                            onPostContentChange({
+                                ...post,
+                                excerpt: e.target.value,
+                            })
+                        }
                     />
                 </div>
 
@@ -159,8 +185,16 @@ export const PostContent = ({
                             name="seo-title"
                             type="text"
                             placeholder="Meta tilte should match Title (H1) for SEO."
-                            defaultValue={post?.seo.title ?? undefined}
-                            onChange={onInputChange}
+                            defaultValue={post.seo.title ?? undefined}
+                            onChange={e =>
+                                onPostContentChange({
+                                    ...post,
+                                    seo: {
+                                        ...post.seo,
+                                        title: e.target.value,
+                                    },
+                                })
+                            }
                         />
                         <Button
                             type="button"
@@ -183,11 +217,40 @@ export const PostContent = ({
                         name="seo-description"
                         rows={3}
                         placeholder="Short description about your post..."
-                        defaultValue={post?.seo.description ?? undefined}
-                        onChange={onInputChange}
+                        defaultValue={post.seo.description ?? undefined}
+                        onChange={e =>
+                            onPostContentChange({
+                                ...post,
+                                seo: {
+                                    ...post.seo,
+                                    description: e.target.value,
+                                },
+                            })
+                        }
                     />
                 </div>
             </section>
         </div>
     )
+}
+
+const newPost: EditPost = {
+    id: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    slug: '',
+    title: '',
+    content: '',
+    excerpt: '',
+    featuredImage: '',
+    status: 'DRAFT',
+    authorId: '',
+    seoId: '',
+    tagIDs: [],
+    categoryIDs: [],
+    subCategoryIDs: [],
+    seo: {
+        title: '',
+        description: '',
+    },
 }

@@ -30,11 +30,14 @@ export const PostSchema = z.object({
     updatedAt: z.date(),
     slug: z.string(),
     title: z.string(),
-    content: z.string().nullable(),
+    content: z.string(),
+    excerpt: z.string(),
+    featuredImage: z.string().nullable(),
     status: PostStatus,
     authorId: z.string(),
     seoId: z.string(),
 })
+export type Post = z.infer<typeof PostSchema>
 
 export const SeoSchema = z.object({
     id: z.string(),
@@ -44,3 +47,4 @@ export const SeoSchema = z.object({
     description: z.string().nullable(),
     route: z.string().nullable(),
 })
+export type Seo = z.infer<typeof SeoSchema>

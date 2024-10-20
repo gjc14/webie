@@ -104,7 +104,7 @@ export default function AdminPost() {
     const [isDirty, setIsDirty] = useState(false)
     const isSubmitting = fetcher.state === 'submitting'
 
-    const handleInputChange = () => {
+    const handlePostContentChange = () => {
         setIsDirty(true)
     }
 
@@ -167,7 +167,7 @@ export default function AdminPost() {
                     setIsDirty(false)
                 }}
             >
-                <PostContent onInputChange={handleInputChange} />
+                <PostContent onPostContentChange={handlePostContentChange} />
             </Form>
         </AdminSectionWrapper>
     )

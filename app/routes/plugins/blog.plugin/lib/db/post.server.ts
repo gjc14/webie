@@ -147,17 +147,8 @@ export const createPost = async (
     return { post }
 }
 
-interface UpdatePostProps {
+interface UpdatePostProps extends CreatePostProps {
     id: string
-    title: string
-    content: string
-    excerpt: string
-    slug: string
-    status: string
-    seo: {
-        metaTitle?: string
-        metaDescription?: string
-    }
 }
 
 export const updatePost = async (
