@@ -102,6 +102,7 @@ export default function AdminPost() {
             promptTitle="Discard Post"
             promptMessage="You have unsaved changes. Are you sure you want to leave?"
             shouldConfirm={isDirty}
+            onConfirm={() => window.localStorage.removeItem(`dirty-post-new`)}
         >
             <AdminHeader>
                 <AdminTitle>New Post</AdminTitle>
@@ -129,7 +130,13 @@ export default function AdminPost() {
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <Link to="/admin/posts">
-                                    <AlertDialogAction>
+                                    <AlertDialogAction
+                                        onClick={() => {
+                                            window.localStorage.removeItem(
+                                                `dirty-post-new`
+                                            )
+                                        }}
+                                    >
                                         Discard
                                     </AlertDialogAction>
                                 </Link>

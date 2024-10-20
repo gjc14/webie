@@ -1,9 +1,17 @@
 import { Post, Seo } from '@prisma/client'
-import { generateText } from '@tiptap/react'
 import { useEffect, useRef, useState } from 'react'
 
-import DefaultTipTap from '~/components/editor/default-tiptap'
-import ExtensionKit from '~/components/editor/extensions/extension-kit'
+import DefaultTipTap, { EditorRef } from '~/components/editor/default-tiptap'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
@@ -34,28 +42,98 @@ export const PostContent = ({
     post = newPost,
     onPostChange,
 }: PostContentProps) => {
+    const editorRef = useRef<EditorRef | null>(null)
     const contentWrapperRef = useRef<HTMLDivElement>(null)
-    const [postContent, setPostContent] = useState<PostContentEdit>(post)
+    const localStorageContent = useRef<string | null>(null)
+    const [open, setOpen] = useState(false)
+    const [initRecoverUnsaved, setInitRecoverUnsaved] = useState(false)
+    const [postState, setPostState] = useState<PostContentEdit>(post)
 
+    const postKey = `dirty-post-${postState.id}`
+
+    // Initialize recover/discard unsaved changes
+    // 1. Recover 2. Discard 3. Nothing => setInitRecoverUnsaved(true)
     useEffect(() => {
-        setPostContent(post)
+        if (window) {
+            const dirtyPost = window.localStorage.getItem(postKey)
+
+            if (dirtyPost) {
+                const isDirty = dirtyPost !== JSON.stringify(postState)
+
+                if (isDirty) {
+                    setOpen(true)
+                    localStorageContent.current = dirtyPost
+                } else {
+                    setInitRecoverUnsaved(true)
+                    window.localStorage.removeItem(postKey)
+                }
+            } else {
+                setInitRecoverUnsaved(true)
+            }
+        }
+    }, [])
+
+    // Update post content when post prop changes
+    useEffect(() => {
+        setPostState(post)
     }, [post])
 
+    // Update parent component and save dirty to local when post content changes
     useEffect(() => {
-        const isDirty = JSON.stringify(postContent) !== JSON.stringify(post)
-        onPostChange?.(postContent, isDirty)
+        const postChanged = JSON.stringify(postState)
+        const isDirty = postChanged !== JSON.stringify(post)
+        onPostChange?.(postState, isDirty)
 
-        // // TODO: Persist the post if dirty
-        // if (window) {
-        //     window.localStorage.setItem(
-        //         `postContent-${postContent.id}`,
-        //         JSON.stringify(postContent)
-        //     )
-        // }
-    }, [postContent])
+        if (isDirty && window) {
+            window.localStorage.setItem(postKey, postChanged)
+        } else if (!isDirty && window && initRecoverUnsaved) {
+            // Remove only if user has asked to recover unsaved changes (prevent removed on render)
+            window.localStorage.removeItem(postKey)
+        }
+    }, [postState])
 
     return (
         <div className="w-full flex flex-col md:flex-row gap-5">
+            <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Unsaved changes detected
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Do you want to recover your unsaved changes? For
+                            post <strong>{postState.title}</strong> (id:{' '}
+                            {postState.id})
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel
+                            onClick={() => {
+                                setInitRecoverUnsaved(true)
+                                window.localStorage.removeItem(postKey)
+                            }}
+                        >
+                            Discard
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                setInitRecoverUnsaved(true)
+
+                                const postContentLocal = JSON.parse(
+                                    localStorageContent.current || '{}'
+                                )
+                                setPostState(postContentLocal)
+                                editorRef.current?.updateContent(
+                                    postContentLocal.content
+                                )
+                            }}
+                        >
+                            Recover
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             <section className="flex flex-col gap-5">
                 <div>
                     <Label htmlFor="title">Title</Label>
@@ -64,9 +142,9 @@ export const PostContent = ({
                         name="title"
                         type="text"
                         placeholder="What is your post title?"
-                        value={postContent.title}
+                        value={postState.title}
                         onChange={e => {
-                            setPostContent(prev => {
+                            setPostState(prev => {
                                 const newPost = {
                                     ...prev,
                                     title: e.target.value,
@@ -76,6 +154,7 @@ export const PostContent = ({
                         }}
                     />
                 </div>
+
                 <div>
                     <Label htmlFor="content">Content</Label>
                     <div
@@ -88,12 +167,13 @@ export const PostContent = ({
                             type="hidden"
                             name="content"
                             readOnly
-                            value={postContent.content}
+                            value={postState.content}
                         />
                         <DefaultTipTap
-                            content={postContent.content}
-                            onUpdate={({ toJSON, toText }) => {
-                                setPostContent(prev => {
+                            ref={editorRef}
+                            content={postState.content}
+                            onUpdate={({ toJSON }) => {
+                                setPostState(prev => {
                                     const newPost = {
                                         ...prev,
                                         content: toJSON(),
@@ -120,10 +200,10 @@ export const PostContent = ({
                 <div>
                     <Label htmlFor="status">Status</Label>
                     <Select
-                        value={postContent.status}
+                        value={postState.status}
                         name="status"
                         onValueChange={v => {
-                            setPostContent(prev => {
+                            setPostState(prev => {
                                 const newPost = {
                                     ...prev,
                                     status: v,
@@ -153,9 +233,9 @@ export const PostContent = ({
                             name="slug"
                             type="text"
                             placeholder="How to display your post in the URL?"
-                            value={postContent.slug}
+                            value={postState.slug}
                             onChange={e => {
-                                setPostContent(prev => {
+                                setPostState(prev => {
                                     const newPost = {
                                         ...prev,
                                         slug: e.target.value,
@@ -168,14 +248,14 @@ export const PostContent = ({
                             type="button"
                             variant={'secondary'}
                             onClick={() => {
-                                const slug = postContent.title
+                                const slug = postState.title
                                     .replace(/^\s+|\s+$/g, '')
                                     .toLowerCase()
                                     .replace(/[^a-z0-9 -]/g, '')
                                     .replace(/\s+/g, '-')
                                     .replace(/-+/g, '-')
 
-                                setPostContent(prev => {
+                                setPostState(prev => {
                                     const newPost = {
                                         ...prev,
                                         slug,
@@ -196,9 +276,9 @@ export const PostContent = ({
                         name="excerpt"
                         rows={3}
                         placeholder="Short description about your post..."
-                        value={postContent.excerpt}
+                        value={postState.excerpt}
                         onChange={e => {
-                            setPostContent(prev => {
+                            setPostState(prev => {
                                 const newPost = {
                                     ...prev,
                                     excerpt: e.target.value,
@@ -212,11 +292,8 @@ export const PostContent = ({
                         variant={'secondary'}
                         className="mt-2"
                         onClick={() => {
-                            setPostContent(prev => {
-                                const text = generateText(
-                                    JSON.parse(postContent.content),
-                                    ExtensionKit
-                                )
+                            setPostState(prev => {
+                                const text = editorRef.current?.getText() || ''
                                 const newPost = {
                                     ...prev,
                                     excerpt: text.slice(0, 150).trim() || '',
@@ -239,9 +316,9 @@ export const PostContent = ({
                             name="seo-title"
                             type="text"
                             placeholder="Meta tilte should match Title (H1) for SEO."
-                            value={postContent.seo.title ?? ''}
+                            value={postState.seo.title ?? ''}
                             onChange={e => {
-                                setPostContent(prev => {
+                                setPostState(prev => {
                                     const newPost = {
                                         ...prev,
                                         seo: {
@@ -257,12 +334,12 @@ export const PostContent = ({
                             type="button"
                             variant={'secondary'}
                             onClick={() => {
-                                setPostContent(prev => {
+                                setPostState(prev => {
                                     const newPost = {
                                         ...prev,
                                         seo: {
                                             ...prev.seo,
-                                            title: postContent.title,
+                                            title: postState.title,
                                         },
                                     }
                                     return newPost
@@ -280,9 +357,9 @@ export const PostContent = ({
                         name="seo-description"
                         rows={3}
                         placeholder="Short description about your post..."
-                        value={postContent.seo.description ?? ''}
+                        value={postState.seo.description ?? ''}
                         onChange={e => {
-                            setPostContent(prev => {
+                            setPostState(prev => {
                                 const newPost = {
                                     ...prev,
                                     seo: {
@@ -299,11 +376,8 @@ export const PostContent = ({
                         variant={'secondary'}
                         className="mt-2"
                         onClick={() => {
-                            setPostContent(prev => {
-                                const text = generateText(
-                                    JSON.parse(postContent.content),
-                                    ExtensionKit
-                                )
+                            setPostState(prev => {
+                                const text = editorRef.current?.getText() || ''
                                 const newPost = {
                                     ...prev,
                                     seo: {
@@ -325,7 +399,7 @@ export const PostContent = ({
 }
 
 const newPost: PostContentEdit = {
-    id: '',
+    id: 'new',
     createdAt: new Date(),
     updatedAt: new Date(),
     slug: '',

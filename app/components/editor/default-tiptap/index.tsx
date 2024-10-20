@@ -2,12 +2,18 @@ import 'highlight.js/styles/base16/atelier-dune.min.css'
 import './styles.scss'
 
 import { EditorContent, useEditor } from '@tiptap/react'
+import { forwardRef, useImperativeHandle } from 'react'
 import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
 import { DefaultFloatingMenu } from '../components/menus/floating-menu'
 import { MenuBar } from '../components/menus/menu-bar'
 import ExtensionKit from '../extensions/extension-kit'
 
-export default (props: {
+export interface EditorRef {
+    updateContent: (content: string) => void
+    getText: () => string
+}
+
+interface EditorProps {
     content?: string
     onUpdate?: ({
         toJSON,
@@ -20,7 +26,9 @@ export default (props: {
     }) => void
     onFocus?: () => void
     onBlur?: () => void
-}) => {
+}
+
+export default forwardRef<EditorRef, EditorProps>((props, ref) => {
     const editor = useEditor({
         immediatelyRender: false,
         extensions: [...ExtensionKit],
@@ -46,6 +54,19 @@ export default (props: {
         },
     })
 
+    useImperativeHandle(
+        ref,
+        () => ({
+            updateContent(content: string) {
+                editor?.commands.setContent(JSON.parse(content))
+            },
+            getText() {
+                return editor?.getText() || ''
+            },
+        }),
+        [editor]
+    )
+
     return (
         <>
             {editor && <MenuBar editor={editor} />}
@@ -54,4 +75,4 @@ export default (props: {
             <EditorContent editor={editor} />
         </>
     )
-}
+})

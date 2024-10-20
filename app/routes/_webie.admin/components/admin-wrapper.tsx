@@ -17,15 +17,21 @@ const AdminSectionWrapper = ({
     children,
     className,
     shouldConfirm,
-    promptMessage = 'Are you sure you want to discard changes?',
     promptTitle = 'Discard changes?',
+    promptMessage = 'Are you sure you want to discard changes?',
+    cancelButtonText = 'Cancel',
+    confirmButtonText = 'Discard',
+    onConfirm,
     hideReturnButton = false,
 }: {
     children?: ReactNode
     className?: string
     shouldConfirm?: boolean
-    promptMessage?: string
     promptTitle?: string
+    promptMessage?: string
+    cancelButtonText?: string
+    confirmButtonText?: string
+    onConfirm?: () => void
     hideReturnButton?: boolean
 }) => {
     const navigate = useNavigate()
@@ -61,9 +67,16 @@ const AdminSectionWrapper = ({
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => navigate(-1)}>
-                            Discard
+                        <AlertDialogCancel>
+                            {cancelButtonText}
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                onConfirm?.()
+                                navigate('..', { relative: 'path' })
+                            }}
+                        >
+                            {confirmButtonText}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
