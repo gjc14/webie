@@ -74,7 +74,7 @@ export default function AdminSEO() {
     const [open, setOpen] = useState(false)
 
     return (
-        <AdminSectionWrapper hideReturnButton>
+        <AdminSectionWrapper>
             <AdminHeader>
                 <AdminTitle description="SEO data is connect to post or route. You could set in either here or in post or route.">
                     SEO

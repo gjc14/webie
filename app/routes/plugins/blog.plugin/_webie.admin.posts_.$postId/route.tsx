@@ -127,14 +127,7 @@ export default function AdminPost() {
     const isSubmitting = fetcher.state === 'submitting'
 
     return (
-        <AdminSectionWrapper
-            shouldConfirm={isDirty}
-            promptTitle="Discard Post"
-            promptMessage="You have unsaved changes. Are you sure you want to leave?"
-            onConfirm={() =>
-                window.localStorage.removeItem(`dirty-post-${postContent.id}`)
-            }
-        >
+        <AdminSectionWrapper>
             <AdminHeader>
                 <AdminTitle description={'Post id: ' + post.id}>
                     Edit Post

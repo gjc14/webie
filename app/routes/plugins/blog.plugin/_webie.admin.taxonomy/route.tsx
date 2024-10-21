@@ -35,14 +35,14 @@ export default function AdminTaxonomy() {
     const { tags, categories } = useLoaderData<typeof loader>()
 
     return (
-        <AdminSectionWrapper hideReturnButton>
+        <AdminSectionWrapper>
             <AdminHeader>
                 <AdminTitle description="SEO data is connect to post or route. You could set in either here or in post or route.">
                     Taxonomy
                 </AdminTitle>
                 <AdminActions>
                     <TaxonomyDialog tags={tags} categories={categories}>
-                        <Button className="space-x-1.5" size={'sm'}>
+                        <Button size={'sm'}>
                             <PlusCircle size={16} />
                             <p className="text-xs">Create Taxonomy</p>
                         </Button>

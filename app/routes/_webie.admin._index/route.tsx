@@ -2,7 +2,7 @@ import { AdminSectionWrapper } from '~/routes/_webie.admin/components/admin-wrap
 
 export default function AdminIndex() {
     return (
-        <AdminSectionWrapper hideReturnButton>
+        <AdminSectionWrapper>
             <h2>Dashboard</h2>
             <div className="w-full h-80 border border-border rounded-md" />
             <div className="flex flex-row gap-5 w-full">

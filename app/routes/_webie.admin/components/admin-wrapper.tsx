@@ -1,42 +1,13 @@
-import { useNavigate } from '@remix-run/react'
-import { ArrowLeftCircle } from 'lucide-react'
-import { ReactNode, useState } from 'react'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '~/components/ui/alert-dialog'
+import { ReactNode } from 'react'
 import { cn } from '~/lib/utils'
 
 const AdminSectionWrapper = ({
     children,
     className,
-    shouldConfirm,
-    promptTitle = 'Discard changes?',
-    promptMessage = 'Are you sure you want to discard changes?',
-    cancelButtonText = 'Cancel',
-    confirmButtonText = 'Discard',
-    onConfirm,
-    hideReturnButton = false,
 }: {
     children?: ReactNode
     className?: string
-    shouldConfirm?: boolean
-    promptTitle?: string
-    promptMessage?: string
-    cancelButtonText?: string
-    confirmButtonText?: string
-    onConfirm?: () => void
-    hideReturnButton?: boolean
 }) => {
-    const navigate = useNavigate()
-    const [open, setOpen] = useState(false)
-
     return (
         <section
             className={cn(
@@ -44,43 +15,7 @@ const AdminSectionWrapper = ({
                 className
             )}
         >
-            {!hideReturnButton && (
-                <ArrowLeftCircle
-                    size={16}
-                    className="absolute top-3.5 cursor-pointer"
-                    onClick={() =>
-                        shouldConfirm
-                            ? setOpen(true)
-                            : navigate('..', { relative: 'path' })
-                    }
-                    aria-label="return to last page"
-                />
-            )}
             {children}
-
-            <AlertDialog open={open} onOpenChange={setOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>{promptTitle}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            {promptMessage}
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            {cancelButtonText}
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={() => {
-                                onConfirm?.()
-                                navigate('..', { relative: 'path' })
-                            }}
-                        >
-                            {confirmButtonText}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </section>
     )
 }
@@ -142,10 +77,7 @@ const AdminActions = ({
 }) => {
     return (
         <div
-            className={cn(
-                'flex flex-nowrap space-x-1.5 sm:space-x-3',
-                className
-            )}
+            className={cn('flex flex-nowrap items-center space-x-2', className)}
         >
             {children}
         </div>

@@ -38,14 +38,14 @@ export default function AdminPost() {
     const { posts, tags, categories } = useLoaderData<typeof loader>()
 
     return (
-        <AdminSectionWrapper hideReturnButton>
+        <AdminSectionWrapper>
             <AdminHeader>
                 <AdminTitle>Posts</AdminTitle>
                 <AdminActions>
                     <TaxonomyDialog tags={tags} categories={categories} />
                     <Link to="/admin/posts/new">
-                        <Button className="space-x-1.5">
-                            <PlusCircle height={16} width={16} />
+                        <Button size={'sm'}>
+                            <PlusCircle size={16} />
                             <p className="text-xs">Create new post</p>
                         </Button>
                     </Link>

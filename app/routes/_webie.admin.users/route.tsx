@@ -30,7 +30,7 @@ export default function AdminAllUsers() {
     const { users } = useLoaderData<typeof loader>()
 
     return (
-        <AdminSectionWrapper hideReturnButton>
+        <AdminSectionWrapper>
             <AdminHeader>
                 <AdminTitle>Users</AdminTitle>
             </AdminHeader>

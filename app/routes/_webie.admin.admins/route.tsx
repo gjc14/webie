@@ -97,13 +97,13 @@ export default function AdminAdminUsers() {
     const isSubmitting = fetcher.formAction === '/admin/admins/invite'
 
     return (
-        <AdminSectionWrapper hideReturnButton>
+        <AdminSectionWrapper>
             <AdminHeader>
                 <AdminTitle>Admins</AdminTitle>
                 <AdminActions>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className="space-x-1.5" size={'sm'}>
+                            <Button size={'sm'}>
                                 {isSubmitting ? (
                                     <Loader2
                                         size={16}

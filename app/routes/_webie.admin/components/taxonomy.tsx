@@ -41,7 +41,7 @@ export const TaxonomyDialog = (props: {
                 {props.children ? (
                     props.children
                 ) : (
-                    <Button variant="outline" className="space-x-1.5">
+                    <Button variant="outline" size={'sm'}>
                         <Tags size={16} />
                         <span className="sr-only md:not-sr-only xs:whitespace-nowrap">
                             Edit Tags and Categories
