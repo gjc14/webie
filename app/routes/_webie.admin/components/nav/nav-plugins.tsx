@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react'
+import { NavLink } from '@remix-run/react'
 import { type LucideIcon } from 'lucide-react'
 
 import {
@@ -36,16 +36,25 @@ export function NavPlugins({ plugins }: { plugins: NavPluginsItem[] }) {
             <SidebarMenu>
                 {plugins.map(item => (
                     <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
-                            <Link to={item.url}>
-                                {item.lucideIcon ? (
-                                    <item.lucideIcon />
-                                ) : (
-                                    item.jsxIcon
-                                )}
-                                <span>{item.title}</span>
-                            </Link>
-                        </SidebarMenuButton>
+                        <NavLink to={item.url} end>
+                            {({ isActive }) => (
+                                <SidebarMenuButton
+                                    tooltip={item.title}
+                                    className={
+                                        isActive
+                                            ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                                            : ''
+                                    }
+                                >
+                                    {item.lucideIcon ? (
+                                        <item.lucideIcon />
+                                    ) : (
+                                        item.jsxIcon
+                                    )}
+                                    <span>{item.title}</span>
+                                </SidebarMenuButton>
+                            )}
+                        </NavLink>
                     </SidebarMenuItem>
                 ))}
             </SidebarMenu>

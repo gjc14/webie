@@ -15,6 +15,7 @@ const Icon = ({ name, ...props }: IconProps) => {
     // This Suspense boundary received an update before it finished hydrating.
     // This caused the boundary to switch to client rendering.
     // The usual way to fix this is to wrap the original update in startTransition.
+    // This appears when using icon in radix trigger
     const LucideIcon = useMemo(() => lazy(dynamicIconImports[name]), [name])
 
     return (

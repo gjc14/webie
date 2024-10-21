@@ -12,6 +12,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     const id = params.seoId
 
     if (!id) {
+        console.log('Invalid arguments', id)
         return json({ err: `Invalid arguments` }, { status: 400 })
     }
 

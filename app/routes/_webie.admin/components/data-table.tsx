@@ -14,6 +14,16 @@ import {
 } from '@tanstack/react-table'
 import { EyeOff, Loader2, MoreHorizontal } from 'lucide-react'
 import { ReactNode, useState } from 'react'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
 import {
     DropdownMenu,
@@ -193,19 +203,22 @@ export function DataTable<TData, TValue>({
     )
 }
 
-// TODO: Confirm deletion
 export const AdminDataTableMoreMenu = ({
     route,
     id,
     children,
     hideDelete,
+    deleteTarget,
 }: {
     route: string
     id: string
     children?: ReactNode
     hideDelete?: boolean
+    deleteTarget?: string
 }) => {
     const fetcher = useFetcher()
+    const [open, setOpen] = useState(false)
+
     const isSubmitting = fetcher.state === 'submitting'
     const isDeleting = fetcher.state !== 'idle'
 
@@ -227,18 +240,40 @@ export const AdminDataTableMoreMenu = ({
                 <DropdownMenuSeparator />
                 {children}
                 {!hideDelete && (
-                    <DropdownMenuItem
-                        onClick={() =>
-                            fetcher.submit(null, {
-                                method: 'DELETE',
-                                action: `/admin/${route}/${id}/delete`,
-                            })
-                        }
-                    >
+                    <DropdownMenuItem onClick={() => setOpen(true)}>
                         Delete
                     </DropdownMenuItem>
                 )}
             </DropdownMenuContent>
+
+            <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete {deleteTarget ? deleteTarget : 'this data'}{' '}
+                            (id: {id}).
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() =>
+                                fetcher.submit(null, {
+                                    method: 'DELETE',
+                                    action: `/admin/${route}/${id}/delete`,
+                                })
+                            }
+                        >
+                            Continue
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </DropdownMenu>
     )
 }
