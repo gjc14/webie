@@ -3,6 +3,7 @@ import { json } from '@remix-run/react'
 import { z } from 'zod'
 
 import { userIs } from '~/lib/db/auth.server'
+import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
 import {
     createCategory,
     createSubcategory,
@@ -63,18 +64,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 } else if (request.method === 'DELETE') {
                     const { id } = deleteSchema.parse(formObject)
                     const { category } = await deleteCategory(id)
-                    return json({
+                    return json<ConventionalSuccess>({
                         msg: deleteMesage(category.name),
                     })
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
-                    return json({
+                    return json<ConventionalError>({
                         err: 'Invalid argument',
                     })
                 }
                 console.error(error)
-                return json({
+                return json<ConventionalError>({
                     err: 'Failed to delete category',
                 })
             }
@@ -94,18 +95,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 } else if (request.method === 'DELETE') {
                     const { id } = deleteSchema.parse(formObject)
                     const { subcategory } = await deleteSubcategory(id)
-                    return json({
+                    return json<ConventionalSuccess>({
                         msg: deleteMesage(subcategory.name),
                     })
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
-                    return json({
+                    return json<ConventionalError>({
                         err: 'Invalid argument',
                     })
                 }
                 console.error(error)
-                return json({
+                return json<ConventionalError>({
                     err: 'Failed to delete category',
                 })
             }
@@ -124,18 +125,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 } else if (request.method === 'DELETE') {
                     const { id } = deleteSchema.parse(formObject)
                     const { tag } = await deleteTag(id)
-                    return json({
+                    return json<ConventionalSuccess>({
                         msg: deleteMesage(tag.name),
                     })
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
-                    return json({
+                    return json<ConventionalError>({
                         err: 'Invalid argument',
                     })
                 }
                 console.error(error)
-                return json({
+                return json<ConventionalError>({
                     err: 'Failed to delete tag',
                 })
             }

@@ -111,7 +111,7 @@ export default function App() {
                 )
             )
 
-            // Convention: actions return json({ data?, msg?, err? }) refer to README.md
+            // Convention: actions return json({ msg, data? } | { err, data?}) refer to README.md or /app/libs/utils.tsx
             const actionResponses = fetchers.filter(fetcher => {
                 return (
                     fetcher.state === 'loading' &&

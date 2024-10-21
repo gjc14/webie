@@ -5,40 +5,31 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export const isConventional = (
-    fetcherData: unknown
-): fetcherData is { data: any; msg: string; err: string } => {
-    if (typeof fetcherData !== 'object' || fetcherData === null) return false
-    if (
-        !('data' in fetcherData) ||
-        !('msg' in fetcherData) ||
-        !('err' in fetcherData)
-    )
-        return false
-    return true
+export type ConventionalSuccess = {
+    msg: string
+    data?: unknown
 }
-
-export const isConventionalData = (
-    fetcherData: unknown
-): fetcherData is { data: any } => {
-    if (typeof fetcherData !== 'object' || fetcherData === null) return false
-    if (!('data' in fetcherData)) return false
-    return true
+export type ConventionalError = {
+    err: string
+    data?: unknown
 }
+export type ConventionalActionResponse = ConventionalSuccess | ConventionalError
 
 export const isConventionalSuccess = (
     fetcherData: unknown
-): fetcherData is { msg: string } => {
+): fetcherData is ConventionalSuccess => {
     if (typeof fetcherData !== 'object' || fetcherData === null) return false
     if (!('msg' in fetcherData)) return false
+    if (!('data' in fetcherData)) return false
     return true
 }
 
 export const isConventionalError = (
     fetcherData: unknown
-): fetcherData is { err: string } => {
+): fetcherData is ConventionalError => {
     if (typeof fetcherData !== 'object' || fetcherData === null) return false
     if (!('err' in fetcherData)) return false
+    if (!('data' in fetcherData)) return false
     return true
 }
 

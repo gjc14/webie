@@ -126,12 +126,18 @@ npm run dev
 
 ### Conventional Return
 
+Refer to: [Definitions in lib/utils](./app/lib/utils.tsx)
+
 ```ts
-interface ActionResponse {
-    data?: {}
-    msg?: string
-    err?: string
+type ConventionalSuccess = {
+    msg: string
+    data?: unknown
+}
+type ConventionalError = {
+    err: string
+    data?: unknown
 }
 
-return json<ActionResponse>({ msg: 'Action success 🎉' })
+return json<ConventionalSuccess>({ msg: 'Action success 🎉' })
+return json<ConventionalError>({ err: 'Something went wrong 🚨' })
 ```

@@ -18,6 +18,7 @@ import {
 import { Button } from '~/components/ui/button'
 import { userIs } from '~/lib/db/auth.server'
 import { commitFlashSession, getFlashSession } from '~/lib/sessions.server'
+import { ConventionalError } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -59,7 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json({ data: null, err: message }, { status: 400 })
+        return json<ConventionalError>({ err: message }, { status: 400 })
     }
 
     try {
@@ -88,7 +89,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         })
     } catch (error) {
         console.error(error)
-        return json({ err: 'Failed to create post' }, { status: 500 })
+        return json<ConventionalError>(
+            { err: 'Failed to create post' },
+            { status: 500 }
+        )
     }
 }
 

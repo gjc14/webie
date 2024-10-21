@@ -4,17 +4,6 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Loader2, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import {
-    AdminActions,
-    AdminHeader,
-    AdminSectionWrapper,
-    AdminTitle,
-} from '~/routes/_webie.admin/components/admin-wrapper'
-import {
-    AdminDataTableMoreMenu,
-    DataTable,
-} from '~/routes/_webie.admin/components/data-table'
-import { UserContent } from '~/routes/_webie.admin/components/user-content'
 import { Button } from '~/components/ui/button'
 import {
     Dialog,
@@ -29,6 +18,18 @@ import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { userIs } from '~/lib/db/auth.server'
 import { getAdminUsers, updateUser } from '~/lib/db/user.server'
+import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import {
+    AdminActions,
+    AdminHeader,
+    AdminSectionWrapper,
+    AdminTitle,
+} from '~/routes/_webie.admin/components/admin-wrapper'
+import {
+    AdminDataTableMoreMenu,
+    DataTable,
+} from '~/routes/_webie.admin/components/data-table'
+import { UserContent } from '~/routes/_webie.admin/components/user-content'
 import { UserRole, UserStatus } from '~/schema/database'
 
 export const UserUpdateSchema = z.object({
@@ -41,7 +42,10 @@ export const UserUpdateSchema = z.object({
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'PUT') {
-        return json({ data: null, err: 'Invalid method' }, { status: 400 })
+        return json<ConventionalError>(
+            { data: null, err: 'Invalid method' },
+            { status: 400 }
+        )
     }
 
     await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
@@ -56,7 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json(
+        return json<ConventionalError>(
             { data: zResult.error.issues, err: message },
             { status: 400 }
         )
@@ -73,10 +77,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         })
 
-        return json({ msg: 'Success update ' + (user.name || user.email) })
+        return json<ConventionalSuccess>({
+            msg: 'Success update ' + (user.name || user.email),
+        })
     } catch (error) {
         console.error(error)
-        return json(
+        return json<ConventionalError>(
             { data: null, err: 'Failed to update user' },
             { status: 400 }
         )

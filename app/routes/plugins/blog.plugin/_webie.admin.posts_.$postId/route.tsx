@@ -17,6 +17,7 @@ import {
 } from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
 import { userIs } from '~/lib/db/auth.server'
+import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -68,7 +69,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json({ data: null, err: message }, { status: 400 })
+        return json<ConventionalError>({ err: message }, { status: 400 })
     }
 
     try {
@@ -86,10 +87,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         })
 
-        return json({ msg: `Post ${post.title} updated successfully` })
+        return json<ConventionalSuccess>({
+            msg: `Post ${post.title} updated successfully`,
+        })
     } catch (error) {
         console.error(error)
-        return json({ data: null, err: 'Failed to create post' })
+        return json<ConventionalError>({
+            data: null,
+            err: 'Failed to create post',
+        })
     }
 }
 

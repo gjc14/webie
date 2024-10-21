@@ -4,6 +4,12 @@ import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
+import { Button } from '~/components/ui/button'
+import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import { Input } from '~/components/ui/input'
+import { userIs } from '~/lib/db/auth.server'
+import { getSEOs, updateSEO } from '~/lib/db/seo.server'
+import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -15,11 +21,6 @@ import {
     DataTable,
 } from '~/routes/_webie.admin/components/data-table'
 import { SeoContent } from '~/routes/_webie.admin/components/seo-content'
-import { Button } from '~/components/ui/button'
-import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { Input } from '~/components/ui/input'
-import { userIs } from '~/lib/db/auth.server'
-import { getSEOs, updateSEO } from '~/lib/db/seo.server'
 
 export const SeoUpdateSchmea = z.object({
     id: z.string(),
@@ -29,7 +30,10 @@ export const SeoUpdateSchmea = z.object({
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'PUT') {
-        return json({ err: 'Method not allowed' }, { status: 405 })
+        return json<ConventionalError>(
+            { err: 'Method not allowed' },
+            { status: 405 }
+        )
     }
 
     await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
@@ -43,7 +47,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json({ err: message }, { status: 400 })
+        return json<ConventionalError>({ err: message }, { status: 400 })
     }
 
     try {
@@ -52,12 +56,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             title: zResult.data.title,
             description: zResult.data.description,
         })
-        return json({
+        return json<ConventionalSuccess>({
             msg: `SEO for ${seo.route || seo.title || 'unknown'} updated`,
         })
     } catch (error) {
         console.error(error)
-        return json({ err: 'Failed to update SEO' }, { status: 500 })
+        return json<ConventionalError>(
+            { err: 'Failed to update SEO' },
+            { status: 500 }
+        )
     }
 }
 
