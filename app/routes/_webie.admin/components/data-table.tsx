@@ -40,6 +40,7 @@ interface DataTableProps<TData, TValue> {
     hideColumnFilter?: boolean
 }
 
+// TODO: all filterable and sortable columns
 export function DataTable<TData, TValue>({
     columns,
     data,
@@ -74,7 +75,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <section>
-            <div className="flex pb-3">
+            <div className="flex pb-3 gap-2">
                 {children && children(table)}
 
                 {!hideColumnFilter && (
@@ -192,6 +193,7 @@ export function DataTable<TData, TValue>({
     )
 }
 
+// TODO: Confirm deletion
 export const AdminDataTableMoreMenu = ({
     route,
     id,

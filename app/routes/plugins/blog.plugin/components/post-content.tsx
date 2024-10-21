@@ -38,6 +38,8 @@ interface PostContentProps {
     onPostChange?: (post: PostContentEdit, dirty: boolean) => void
 }
 
+// TODO: Add featured image; tags, categories, subcategories selection; edit author; publish schedule
+// TODO: Editor upload image; link setting popup
 export const PostContent = ({
     post = newPost,
     onPostChange,

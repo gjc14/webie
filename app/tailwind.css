@@ -79,7 +79,7 @@
         @apply scroll-smooth border-border;
     }
     body {
-        @apply relative w-full min-h-screen bg-background text-foreground antialiased transition-colors duration-300;
+        @apply relative w-full min-h-screen bg-background text-foreground antialiased transition-colors duration-300 overscroll-y-none;
     }
 
     /* From Apple.com home page h1 */
