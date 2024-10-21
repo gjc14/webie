@@ -223,7 +223,7 @@ export const AdminDataTableMoreMenu = ({
     const isDeleting = fetcher.state !== 'idle'
 
     return (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size={'icon'} disabled={isDeleting}>
                     <span className="sr-only">Open menu</span>

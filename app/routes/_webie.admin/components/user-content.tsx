@@ -21,11 +21,6 @@ import {
 } from '~/components/ui/select'
 import { UserRole, UserStatus } from '~/schema/database'
 
-// TODO: It is not working with dropdown menu in data-table.
-// When clicked item in <AdminDataTableMoreMenu>, sure popup the dialog.
-// But also removes the pointer-events: none; which prevent click outside of dialog or dropdown-menu.
-// So when dialog open, it doesn't has a pointer-events: none;, when closed, however, it is toggled on.
-// Results in the whole page is not clickable even after dialog closed.
 export const UserContent = ({
     user,
     open,
