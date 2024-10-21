@@ -17,17 +17,17 @@ import { parse } from 'cookie'
 import { useEffect, useRef } from 'react'
 import { toast, Toaster } from 'sonner'
 
+import { GlobalLoading } from './components/global-loading'
 import {
     customThemeCookieName,
     getCustomTheme,
     ThemeProvider,
     useTheme,
-} from './lib/hooks/theme-provider'
+} from './hooks/theme-provider'
+import { useCookieTheme } from './hooks/use-cookie-theme'
 import { ClientHintCheck, getHints } from './lib/client-hints/client-hints'
 import { subscribeToSchemeChange } from './lib/client-hints/color-schema'
-import { useCookieTheme } from './lib/hooks/use-cookie-theme'
 import { commitFlashSession, getFlashSession } from './lib/sessions.server'
-import { GlobalLoading } from './components/global-loading'
 
 export function Layout({ children }: { children: React.ReactNode }) {
     const theme = useCookieTheme()

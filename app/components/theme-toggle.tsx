@@ -1,4 +1,4 @@
-import { setCustomTheme, useTheme } from '~/lib/hooks/theme-provider'
+import { setCustomTheme, useTheme } from '~/hooks/theme-provider'
 
 export function ThemeToggle({
     size,
