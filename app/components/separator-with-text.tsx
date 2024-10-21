@@ -6,19 +6,23 @@ import { cn } from '~/lib/utils'
 const SeparatorWithText = ({
     children,
     className,
+    seperatorClassName,
     paddingY = '12px',
 }: {
     children: React.ReactNode
     className?: string
+    seperatorClassName?: string
     paddingY?: string
 }) => {
     return (
         <div
-            className={cn('flex items-center', className)}
+            className={cn('flex items-center', seperatorClassName)}
             style={{ paddingTop: paddingY, paddingBottom: paddingY }}
         >
             <hr className="flex-grow border-current" />
-            <span className="px-3 text-xs text-muted-foreground">
+            <span
+                className={cn('px-3 text-xs text-muted-foreground', className)}
+            >
                 {children}
             </span>
             <hr className="flex-grow border-current" />

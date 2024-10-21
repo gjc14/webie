@@ -5,7 +5,7 @@ import {
 } from '@remix-run/node'
 import { authCookie, getToken, sendMagicLink } from '~/lib/db/auth.server'
 import { getUser, getUserById } from '~/lib/db/user.server'
-import { MainWrapper } from '../plugins/components/wrappers'
+import { MainWrapper } from '~/components/wrappers'
 import { SignInForm } from './auth'
 
 export const action = async ({ request }: ActionFunctionArgs) => {

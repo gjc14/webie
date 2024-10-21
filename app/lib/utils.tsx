@@ -20,7 +20,6 @@ export const isConventionalSuccess = (
 ): fetcherData is ConventionalSuccess => {
     if (typeof fetcherData !== 'object' || fetcherData === null) return false
     if (!('msg' in fetcherData)) return false
-    if (!('data' in fetcherData)) return false
     return true
 }
 
@@ -29,7 +28,6 @@ export const isConventionalError = (
 ): fetcherData is ConventionalError => {
     if (typeof fetcherData !== 'object' || fetcherData === null) return false
     if (!('err' in fetcherData)) return false
-    if (!('data' in fetcherData)) return false
     return true
 }
 

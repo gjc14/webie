@@ -7,7 +7,7 @@ import {
 import { ClientLoaderFunctionArgs, useLoaderData } from '@remix-run/react'
 
 import { getSEO } from '~/lib/db/seo.server'
-import { MainWrapper } from '../../components/wrappers'
+import { MainWrapper } from '~/components/wrappers'
 import { Footer } from '../_web/components/footer'
 import { Nav } from '../_web/components/nav'
 import { Hero } from './hero'

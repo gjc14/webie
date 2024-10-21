@@ -1,7 +1,7 @@
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { motion } from 'framer-motion'
 import { File } from 'lucide-react'
-import { fade } from '../../components/motions'
+import { fade } from '~/components/motions'
 
 export const Hero = () => {
     return (

@@ -5,7 +5,7 @@
 import { MetaFunction } from '@remix-run/node'
 import { Link } from '@remix-run/react'
 import { Button } from '~/components/ui/button'
-import { MainWrapper } from '../../components/wrappers'
+import { MainWrapper } from '~/components/wrappers'
 
 export const meta: MetaFunction = () => {
     return [
