@@ -112,8 +112,8 @@ export const NavContent = ({
                                   Icon={
                                       <Icon name={route.iconName} size={18} />
                                   }
-                                  label={route.label}
-                                  to={route.to}
+                                  label={route.title}
+                                  to={route.url}
                                   onClick={onClick}
                                   desktopShrink={desktopShrink}
                               />

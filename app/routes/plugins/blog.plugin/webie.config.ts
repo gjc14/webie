@@ -5,13 +5,13 @@ const config = (): WebieConfig => {
         pluginName: 'Blog',
         adminRoutes: [
             {
-                label: 'Posts',
-                to: 'posts',
+                title: 'Posts',
+                url: 'posts',
                 iconName: 'pen',
             },
             {
-                label: 'Taxonomies',
-                to: 'taxonomy',
+                title: 'Taxonomies',
+                url: 'taxonomy',
                 iconName: 'tag',
             },
         ],

@@ -1,10 +1,23 @@
-import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
-import { Outlet, useLoaderData } from '@remix-run/react'
+import {
+    json,
+    LoaderFunctionArgs,
+    MetaFunction,
+    redirect,
+} from '@remix-run/node'
+import { Outlet, useLoaderData, useLocation } from '@remix-run/react'
 
-import { ScrollArea } from '~/components/ui/scroll-area'
+import Icon from '~/components/dynamic-icon'
+import { Breadcrumb, BreadcrumbList } from '~/components/ui/breadcrumb'
+import { Separator } from '~/components/ui/separator'
+import {
+    SidebarInset,
+    SidebarProvider,
+    SidebarTrigger,
+} from '~/components/ui/sidebar'
 import { userIs } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
-import { Nav } from '~/routes/_webie.admin/components/nav'
+import { generateBreadcrumbs } from '~/lib/utils'
+import { AppSidebar } from '~/routes/_webie.admin/components/admin-sidebar'
 import { getPluginConfigs } from '~/routes/plugins/utils/get-plugin-configs.server'
 
 export const meta: MetaFunction = () => {
@@ -19,27 +32,58 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     )
 
     const existingUser = await getUserById(admin.id)
+    if (!existingUser || !existingUser.user) {
+        throw redirect('/admin/signin')
+    }
 
     const pluginConfigs = await getPluginConfigs()
     const pluginRoutes = pluginConfigs
         .flatMap(config => config.adminRoutes)
-        .filter(route => !!route)
+        .filter(routeItem => !!routeItem)
 
-    return json({ admin: existingUser.user, pluginRoutes: pluginRoutes })
+    return json({
+        admin: existingUser.user,
+        pluginRoutes: pluginRoutes,
+    })
 }
 
 export default function Admin() {
-    const { pluginRoutes } = useLoaderData<typeof loader>()
+    const { admin, pluginRoutes } = useLoaderData<typeof loader>()
+    const location = useLocation()
+    const breadcrumbPaths = generateBreadcrumbs(location.pathname)
+    const pluginRoutesWithIcon = pluginRoutes.map(item => ({
+        ...item,
+        jsxIcon: Icon({ name: item.iconName }),
+    }))
 
     return (
-        <div className="flex flex-col sm:flex-row">
-            <Nav pluginRoutes={pluginRoutes} />
+        <SidebarProvider>
+            <AppSidebar
+                pluginRoutes={pluginRoutesWithIcon}
+                user={{
+                    name: admin.name ?? 'webie-pro',
+                    email: admin.email,
+                    avatar: admin.imageUri ?? '/placeholders/avatar.png',
+                }}
+            />
+            <SidebarInset>
+                <header className="flex my-3 shrink-0 items-center gap-2">
+                    <div className="flex items-center gap-2 px-4">
+                        <SidebarTrigger className="-ml-1" />
+                        <Separator
+                            orientation="vertical"
+                            className="mr-2 h-4"
+                        />
+                        <Breadcrumb>
+                            <BreadcrumbList>{breadcrumbPaths}</BreadcrumbList>
+                        </Breadcrumb>
+                    </div>
+                </header>
 
-            <main className="grow w-full max-w-full h-auto flex flex-col items-center sm:h-screen sm:overflow-scroll">
-                <ScrollArea className="w-full overflow-x-auto">
+                <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
                     <Outlet />
-                </ScrollArea>
-            </main>
-        </div>
+                </main>
+            </SidebarInset>
+        </SidebarProvider>
     )
 }

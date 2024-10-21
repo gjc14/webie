@@ -54,13 +54,13 @@ const WebieConfigSchema = z.object({
         .array(
             z.object({
                 /**
-                 * Which will show as tooltip
+                 * Which will show in the `Admin` nav bar
                  */
-                label: z.string(),
+                title: z.string(),
                 /**
                  * The path relative to the `admin` route.
                  */
-                to: z.string(),
+                url: z.string(),
                 /**
                  * Icon name from `lucide-react`
                  * zod enum should have at least one value

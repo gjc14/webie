@@ -40,7 +40,7 @@ const AdminSectionWrapper = ({
     return (
         <section
             className={cn(
-                'relative flex flex-col p-10 mt-2.5 w-full gap-5',
+                'relative flex flex-col p-3 w-full gap-5 md:p-6',
                 className
             )}
         >
