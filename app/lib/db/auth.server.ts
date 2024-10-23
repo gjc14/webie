@@ -102,10 +102,11 @@ export const verifyMagicLink = async (
 }
 
 export const userIs = async (
-    cookieString: string | null,
+    request: Request,
     role: UserRole,
     redirectToSignIn: string
 ): Promise<{ id: string }> => {
+    const cookieString = request.headers.get('Cookie')
     if (!cookieString) throw redirect(redirectToSignIn)
 
     const cookie = await authCookie.parse(cookieString)

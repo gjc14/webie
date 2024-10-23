@@ -50,11 +50,7 @@ const PostContentUpdateSchema = z
     })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const admin = await userIs(
-        request.headers.get('Cookie'),
-        'ADMIN',
-        '/admin/signin'
-    )
+    const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
     if (request.method !== 'PUT') {
         throw new Response('Method not allowed', { status: 405 })

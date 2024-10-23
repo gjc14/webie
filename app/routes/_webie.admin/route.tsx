@@ -25,11 +25,7 @@ export const meta: MetaFunction = () => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const admin = await userIs(
-        request.headers.get('Cookie'),
-        'ADMIN',
-        '/admin/signin'
-    )
+    const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
     const existingUser = await getUserById(admin.id)
     if (!existingUser || !existingUser.user) {

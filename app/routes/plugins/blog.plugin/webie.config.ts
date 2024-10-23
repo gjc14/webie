@@ -15,7 +15,7 @@ const config = (): WebieConfig => {
                     },
                     {
                         title: 'Generative AI',
-                        url: 'gai',
+                        url: 'generative',
                     },
                 ],
             },

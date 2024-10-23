@@ -36,7 +36,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         )
     }
 
-    await userIs(request.headers.get('Cookie'), 'ADMIN', '/admin/signin')
+    await userIs(request, 'ADMIN', '/admin/signin')
 
     const formData = await request.formData()
     const updateSeoData = Object.fromEntries(formData)

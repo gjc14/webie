@@ -40,11 +40,7 @@ const PostCreateSchema = z.object({
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const admin = await userIs(
-        request.headers.get('Cookie'),
-        'ADMIN',
-        '/admin/signin'
-    )
+    const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
     if (request.method !== 'POST') {
         throw new Response('Method not allowed', { status: 405 })
