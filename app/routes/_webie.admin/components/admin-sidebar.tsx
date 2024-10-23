@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import { Command, LifeBuoy, Send, TextSearch, UserRound } from 'lucide-react'
+import { Command, LifeBuoy, Send } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -11,28 +11,23 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '~/components/ui/sidebar'
-import {
-    NavMain,
-    NavMainItem,
-} from '~/routes/_webie.admin/components/nav/nav-main'
-import {
-    NavPlugins,
-    NavPluginsItem,
-} from '~/routes/_webie.admin/components/nav/nav-plugins'
+import { NavMain } from '~/routes/_webie.admin/components/nav/nav-main'
+import { NavPlugins } from '~/routes/_webie.admin/components/nav/nav-plugins'
 import {
     NavSecondary,
     NavSecondaryItem,
 } from '~/routes/_webie.admin/components/nav/nav-secondary'
 import { NavUser } from '~/routes/_webie.admin/components/nav/nav-user'
+import { WebieAdminMenuItem } from '~/routes/plugins/utils/get-plugin-configs.server'
 
-const MainNavItems: NavMainItem[] = [
+const MainNavItems: WebieAdminMenuItem[] = [
     {
-        icon: UserRound,
+        iconName: 'user-round',
         title: 'Users',
         url: '/admin/users',
-        items: [{ title: 'Admin', url: '/admin/admins' }],
+        sub: [{ title: 'Admin', url: '/admin/admins' }],
     },
-    { icon: TextSearch, title: 'SEO', url: '/admin/seo' },
+    { iconName: 'text-search', title: 'SEO', url: '/admin/seo' },
 ]
 
 const SecondaryNavItems: NavSecondaryItem[] = [
@@ -53,7 +48,7 @@ const SecondaryNavItems: NavSecondaryItem[] = [
 ]
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-    pluginRoutes: NavPluginsItem[]
+    pluginRoutes: WebieAdminMenuItem[]
     user: {
         name: string
         email: string

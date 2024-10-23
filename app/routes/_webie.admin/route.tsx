@@ -51,15 +51,11 @@ export default function Admin() {
     const { admin, pluginRoutes } = useLoaderData<typeof loader>()
     const location = useLocation()
     const breadcrumbPaths = generateBreadcrumbs(location.pathname)
-    const pluginRoutesWithIcon = pluginRoutes.map(item => ({
-        ...item,
-        jsxIcon: Icon({ name: item.iconName }),
-    }))
 
     return (
         <SidebarProvider>
             <AppSidebar
-                pluginRoutes={pluginRoutesWithIcon}
+                pluginRoutes={pluginRoutes}
                 user={{
                     name: admin.name ?? 'webie-pro',
                     email: admin.email,

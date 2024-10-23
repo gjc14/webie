@@ -1,6 +1,7 @@
 import { NavLink } from '@remix-run/react'
-import { ChevronRight, type LucideIcon } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 
+import Icon from '~/components/dynamic-icon'
 import {
     Collapsible,
     CollapsibleContent,
@@ -17,29 +18,15 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from '~/components/ui/sidebar'
+import { type WebieAdminMenuItem } from '~/routes/plugins/utils/get-plugin-configs.server'
 
-export type NavMainItem = {
-    title: string
-    url: string
-    icon: LucideIcon
-    isActive?: boolean
-    items?: {
-        title: string
-        url: string
-    }[]
-}
-
-export function NavMain({ items }: { items: NavMainItem[] }) {
+export function NavMain({ items }: { items: WebieAdminMenuItem[] }) {
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map(item => (
-                    <Collapsible
-                        key={item.title}
-                        asChild
-                        defaultOpen={item.isActive}
-                    >
+                    <Collapsible key={item.title} asChild defaultOpen={false}>
                         <SidebarMenuItem>
                             <NavLink to={item.url} end>
                                 {({ isActive }) => (
@@ -51,12 +38,12 @@ export function NavMain({ items }: { items: NavMainItem[] }) {
                                                 : ''
                                         }
                                     >
-                                        <item.icon />
+                                        <Icon name={item.iconName} />
                                         <span>{item.title}</span>
                                     </SidebarMenuButton>
                                 )}
                             </NavLink>
-                            {item.items?.length ? (
+                            {item.sub?.length ? (
                                 <>
                                     <CollapsibleTrigger asChild>
                                         <SidebarMenuAction className="data-[state=open]:rotate-90">
@@ -68,7 +55,7 @@ export function NavMain({ items }: { items: NavMainItem[] }) {
                                     </CollapsibleTrigger>
                                     <CollapsibleContent>
                                         <SidebarMenuSub>
-                                            {item.items?.map(subItem => (
+                                            {item.sub?.map(subItem => (
                                                 <SidebarMenuSubItem
                                                     key={subItem.title}
                                                 >

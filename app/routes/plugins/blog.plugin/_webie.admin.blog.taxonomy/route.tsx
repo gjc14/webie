@@ -1,5 +1,4 @@
-import { json, SerializeFrom } from '@remix-run/node'
-import { useFetcher, useLoaderData } from '@remix-run/react'
+import { useFetcher, useOutletContext } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 
@@ -14,25 +13,11 @@ import {
 } from '~/routes/_webie.admin/components/admin-wrapper'
 import { DataTable } from '~/routes/_webie.admin/components/data-table'
 import { TaxonomyDialog } from '~/routes/_webie.admin/components/taxonomy'
-import { Intents } from '../_webie.admin.posts.action.taxonomy/route'
-import { getCategories, getTags } from '../lib/db/blog-taxonomy.server'
-
-export const loader = async () => {
-    try {
-        const { tags } = await getTags()
-        const { categories } = await getCategories()
-
-        return json({ tags, categories })
-    } catch (error) {
-        console.error(error)
-        return json({ tags: [], categories: [] })
-    }
-}
-
-export type SerializedTaxonomies = SerializeFrom<typeof loader>
+import { Intents } from '../_webie.admin.blog.action.taxonomy/route'
+import { useAdminBlogContext } from '../_webie.admin.blog/route'
 
 export default function AdminTaxonomy() {
-    const { tags, categories } = useLoaderData<typeof loader>()
+    const { tags, categories } = useAdminBlogContext()
 
     return (
         <AdminSectionWrapper>
@@ -116,7 +101,9 @@ const DeleteTaxonomy = ({
     )
 }
 
-export const tagColumns: ColumnDef<SerializedTaxonomies['tags'][number]>[] = [
+export const tagColumns: ColumnDef<
+    ReturnType<typeof useAdminBlogContext>['tags'][number]
+>[] = [
     {
         accessorKey: 'name',
         header: 'Name',
@@ -136,7 +123,7 @@ export const tagColumns: ColumnDef<SerializedTaxonomies['tags'][number]>[] = [
             <div className="w-full flex">
                 <DeleteTaxonomy
                     id={row.original.id}
-                    actionRoute={'/admin/posts/action/taxonomy'}
+                    actionRoute={'/admin/blog/action/taxonomy'}
                     intent={'tag'}
                 />
             </div>
@@ -145,7 +132,7 @@ export const tagColumns: ColumnDef<SerializedTaxonomies['tags'][number]>[] = [
 ]
 
 export const categoryColumns: ColumnDef<
-    SerializedTaxonomies['categories'][number]
+    ReturnType<typeof useAdminBlogContext>['categories'][number]
 >[] = [
     {
         accessorKey: 'name',
@@ -174,7 +161,7 @@ export const categoryColumns: ColumnDef<
             <div className="w-full flex">
                 <DeleteTaxonomy
                     id={row.original.id}
-                    actionRoute={'/admin/posts/action/taxonomy'}
+                    actionRoute={'/admin/blog/action/taxonomy'}
                     intent={'category'}
                 />
             </div>

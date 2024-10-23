@@ -5,14 +5,19 @@ const config = (): WebieConfig => {
         pluginName: 'Blog',
         adminRoutes: [
             {
-                title: 'Posts',
-                url: 'posts',
+                title: 'Blog',
+                url: 'blog',
                 iconName: 'pen',
-            },
-            {
-                title: 'Taxonomies',
-                url: 'taxonomy',
-                iconName: 'tag',
+                sub: [
+                    {
+                        title: 'Taxonomies',
+                        url: 'taxonomy',
+                    },
+                    {
+                        title: 'Content AI',
+                        url: 'ai',
+                    },
+                ],
             },
         ],
     }

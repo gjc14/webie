@@ -149,7 +149,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 export const loader = () => {
-    return redirect('/admin/posts')
+    return redirect('/admin/blog')
 }
 
 export default function AdminPostsActionTaxonomy() {

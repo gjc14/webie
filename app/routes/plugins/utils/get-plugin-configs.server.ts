@@ -66,9 +66,21 @@ const WebieConfigSchema = z.object({
                  * zod enum should have at least one value
                  */
                 iconName: z.enum([iconOptions[0], ...iconOptions.slice(1)]),
+                /**
+                 * The sub menu
+                 */
+                sub: z
+                    .array(
+                        z.object({
+                            title: z.string(),
+                            url: z.string(),
+                        })
+                    )
+                    .optional(),
             })
         )
         .optional(),
     dependencies: z.array(z.string()).optional(),
 })
 export type WebieConfig = z.infer<typeof WebieConfigSchema>
+export type WebieAdminMenuItem = NonNullable<WebieConfig['adminRoutes']>[number]

@@ -43,7 +43,7 @@ export default function AdminPost() {
                 <AdminTitle>Posts</AdminTitle>
                 <AdminActions>
                     <TaxonomyDialog tags={tags} categories={categories} />
-                    <Link to="/admin/posts/new">
+                    <Link to="/admin/blog/new">
                         <Button size={'sm'}>
                             <PlusCircle size={16} />
                             <p className="text-xs">Create new post</p>
@@ -115,8 +115,8 @@ export const columns: ColumnDef<SerializedPost>[] = [
             const id = row.original.id
 
             return (
-                <AdminDataTableMoreMenu route="posts" id={id}>
-                    <Link to={`/admin/posts/${id}`}>
+                <AdminDataTableMoreMenu route="blog" id={id}>
+                    <Link to={`/admin/blog/${id}`}>
                         <DropdownMenuItem>Edit</DropdownMenuItem>
                     </Link>
                 </AdminDataTableMoreMenu>

@@ -82,7 +82,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             `Post "${post.title}" created successfully`,
         ])
 
-        return redirect(`/admin/posts/${post.id}`, {
+        return redirect(`/admin/blog/${post.id}`, {
             headers: {
                 'Set-Cookie': await commitFlashSession(flashSession),
             },
@@ -128,7 +128,7 @@ export default function AdminPost() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <Link to="/admin/posts">
+                                <Link to="/admin/blog">
                                     <AlertDialogAction
                                         onClick={() => {
                                             window.localStorage.removeItem(

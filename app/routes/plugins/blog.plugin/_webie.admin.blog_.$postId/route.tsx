@@ -167,7 +167,7 @@ export default function AdminPost() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <Link to="/admin/posts">
+                                <Link to="/admin/blog">
                                     <AlertDialogAction
                                         onClick={() => {
                                             window.localStorage.removeItem(
