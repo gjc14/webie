@@ -1,5 +1,4 @@
-import { json, SerializeFrom } from '@remix-run/node'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, PlusCircle } from 'lucide-react'
 
@@ -17,25 +16,10 @@ import {
     DataTable,
 } from '~/routes/_webie.admin/components/data-table'
 import { TaxonomyDialog } from '~/routes/_webie.admin/components/taxonomy'
-import { getCategories, getTags } from '../lib/db/blog-taxonomy.server'
-import { getPosts } from '../lib/db/post.server'
-
-export const loader = async () => {
-    try {
-        const { posts } = await getPosts()
-        const { tags } = await getTags()
-        const { categories } = await getCategories()
-        return json({ posts, tags, categories })
-    } catch (error) {
-        console.error(error)
-        return json({ posts: [], categories: [], tags: [] })
-    }
-}
-
-type SerializedPost = SerializeFrom<typeof loader>['posts'][number]
+import { useAdminBlogContext } from '../_webie.admin.blog/route'
 
 export default function AdminPost() {
-    const { posts, tags, categories } = useLoaderData<typeof loader>()
+    const { posts, tags, categories } = useAdminBlogContext()
 
     return (
         <AdminSectionWrapper>
@@ -72,6 +56,8 @@ export default function AdminPost() {
         </AdminSectionWrapper>
     )
 }
+
+type SerializedPost = ReturnType<typeof useAdminBlogContext>['posts'][number]
 
 export const columns: ColumnDef<SerializedPost>[] = [
     {

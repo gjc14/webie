@@ -1,5 +1,5 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
-import { Form, Link, useFetcher, useLoaderData } from '@remix-run/react'
+import { ActionFunctionArgs, json } from '@remix-run/node'
+import { Form, Link, useFetcher, useParams } from '@remix-run/react'
 import { ExternalLink, Loader2, Save, Trash } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { z } from 'zod'
@@ -26,7 +26,8 @@ import {
 } from '~/routes/_webie.admin/components/admin-wrapper'
 import { PostContent } from '~/routes/plugins/blog.plugin/components/post-content'
 import { PostStatus } from '~/schema/database'
-import { getPost, updatePost } from '../lib/db/post.server'
+import { useAdminBlogContext } from '../_webie.admin.blog/route'
+import { updatePost } from '../lib/db/post.server'
 
 const PostContentUpdateSchema = z
     .object({
@@ -99,27 +100,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 }
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-    const postId = params.postId
-    if (!postId) {
-        throw new Response('Bad request', { status: 400 })
-    }
-
-    try {
-        const { post } = await getPost(postId)
-        if (!post) {
-            throw new Error('Post not found')
-        }
-        return json({ post })
-    } catch (error) {
-        console.error(error)
-        throw new Error('Failed to get post')
-    }
-}
-
 export default function AdminPost() {
     const fetcher = useFetcher()
-    const { post } = useLoaderData<typeof loader>()
+    const params = useParams()
+    const postId = params.postId
+    const { posts } = useAdminBlogContext()
+    const post = posts.find(p => p.id === postId)
+
+    if (!post) {
+        return (
+            <h2 className="grow flex items-center justify-center">Not found</h2>
+        )
+    }
+
     const [isDirty, setIsDirty] = useState(false)
 
     const postContent = useMemo(() => {

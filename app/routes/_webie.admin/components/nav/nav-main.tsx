@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from '@remix-run/react'
 import { ChevronRight } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 import Icon from '~/components/dynamic-icon'
 import {
@@ -24,22 +25,32 @@ export function NavMain({ items }: { items: WebieAdminMenuItem[] }) {
     const location = useLocation()
     const currentPath = location.pathname
 
+    const checkActive = (item: WebieAdminMenuItem) => {
+        return (
+            currentPath.endsWith(item.url) ||
+            item.sub?.some(subItem =>
+                currentPath.endsWith(`${item.url}/${subItem.url}`)
+            )
+        )
+    }
+
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map(item => {
-                    const isActive =
-                        currentPath.endsWith(item.url) ||
-                        item.sub?.some(subItem =>
-                            currentPath.endsWith(`${item.url}/${subItem.url}`)
-                        )
+                    const [isActive, setIsActive] = useState(checkActive(item))
+
+                    useEffect(() => {
+                        setIsActive(checkActive(item))
+                    }, [currentPath])
 
                     return (
                         <Collapsible
                             key={item.title}
                             asChild
-                            defaultOpen={isActive}
+                            open={isActive}
+                            onOpenChange={setIsActive}
                         >
                             <SidebarMenuItem>
                                 <NavLink to={item.url} end>

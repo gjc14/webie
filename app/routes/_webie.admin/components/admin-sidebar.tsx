@@ -58,6 +58,7 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 
 export function AppSidebar({ pluginRoutes, user, ...props }: AppSidebarProps) {
     return (
+        // TODO: Close sidebar on click menu button
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>
                 <SidebarMenu>
