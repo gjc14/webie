@@ -240,9 +240,12 @@ export const AdminDataTableMoreMenu = ({
                 <DropdownMenuSeparator />
                 {children}
                 {!hideDelete && (
-                    <DropdownMenuItem onClick={() => setOpen(true)}>
-                        Delete
-                    </DropdownMenuItem>
+                    <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => setOpen(true)}>
+                            Delete
+                        </DropdownMenuItem>
+                    </>
                 )}
             </DropdownMenuContent>
 

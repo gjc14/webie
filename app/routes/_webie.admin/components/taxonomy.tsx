@@ -112,7 +112,7 @@ const CategoryPart = (props: {
             </div>
 
             <div className="flex items-center">
-                <Popover>
+                <Popover modal>
                     <PopoverTrigger asChild>
                         <Button variant={'outline'}>Add a new Category</Button>
                     </PopoverTrigger>
@@ -266,7 +266,7 @@ const SubCategoryPart = (props: {
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-                <Popover>
+                <Popover modal>
                     <PopoverTrigger
                         asChild
                         disabled={

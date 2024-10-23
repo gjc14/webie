@@ -7,11 +7,6 @@ export const getUsers = async (): Promise<{ users: User[] }> => {
     return { users }
 }
 
-export const getAdminUsers = async (): Promise<{ users: User[] }> => {
-    const users = await prisma.user.findMany({ where: { role: 'ADMIN' } })
-    return { users }
-}
-
 export const getUser = async (
     email: string
 ): Promise<{ user: User | null }> => {

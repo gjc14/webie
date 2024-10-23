@@ -14,8 +14,8 @@ const config = (): WebieConfig => {
                         url: 'taxonomy',
                     },
                     {
-                        title: 'Content AI',
-                        url: 'ai',
+                        title: 'Generative AI',
+                        url: 'gai',
                     },
                 ],
             },

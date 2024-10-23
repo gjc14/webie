@@ -1,5 +1,5 @@
-import { ActionFunctionArgs, json, SerializeFrom } from '@remix-run/node'
-import { useFetcher, useLoaderData } from '@remix-run/react'
+import { ActionFunctionArgs, json } from '@remix-run/node'
+import { useFetcher } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { Loader2, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
@@ -17,7 +17,7 @@ import {
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { userIs } from '~/lib/db/auth.server'
-import { getAdminUsers, updateUser } from '~/lib/db/user.server'
+import { updateUser } from '~/lib/db/user.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
 import {
     AdminActions,
@@ -31,6 +31,7 @@ import {
 } from '~/routes/_webie.admin/components/data-table'
 import { UserContent } from '~/routes/_webie.admin/components/user-content'
 import { UserRole, UserStatus } from '~/schema/database'
+import { useUsersContext } from '../_webie.admin.users/route'
 
 export const UserUpdateSchema = z.object({
     id: z.string(),
@@ -89,18 +90,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 }
 
-export const loader = async () => {
-    const { users } = await getAdminUsers()
-
-    return json({ users })
-}
-
-type SerializedUser = SerializeFrom<typeof loader>['users'][number]
-
 export default function AdminAdminUsers() {
     const fetcher = useFetcher()
-    const { users } = useLoaderData<typeof loader>()
-    const isSubmitting = fetcher.formAction === '/admin/admins/invite'
+    const { users: allUsers } = useUsersContext()
+    const users = allUsers.filter(user => user.role === 'ADMIN')
+
+    const isSubmitting = fetcher.formAction === '/admin/users/admins/invite'
 
     return (
         <AdminSectionWrapper>
@@ -132,7 +127,7 @@ export default function AdminAdminUsers() {
                             <fetcher.Form
                                 className="flex gap-1.5"
                                 method="POST"
-                                action="/admin/admins/invite"
+                                action="/admin/users/admins/invite"
                             >
                                 <Input
                                     placeholder="Email"
@@ -169,6 +164,8 @@ export default function AdminAdminUsers() {
     )
 }
 
+type SerializedUser = ReturnType<typeof useUsersContext>['users'][number]
+
 export const columns: ColumnDef<SerializedUser>[] = [
     {
         accessorKey: 'email',
@@ -200,14 +197,14 @@ export const columns: ColumnDef<SerializedUser>[] = [
 
             return (
                 <>
-                    <AdminDataTableMoreMenu route="admins" id={id}>
+                    <AdminDataTableMoreMenu route="users/admins" id={id}>
                         <DropdownMenuItem onClick={() => setOpen(true)}>
                             Edit
                         </DropdownMenuItem>
                     </AdminDataTableMoreMenu>
                     <UserContent
                         method="PUT"
-                        action={`/admin/admins`}
+                        action={`/admin/users/admins`}
                         user={{
                             ...row.original,
                             updatedAt: new Date(row.original.updatedAt),

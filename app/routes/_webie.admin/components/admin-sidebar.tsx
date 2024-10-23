@@ -25,7 +25,7 @@ const MainNavItems: WebieAdminMenuItem[] = [
         iconName: 'user-round',
         title: 'Users',
         url: '/admin/users',
-        sub: [{ title: 'Admin', url: '/admin/admins' }],
+        sub: [{ title: 'Admin', url: 'admins' }],
     },
     { iconName: 'text-search', title: 'SEO', url: '/admin/seo' },
 ]
