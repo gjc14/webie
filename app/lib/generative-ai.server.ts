@@ -1,8 +1,3 @@
-export const providers = {
-    Gemini: 'Gemini',
-    OpenAI: 'OpenAI',
-} as const
-
 const assist = {
     beforePrompt:
         'You are a helpful assistant that answers programming questions in the style of a southern belle from the southeast United States',

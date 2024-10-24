@@ -3,26 +3,53 @@ import { useFetcher } from '@remix-run/react'
 import { Send } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '~/components/ui/select'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { userIs } from '~/lib/db/auth.server'
-import {
-    GeminiCompletion,
-    OpenAICompletion,
-    providers,
-} from '~/lib/generative-ai'
+import { GeminiCompletion, OpenAICompletion } from '~/lib/generative-ai.server'
 import {
     ConventionalError,
     ConventionalSuccess,
     isConventionalSuccess,
 } from '~/lib/utils'
 import {
+    AdminActions,
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
 } from '~/routes/_webie.admin/components/admin-wrapper'
+
+export const providers = {
+    Gemini: 'Gemini',
+    OpenAI: 'OpenAI (Paid)',
+} as const
+export const providersArray = Object.keys(providers) as Array<
+    keyof typeof providers
+>
+
+export type Providers = typeof providers
+export type Provider = keyof Providers
+
+export const isProvider = (provider: any): provider is Provider => {
+    return Object.keys(providers).includes(provider)
+}
+
+export const aiResponseSchama = z.object({
+    provider: z.enum([providersArray[0], ...providersArray.slice(1)]),
+    response: z.string(),
+})
+export type AIResponse = z.infer<typeof aiResponseSchama>
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
@@ -40,7 +67,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         typeof prompt !== 'string' ||
         !provider ||
         typeof provider !== 'string' ||
-        !(provider in providers)
+        !isProvider(provider)
     ) {
         throw new Response('Invalid argument', { status: 400 })
     }
@@ -48,24 +75,25 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     let response: string | null = null
     try {
         switch (provider) {
-            case 'OpenAI':
-                response = await OpenAICompletion({ prompt })
-                break
             case 'Gemini':
                 response = await GeminiCompletion({ prompt })
+                break
+            case 'OpenAI':
+                response = await OpenAICompletion({ prompt })
                 break
             default:
                 throw new Error('Invalid provider')
         }
-        console.log(response)
-        // Please write a post to instruct user making their branch webie-ec in webie repository, into a separate repository as webie-ec, but remaining all commit history. Also, connect the new webie-ec reppository with old webie repo as webie remote
+
+        const responseData: AIResponse = {
+            provider,
+            response: response ?? 'No response',
+        }
 
         return json<ConventionalSuccess>({
-            msg: '',
-            data: {
-                provider,
-                response: response ?? 'No response',
-            },
+            msg: 'Success',
+            data: responseData,
+            options: { preventAlert: true },
         })
     } catch (error) {
         console.error(error)
@@ -87,7 +115,20 @@ export default function AdminGenerativeAI() {
             return
         }
         if (isConventionalSuccess(response)) {
-            console.log(response)
+            const { success, data, error } = aiResponseSchama.safeParse(
+                response.data
+            )
+
+            if (success) {
+                console.log(
+                    'provider:',
+                    data.provider,
+                    'response:',
+                    data.response
+                )
+            } else {
+                console.error(error || 'Failed to parse response')
+            }
         }
     }, [fetcher.data])
 
@@ -106,6 +147,14 @@ export default function AdminGenerativeAI() {
                 <AdminTitle description="Generative AI powers all the content generating for you!">
                     Generative AI
                 </AdminTitle>
+                <AdminActions>
+                    <Label htmlFor="provider">Select your ai assitant</Label>
+                    <SelectProvider
+                        providers={providers}
+                        defaultValue={providers.Gemini}
+                        onValueChange={console.log}
+                    />
+                </AdminActions>
             </AdminHeader>
             <Separator />
             <section className="h-full grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-5">
@@ -141,5 +190,33 @@ export default function AdminGenerativeAI() {
                 </div>
             </section>
         </AdminSectionWrapper>
+    )
+}
+
+const SelectProvider = ({
+    providers,
+    defaultValue,
+    onValueChange,
+}: {
+    providers: Providers
+    defaultValue: Provider
+    onValueChange: (provider: Provider) => void
+}) => {
+    return (
+        <Select
+            defaultValue={defaultValue}
+            onValueChange={v => onValueChange(v as Provider)}
+        >
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select ai agent" />
+            </SelectTrigger>
+            <SelectContent>
+                {Object.entries(providers).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>
+                        {value}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     )
 }
