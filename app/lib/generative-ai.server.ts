@@ -19,21 +19,36 @@ if (process.env.GEMINI_API_KEY) {
     console.warn('GEMINI_API_KEY not found')
 }
 
+const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 64,
+    maxOutputTokens: 8192,
+    responseMimeType: 'text/plain',
+}
+
 export const GeminiCompletion = async ({ prompt }: { prompt: string }) => {
     if (!gemini) {
         return null
     }
 
-    const result = await gemini
-        .getGenerativeModel({
-            model: 'gemini-1.5-flash',
-        })
-        .generateContent(
-            `${assist.beforePrompt}. ${prompt}. ${assist.afterPrompt}.`
-        )
-    const response = result.response
+    const model = gemini.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+    })
 
-    const text = response.text()
+    const chatSession = model.startChat({
+        generationConfig,
+        history: [],
+    })
+
+    const result = await chatSession.sendMessage(
+        `${assist.beforePrompt}. ${prompt}. ${assist.afterPrompt}.`
+    )
+    // const result = await model.generateContent(
+    //     `${assist.beforePrompt}. ${prompt}. ${assist.afterPrompt}.`
+    // )
+
+    const text = result.response.text()
 
     return text
 }
@@ -66,7 +81,7 @@ export const OpenAICompletion = async ({
     }
 
     const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-3.5-turbo',
         messages: [
             {
                 role: 'system',
