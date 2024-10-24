@@ -28,6 +28,7 @@ import { useCookieTheme } from './hooks/use-cookie-theme'
 import { ClientHintCheck, getHints } from './lib/client-hints/client-hints'
 import { subscribeToSchemeChange } from './lib/client-hints/color-schema'
 import { commitFlashSession, getFlashSession } from './lib/sessions.server'
+import { conventionalErrorSchema, conventionalSuccessSchema } from './lib/utils'
 
 export function Layout({ children }: { children: React.ReactNode }) {
     const theme = useCookieTheme()
@@ -136,12 +137,24 @@ export default function App() {
             )
 
             successResponses.forEach(fetcher => {
-                toast.success(fetcher.data.msg)
+                const { success, data, error } =
+                    conventionalSuccessSchema.safeParse(fetcher.data)
+                if (success) {
+                    !data.options?.preventAlert && toast.success(data.msg)
+                } else {
+                    console.warn(error)
+                }
                 cleanedKeys.set(fetcher.key, currentTimestamp)
             })
             errorResponses.forEach(fetcher => {
-                console.error(fetcher.data.err)
-                toast.error(fetcher.data.err)
+                const { success, data, error } =
+                    conventionalErrorSchema.safeParse(fetcher.data)
+                if (success) {
+                    console.error(data.err)
+                    !data.options?.preventAlert && toast.error(data.err)
+                } else {
+                    console.warn(error)
+                }
                 cleanedKeys.set(fetcher.key, currentTimestamp)
             })
 

@@ -5,14 +5,27 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export type ConventionalSuccess = {
-    msg: string
-    data?: unknown
-}
-export type ConventionalError = {
-    err: string
-    data?: unknown
-}
+export const conventionalSuccessSchema = z.object({
+    msg: z.string(),
+    data: z.unknown().optional(),
+    options: z
+        .object({
+            preventAlert: z.boolean().optional(),
+        })
+        .optional(),
+})
+export type ConventionalSuccess = z.infer<typeof conventionalSuccessSchema>
+
+export const conventionalErrorSchema = z.object({
+    err: z.string(),
+    data: z.unknown().optional(),
+    options: z
+        .object({
+            preventAlert: z.boolean().optional(),
+        })
+        .optional(),
+})
+export type ConventionalError = z.infer<typeof conventionalErrorSchema>
 export type ConventionalActionResponse = ConventionalSuccess | ConventionalError
 
 export const isConventionalSuccess = (
@@ -33,6 +46,7 @@ export const isConventionalError = (
 
 import { NavLink } from '@remix-run/react'
 import { BreadcrumbItem, BreadcrumbSeparator } from '~/components/ui/breadcrumb'
+import { z } from 'zod'
 
 export const generateBreadcrumbs = (pathname: string) => {
     const paths = pathname.split('/').filter(Boolean)
