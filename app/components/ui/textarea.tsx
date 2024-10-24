@@ -3,10 +3,20 @@ import * as React from 'react'
 import { cn } from '~/lib/utils'
 
 export interface TextareaProps
-	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+	autoSize?: boolean
+}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-	({ className, ...props }, ref) => {
+	({ className, onChange, autoSize, ...props }, ref) => {
+		const handleHeight = (
+			event: React.ChangeEvent<HTMLTextAreaElement>
+		) => {
+			const textarea = event.currentTarget
+			textarea.style.height = 'inherit'
+			textarea.style.height = `${textarea.scrollHeight}px`
+		}
+
 		return (
 			<textarea
 				className={cn(
@@ -14,6 +24,10 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 					className
 				)}
 				ref={ref}
+				onChange={e => {
+					autoSize && handleHeight(e)
+					onChange?.(e)
+				}}
 				{...props}
 			/>
 		)

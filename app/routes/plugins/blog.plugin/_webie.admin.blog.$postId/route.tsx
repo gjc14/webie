@@ -128,9 +128,15 @@ export default function AdminPost() {
                     Edit Post
                 </AdminTitle>
                 <AdminActions>
-                    <Link to={`/blog/${post.slug}`} target="_blank">
+                    <Link
+                        to={`/blog/${post.slug}?preview=true`}
+                        target="_blank"
+                    >
                         <Button variant={'link'}>
-                            See post
+                            {postContent.status !== 'PUBLISHED'
+                                ? 'Preview'
+                                : 'See'}{' '}
+                            post
                             <ExternalLink size={12} className="ml-1" />
                         </Button>
                     </Link>

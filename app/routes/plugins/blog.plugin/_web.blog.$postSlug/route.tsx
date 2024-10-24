@@ -12,20 +12,28 @@ import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import ExtensionKit from '~/components/editor/extensions/extension-kit'
+import { userIs } from '~/lib/db/auth.server'
 import { getPostBySlug } from '../lib/db/post.server'
 import { FeaturedImage } from './featured-image'
 import { hilightInnerHTML } from './highlight-inner-html'
 import { PostFooter } from './post-footer'
 import { PostMeta } from './post-meta'
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     if (!params.postSlug) {
         throw new Response('Post not found', { status: 404 })
     }
 
+    const { searchParams } = new URL(request.url)
+    const preview = searchParams.get('preview')
+
+    if (preview) {
+        await userIs(request, 'ADMIN', '/admin/signin')
+    }
+
     try {
         const { post, prev, next } = await getPostBySlug(params.postSlug)
-        if (!post) {
+        if (!post || post.status !== 'PUBLISHED') {
             throw new Response('Post not found', { status: 404 })
         }
         return json({ post, prev, next })

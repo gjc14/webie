@@ -8,11 +8,14 @@ import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { userIs } from '~/lib/db/auth.server'
-import { OpenAICompletion } from '~/lib/generative-ai'
+import {
+    GeminiCompletion,
+    OpenAICompletion,
+    providers,
+} from '~/lib/generative-ai'
 import {
     ConventionalError,
     ConventionalSuccess,
-    isConventionalError,
     isConventionalSuccess,
 } from '~/lib/utils'
 import {
@@ -30,20 +33,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const formData = await request.formData()
     const prompt = formData.get('prompt')
+    const provider = formData.get('provider')
 
-    if (!prompt || typeof prompt !== 'string') {
+    if (
+        !prompt ||
+        typeof prompt !== 'string' ||
+        !provider ||
+        typeof provider !== 'string' ||
+        !(provider in providers)
+    ) {
         throw new Response('Invalid argument', { status: 400 })
     }
 
+    let response: string | null = null
     try {
-        const response = await OpenAICompletion({ prompt })
+        switch (provider) {
+            case 'OpenAI':
+                response = await OpenAICompletion({ prompt })
+                break
+            case 'Gemini':
+                response = await GeminiCompletion({ prompt })
+                break
+            default:
+                throw new Error('Invalid provider')
+        }
+        console.log(response)
+        // Please write a post to instruct user making their branch webie-ec in webie repository, into a separate repository as webie-ec, but remaining all commit history. Also, connect the new webie-ec reppository with old webie repo as webie remote
 
         return json<ConventionalSuccess>({
-            msg: 'Success',
+            msg: '',
             data: {
-                provider: 'OpenAI',
-                model: 'GPT-4o',
-                response: 'Hello, how can I help you today?',
+                provider,
+                response: response ?? 'No response',
             },
         })
     } catch (error) {
@@ -73,9 +94,10 @@ export default function AdminGenerativeAI() {
     const handleSubmit = () => {
         const prompt = promptRef.current?.value
         if (!prompt) {
+            toast.error('Enter your message to your ai assistant')
             return
         }
-        fetcher.submit({ prompt }, { method: 'POST' })
+        fetcher.submit({ prompt, provider: 'Gemini' }, { method: 'POST' })
     }
 
     return (
@@ -94,6 +116,8 @@ export default function AdminGenerativeAI() {
                         id="prompt"
                         name="prompt"
                         placeholder="Type your prompt here..."
+                        className="resize-none"
+                        autoSize
                     />
                     <Button
                         onClick={handleSubmit}
