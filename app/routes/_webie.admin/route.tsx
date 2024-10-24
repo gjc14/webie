@@ -6,7 +6,6 @@ import {
 } from '@remix-run/node'
 import { Outlet, useLoaderData, useLocation } from '@remix-run/react'
 
-import Icon from '~/components/dynamic-icon'
 import { Breadcrumb, BreadcrumbList } from '~/components/ui/breadcrumb'
 import { Separator } from '~/components/ui/separator'
 import {
@@ -58,7 +57,7 @@ export default function Admin() {
                     avatar: admin.imageUri ?? '/placeholders/avatar.png',
                 }}
             />
-            <SidebarInset>
+            <SidebarInset className="h-[calc(100svh-theme(spacing.4))]">
                 <header className="flex my-3 shrink-0 items-center gap-2">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1" />
@@ -72,9 +71,7 @@ export default function Admin() {
                     </div>
                 </header>
 
-                <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                    <Outlet />
-                </main>
+                <Outlet />
             </SidebarInset>
         </SidebarProvider>
     )

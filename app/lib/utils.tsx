@@ -44,6 +44,10 @@ export const isConventionalError = (
     return true
 }
 
+export const capitalize = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 import { NavLink } from '@remix-run/react'
 import { BreadcrumbItem, BreadcrumbSeparator } from '~/components/ui/breadcrumb'
 import { z } from 'zod'
@@ -63,7 +67,7 @@ export const generateBreadcrumbs = (pathname: string) => {
                     }
                     end
                 >
-                    {path.charAt(0).toUpperCase() + path.slice(1)}
+                    {capitalize(path)}
                 </NavLink>
             </BreadcrumbItem>
         )

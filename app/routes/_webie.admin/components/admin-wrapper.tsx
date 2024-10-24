@@ -11,7 +11,7 @@ const AdminSectionWrapper = ({
     return (
         <section
             className={cn(
-                'relative flex flex-col p-3 w-full gap-5 md:p-6',
+                'relative flex flex-col p-3 w-full h-full gap-5 md:p-6',
                 className
             )}
         >
@@ -30,7 +30,7 @@ const AdminHeader = ({
     return (
         <div
             className={cn(
-                'flex justify-between items-center flex-wrap-reverse gap-3',
+                'flex justify-between items-center flex-wrap gap-3',
                 className
             )}
         >
@@ -76,9 +76,7 @@ const AdminActions = ({
     className?: string
 }) => {
     return (
-        <div
-            className={cn('flex flex-nowrap items-center space-x-2', className)}
-        >
+        <div className={cn('flex flex-nowrap items-center gap-2', className)}>
             {children}
         </div>
     )
