@@ -1,10 +1,12 @@
+import { google } from '@ai-sdk/google'
+import { openai } from '@ai-sdk/openai'
 import { User } from '@prisma/client'
 import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
-import { useFetcher, useLoaderData } from '@remix-run/react'
-import { Copy, CopyCheck, SendHorizonal, Sparkles } from 'lucide-react'
+import { useLoaderData } from '@remix-run/react'
+import { CoreMessage, streamText } from 'ai'
+import { useChat } from 'ai/react'
+import { CheckCheck, Copy, SendHorizonal, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { toast } from 'sonner'
-import { z } from 'zod'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
@@ -26,12 +28,7 @@ import {
     TooltipTrigger,
 } from '~/components/ui/tooltip'
 import { userIs } from '~/lib/db/auth.server'
-import { GeminiCompletion, OpenAICompletion } from '~/lib/generative-ai.server'
-import {
-    ConventionalError,
-    ConventionalSuccess,
-    isConventionalSuccess,
-} from '~/lib/utils'
+import { getUserById } from '~/lib/db/user.server'
 import {
     AdminActions,
     AdminHeader,
@@ -39,30 +36,22 @@ import {
     AdminTitle,
 } from '~/routes/_webie.admin/components/admin-wrapper'
 import { LoaderHR } from './components/loader'
-import { getUserById } from '~/lib/db/user.server'
 
-export const providers = {
-    Gemini: 'gemini-1.5-flash',
-    OpenAI: 'gpt-3.5-turbo (Paid)',
-} as const
-export const providersArray = Object.values(providers) as Array<
-    (typeof providers)[keyof typeof providers]
->
+const googleModels = [
+    'gemini-1.5-flash-latest',
+    'gemini-1.5-pro-latest',
+] as const
+const openaiModels = [
+    'o1-mini',
+    'gpt-4o-mini',
+    'gpt-4-turbo',
+    'gpt-3.5-turbo',
+] as const
+
+export const providers = [...googleModels, ...openaiModels] as const
 
 export type Providers = typeof providers
-export type Provider = (typeof providers)[keyof typeof providers]
-
-export const isProvider = (provider: any): provider is Provider => {
-    const providersArray = Object.values(providers)
-    return providersArray.includes(provider)
-}
-
-export const aiResponseSchama = z.object({
-    provider: z.enum([providersArray[0], ...providersArray.slice(1)]),
-    content: z.string(),
-    id: z.string(),
-})
-export type AIResponse = z.infer<typeof aiResponseSchama>
+export type Provider = Providers[number]
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
@@ -71,53 +60,29 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
-    const formData = await request.formData()
-    const prompt = formData.get('prompt')
-    const provider = formData.get('provider')
-    const id = formData.get('id')
+    const {
+        messages,
+        provider,
+    }: { messages: CoreMessage[]; provider: Provider } = await request.json()
 
-    if (
-        !prompt ||
-        typeof prompt !== 'string' ||
-        !provider ||
-        typeof provider !== 'string' ||
-        !isProvider(provider) ||
-        !id ||
-        typeof id !== 'string'
-    ) {
-        throw new Response('Invalid argument', { status: 400 })
-    }
-
-    let response: string | null = null
-    try {
-        switch (provider) {
-            case 'gemini-1.5-flash':
-                response = (await GeminiCompletion({ prompt })) ?? null
-                break
-            case 'gpt-3.5-turbo (Paid)':
-                response = await OpenAICompletion({ prompt })
-                break
-            default:
-                throw new Error('Invalid provider')
-        }
-
-        const responseData: AIResponse = {
-            provider,
-            content: response ?? 'No response',
-            id: id,
-        }
-
-        return json<ConventionalSuccess>({
-            msg: 'Success',
-            data: responseData,
-            options: { preventAlert: true },
+    if (googleModels.includes(provider as (typeof googleModels)[number])) {
+        const result = await streamText({
+            model: google(provider),
+            system: 'You are a helpful assistant.',
+            messages,
         })
-    } catch (error) {
-        console.error(error)
-        return json<ConventionalError>(
-            { err: 'Failed to generate response' },
-            { status: 500 }
-        )
+        return result.toDataStreamResponse()
+    } else if (
+        openaiModels.includes(provider as (typeof openaiModels)[number])
+    ) {
+        const result = await streamText({
+            model: openai(provider),
+            system: 'You are a helpful assistant.',
+            messages,
+        })
+        return result.toDataStreamResponse()
+    } else {
+        return null
     }
 }
 
@@ -135,69 +100,64 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function AdminGenerativeAI() {
     const { user } = useLoaderData<typeof loader>()
-    const fetcher = useFetcher()
-    const isLoading = fetcher.state === 'submitting'
+    const scrollAreaRef = useRef<HTMLDivElement>(null)
+    const textAreaRef = useRef<HTMLTextAreaElement>(null)
+    const [isComposing, setIsComposing] = useState(false)
 
-    const [provider, setProvider] = useState<Provider>(providers.Gemini)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [provider, setProvider] = useState<Provider>(
+        'gemini-1.5-flash-latest'
+    )
+    const { messages, input, handleSubmit, handleInputChange, isLoading } =
+        useChat({
+            api: '/admin/blog/generative?_data',
+            body: {
+                provider,
+            },
+            onResponse(response) {
+                if (response.ok) {
+                    setIsSubmitting(false)
+                }
+            },
+        })
 
-    const [chats, setChats] = useState<
-        (AIResponse | { content: string; provider: 'user' })[]
-    >([]) // History
-    const inputRef = useRef<HTMLTextAreaElement>(null) // Input
-    const [newResponse, setNewResponse] = useState<AIResponse | null>(null) // Current response
-    const [revealing, setRevealing] = useState(false) // Revealing current resposne
+    const disabled = isLoading || input.trim() === ''
 
-    useEffect(() => {
-        const response = fetcher.data
-        if (!response) {
-            return
-        }
-        if (isConventionalSuccess(response)) {
-            const { success, data, error } = aiResponseSchama.safeParse(
-                response.data
-            )
-
-            if (success) {
-                console.log(
-                    'provider:',
-                    data.provider,
-                    'response content:',
-                    data.content
-                )
-                setNewResponse(data)
-                setChats(prev => [...prev, data])
-            } else {
-                console.error(error || 'Failed to parse response')
+    const scrollToBottom = () => {
+        // Find the actual scrollable viewport (it's a div with data-radix-scroll-area-viewport)
+        const viewport = scrollAreaRef.current?.querySelector(
+            '[data-radix-scroll-area-viewport]'
+        )
+        if (viewport) {
+            try {
+                viewport.scrollTo({
+                    top: viewport.scrollHeight,
+                    behavior: 'smooth',
+                })
+            } catch (error) {
+                console.error('Scroll error:', error)
             }
-        }
-    }, [fetcher.data])
-
-    useEffect(() => {
-        const revealing = async () => {
-            setRevealing(true)
-            new Promise(resolve => setTimeout(resolve, 1000))
-
-            setRevealing(false)
-            setNewResponse(null)
-        }
-        revealing()
-    }, [newResponse])
-
-    const handleSubmit = () => {
-        const prompt = inputRef.current?.value
-        if (!prompt) {
-            toast.error('Enter your message to your ai assistant')
-            return
-        }
-
-        const id = Date.now().toString()
-        fetcher.submit({ prompt, provider, id }, { method: 'POST' })
-
-        setChats(prev => [...prev, { content: prompt, provider: 'user', id }])
-        if (inputRef.current) {
-            inputRef.current.value = ''
+        } else {
+            console.warn('Viewport not found')
         }
     }
+
+    const onSubmit = async () => {
+        setIsSubmitting(true)
+        handleSubmit()
+    }
+
+    useEffect(() => {
+        const attemptScroll = () => {
+            scrollToBottom()
+            textAreaRef.current?.focus()
+        }
+        attemptScroll()
+    }, [])
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
 
     return (
         <AdminSectionWrapper className="relative overflow-auto">
@@ -209,32 +169,48 @@ export default function AdminGenerativeAI() {
                     <Label htmlFor="provider">Select your ai assitant</Label>
                     <SelectProvider
                         providers={providers}
-                        defaultValue={providers.Gemini}
+                        defaultValue={provider}
                         onValueChange={v => setProvider(v)}
                     />
                 </AdminActions>
             </AdminHeader>
             <Separator />
 
-            <ScrollArea className="flex-grow">
+            <ScrollArea className="flex-grow h-screen" ref={scrollAreaRef}>
                 <div className="max-w-3xl mx-auto space-y-12 px-3 sm:px-5">
-                    {JSON.stringify(chats)}
-                    {chats.map(chat => {
-                        if (chat.provider === 'user') {
-                            return (
-                                <ChatUser
-                                    chat={chat.content}
-                                    user={{
-                                        ...user,
-                                        updatedAt: new Date(user.updatedAt),
-                                    }}
-                                />
-                            )
-                        } else {
-                            return <ChatAI chat={chat.content} />
-                        }
-                    })}
-                    {isLoading && (
+                    {messages.length !== 0 ? (
+                        messages.map(message => {
+                            if (message.role === 'user') {
+                                return (
+                                    <ChatUser
+                                        key={message.id}
+                                        message={message.content}
+                                        user={{
+                                            ...user,
+                                            updatedAt: new Date(user.updatedAt),
+                                        }}
+                                    />
+                                )
+                            } else {
+                                return (
+                                    <ChatAI
+                                        key={message.id}
+                                        message={message.content}
+                                    />
+                                )
+                            }
+                        })
+                    ) : (
+                        <div className="grow px-2 mt-8 md:px-6">
+                            <h3 className="w-fit text-5xl font-medium leading-normal bg-gradient-to-r from-sky-500 via-violet-500 to-fuchsia-700 dark:from-sky-200 dark:via-violet-400 dark:to-fuchsia-500 to-70% bg-clip-text text-transparent">
+                                Good day with Webie!
+                            </h3>
+                            <h3 className="w-fit text-3xl font-medium leading-normal bg-gradient-to-r from-yellow-500 via-amber-600 to-orange-600 dark:from-yellow-50 dark:via-amber-100 dark:to-orange-200 bg-clip-text text-transparent">
+                                Get your idea now with AI
+                            </h3>
+                        </div>
+                    )}
+                    {isLoading && isSubmitting && (
                         <div className="w-full gap-2.5 flex flex-col">
                             <LoaderHR className="via-30%" />
                             <LoaderHR className="via-50% delay-300" />
@@ -247,22 +223,39 @@ export default function AdminGenerativeAI() {
             <div className="space-y-1 max-w-3xl w-full mx-auto">
                 <div className="flex py-1 px-2 border rounded-3xl bg-accent sm:mx-6 lg:mx-8">
                     <Textarea
-                        ref={inputRef}
+                        ref={textAreaRef}
                         id="prompt"
                         name="prompt"
                         placeholder="Type your prompt here..."
                         className="resize-none min-h-fit max-h-60 border-0 focus-visible:ring-0"
+                        value={input}
+                        onChange={handleInputChange}
                         rows={1}
                         autoSize
+                        onCompositionStart={() => {
+                            setIsComposing(true)
+                        }}
+                        onCompositionEnd={() => {
+                            setIsComposing(false)
+                        }}
                         onKeyDown={e => {
-                            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                                handleSubmit()
+                            if (disabled || isComposing) return
+                            if (
+                                e.key === 'Enter' &&
+                                !e.shiftKey &&
+                                !e.metaKey &&
+                                !e.ctrlKey &&
+                                !e.altKey
+                            ) {
+                                e.preventDefault() // Prevents a new line with solo Enter
+                                onSubmit()
                             }
                         }}
                     />
                     <div className="h-full self-end mr-1">
                         <Button
-                            onClick={handleSubmit}
+                            disabled={disabled}
+                            onClick={onSubmit}
                             variant={'ghost'}
                             size={'icon'}
                             className="align-baseline hover:bg-transparent"
@@ -308,13 +301,13 @@ const SelectProvider = ({
     )
 }
 
-const ChatUser = ({ chat, user }: { chat: string; user?: User }) => {
+const ChatUser = ({ message, user }: { message: string; user?: User }) => {
     const [copied, setCopied] = useState(false)
 
     return (
         <div className="max-w-[75%] flex items-start justify-end gap-2 ml-auto">
             <div className="grid space-y-2 border rounded-3xl px-[2ch] py-[1.5ch] bg-accent/60">
-                <p className="text-pretty">{chat}</p>
+                <p className="text-pretty">{message}</p>
                 <div className="flex items-center gap-1">
                     <TooltipProvider>
                         <Tooltip>
@@ -323,7 +316,7 @@ const ChatUser = ({ chat, user }: { chat: string; user?: User }) => {
                                     variant={'ghost'}
                                     size={'icon-sm'}
                                     onClick={async () => {
-                                        navigator.clipboard.writeText(chat)
+                                        navigator.clipboard.writeText(message)
                                         setCopied(true)
                                         await new Promise(resolve =>
                                             setTimeout(resolve, 2000)
@@ -331,7 +324,7 @@ const ChatUser = ({ chat, user }: { chat: string; user?: User }) => {
                                         setCopied(false)
                                     }}
                                 >
-                                    {copied ? <CopyCheck /> : <Copy />}
+                                    {copied ? <CheckCheck /> : <Copy />}
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Copy</TooltipContent>
@@ -360,20 +353,16 @@ const ChatUser = ({ chat, user }: { chat: string; user?: User }) => {
     )
 }
 
-const ChatAI = ({ chat }: { chat: string }) => {
+const ChatAI = ({ message }: { message: string }) => {
     const [copied, setCopied] = useState(false)
 
     return (
         <div className="flex items-start justify-start gap-5">
             <Avatar className="h-8 w-8 flex items-center justify-center rounded-full bg-violet-200 dark:bg-violet-500">
-                <Sparkles
-                    size={20}
-                    strokeWidth={1.5}
-                    className="animate-pulse"
-                />
+                <Sparkles size={20} strokeWidth={1.5} />
             </Avatar>
             <div className="grid space-y-2">
-                <p className="text-pretty max-w-[80%]">{chat}</p>
+                <p className="text-pretty max-w-[80%]">{message}</p>
                 <div className="flex items-center gap-1">
                     <TooltipProvider>
                         <Tooltip>
@@ -382,7 +371,7 @@ const ChatAI = ({ chat }: { chat: string }) => {
                                     variant={'ghost'}
                                     size={'icon-sm'}
                                     onClick={async () => {
-                                        navigator.clipboard.writeText(chat)
+                                        navigator.clipboard.writeText(message)
                                         setCopied(true)
                                         await new Promise(resolve =>
                                             setTimeout(resolve, 2000)
@@ -390,7 +379,7 @@ const ChatAI = ({ chat }: { chat: string }) => {
                                         setCopied(false)
                                     }}
                                 >
-                                    {copied ? <CopyCheck /> : <Copy />}
+                                    {copied ? <CheckCheck /> : <Copy />}
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Copy</TooltipContent>
