@@ -3,8 +3,14 @@ import {
     LoaderFunctionArgs,
     MetaFunction,
     redirect,
+    SerializeFrom,
 } from '@remix-run/node'
-import { Outlet, useLoaderData, useLocation } from '@remix-run/react'
+import {
+    Outlet,
+    useLoaderData,
+    useLocation,
+    useOutletContext,
+} from '@remix-run/react'
 
 import { Breadcrumb, BreadcrumbList } from '~/components/ui/breadcrumb'
 import { Separator } from '~/components/ui/separator'
@@ -75,4 +81,8 @@ export default function Admin() {
             </SidebarInset>
         </SidebarProvider>
     )
+}
+
+export const useAdminContext = () => {
+    return useOutletContext<SerializeFrom<typeof loader>>()
 }

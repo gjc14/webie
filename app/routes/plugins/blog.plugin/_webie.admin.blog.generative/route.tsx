@@ -1,6 +1,4 @@
 import { User } from '@prisma/client'
-import { json, LoaderFunctionArgs } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
 import { useChat } from 'ai/react'
 import { CheckCheck, Copy, SendHorizonal, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -26,8 +24,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '~/components/ui/tooltip'
-import { userIs } from '~/lib/db/auth.server'
-import { getUserById } from '~/lib/db/user.server'
 import {
     Provider,
     Providers,
@@ -39,22 +35,11 @@ import {
     AdminSectionWrapper,
     AdminTitle,
 } from '~/routes/_webie.admin/components/admin-wrapper'
+import { useAdminContext } from '~/routes/_webie.admin/route'
 import { LoaderHR } from './components/loader'
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const { id: userId } = await userIs(request, 'ADMIN', '/admin/signin')
-
-    const { user } = await getUserById(userId)
-
-    if (!user) {
-        throw new Response('User not found', { status: 404 })
-    }
-
-    return json({ user })
-}
-
 export default function AdminGenerativeAI() {
-    const { user } = useLoaderData<typeof loader>()
+    const { admin } = useAdminContext()
     const scrollAreaRef = useRef<HTMLDivElement>(null)
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const [isComposing, setIsComposing] = useState(false)
@@ -142,8 +127,10 @@ export default function AdminGenerativeAI() {
                                         key={message.id}
                                         message={message.content}
                                         user={{
-                                            ...user,
-                                            updatedAt: new Date(user.updatedAt),
+                                            ...admin,
+                                            updatedAt: new Date(
+                                                admin.updatedAt
+                                            ),
                                         }}
                                     />
                                 )
