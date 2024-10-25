@@ -1,5 +1,11 @@
 import { Editor } from '@tiptap/react'
+import { Image, Link, Unlink } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+import Youtube from '~/components/editor/components/asset/youtube'
 import { Separator } from '~/components/ui/separator'
+import { cn } from '~/lib/utils'
+import { Provider, providers } from '~/routes/_webie.admin.api.ai.chat'
 import {
     editAlignOptions,
     editHistoryOptions,
@@ -9,11 +15,16 @@ import {
     editParagraphOptions,
 } from '../../edit-options'
 import { ToggleButton } from '../toggle-button'
-import { useCallback, useState } from 'react'
-import Youtube from '~/components/editor/components/asset/youtube'
-import { Image, Link, Unlink } from 'lucide-react'
 
-export const MenuBar = ({ editor }: { editor: Editor }) => {
+export const MenuBar = ({
+    editor,
+    className,
+    onAiProviderSelect,
+}: {
+    editor: Editor
+    className?: string
+    onAiProviderSelect?: (ai: Provider) => void
+}) => {
     const [height, setHeight] = useState('480')
     const [width, setWidth] = useState('640')
 
@@ -43,7 +54,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     }, [editor])
 
     return (
-        <div id="menu-bar" className="my-3 py-1.5 border-y">
+        <div id="menu-bar" className={cn('py-1.5 border-y', className)}>
             <div id="buttons" className="flex flex-wrap items-center gap-1 p-1">
                 {/* Formatting */}
                 {editMarkOptions.map((option, index) => (
@@ -251,7 +262,96 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                 >
                     <Youtube />
                 </ToggleButton>
+
+                {/* AI Model Selector */}
+                <AIProviderSelector
+                    onAiProviderSelect={onAiProviderSelect}
+                    className="ml-auto"
+                />
             </div>
         </div>
+    )
+}
+
+import { Check, ChevronsUpDown } from 'lucide-react'
+
+import { Button } from '~/components/ui/button'
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '~/components/ui/command'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '~/components/ui/popover'
+
+const AIProviderSelector = ({
+    className,
+    onAiProviderSelect,
+}: {
+    className?: string
+    onAiProviderSelect?: (ai: Provider) => void
+}) => {
+    const triggerRef = useRef<HTMLButtonElement>(null)
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState<Provider>('gemini-1.5-flash-latest')
+
+    useEffect(() => {
+        onAiProviderSelect?.(value)
+    }, [value])
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    ref={triggerRef}
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className={cn('w-fit h-7 px-2justify-between', className)}
+                    size={'sm'}
+                >
+                    {value}
+                    <ChevronsUpDown className="ml-2 size-2 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent
+                className={`w-[${triggerRef.current?.offsetWidth}] p-0`}
+            >
+                <Command>
+                    <CommandInput placeholder="Search ai model..." />
+                    <CommandList>
+                        <CommandEmpty>No ai provider found.</CommandEmpty>
+                        <CommandGroup>
+                            {providers.map(provider => (
+                                <CommandItem
+                                    key={provider}
+                                    value={provider}
+                                    onSelect={currentValue => {
+                                        setValue(currentValue as Provider)
+                                        setOpen(false)
+                                    }}
+                                >
+                                    <Check
+                                        className={cn(
+                                            'mr-2 h-4 w-4',
+                                            value === provider
+                                                ? 'opacity-100'
+                                                : 'opacity-0'
+                                        )}
+                                    />
+                                    {provider}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

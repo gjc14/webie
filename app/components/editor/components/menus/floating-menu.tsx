@@ -15,7 +15,7 @@ export const DefaultFloatingMenu = ({ editor }: { editor: Editor }) => {
         <FloatingMenu
             tippyOptions={{ duration: 100 }}
             editor={editor}
-            className="flex p-0.5 gap-0.5 bg-muted/50 border border-muted rounded-md"
+            className="flex p-1 gap-0.5 bg-muted border rounded-md"
         >
             <ToggleButton
                 onClick={() =>

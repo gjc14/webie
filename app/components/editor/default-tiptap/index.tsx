@@ -3,8 +3,11 @@ import './styles.scss'
 
 import { EditorContent, useEditor } from '@tiptap/react'
 import { forwardRef, useImperativeHandle } from 'react'
+
+import { cn } from '~/lib/utils'
 import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
-import { DefaultFloatingMenu } from '../components/menus/floating-menu'
+// import { DefaultFloatingMenu } from '../components/menus/floating-menu'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { MenuBar } from '../components/menus/menu-bar'
 import ExtensionKit from '../extensions/extension-kit'
 
@@ -26,6 +29,9 @@ interface EditorProps {
     }) => void
     onFocus?: () => void
     onBlur?: () => void
+    className?: string
+    menuBarClassName?: string
+    editorContentClassName?: string
 }
 
 export default forwardRef<EditorRef, EditorProps>((props, ref) => {
@@ -49,7 +55,7 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
         },
         editorProps: {
             attributes: {
-                class: 'prose tracking-wide leading-loose dark:prose-invert my-8 mx-1 focus:outline-none',
+                class: 'prose tracking-wide leading-loose dark:prose-invert py-5 mx-1 focus:outline-none',
             },
         },
     })
@@ -68,11 +74,35 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
     )
 
     return (
-        <>
-            {editor && <MenuBar editor={editor} />}
+        // To make tippy (BubbleMenu/FloatingMenu under the hood) interactive with keyboard, wrap it with <div> or <span>
+        // see: https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity
+        <div
+            className={cn(
+                'relative max-w-prose grow flex flex-col gap-3',
+                props.className
+            )}
+        >
+            {editor && (
+                <MenuBar editor={editor} className={props.menuBarClassName} />
+            )}
             {editor && <DefaultBubbleMenu editor={editor} />}
-            {editor && <DefaultFloatingMenu editor={editor} />}
-            <EditorContent editor={editor} />
-        </>
+            {/* {editor && <DefaultFloatingMenu editor={editor} />} */}
+            <EditorContent
+                onClick={() => editor?.commands.focus()}
+                editor={editor}
+                className={cn('grow cursor-text', props.editorContentClassName)}
+            />
+            <footer className="flex justify-end items-center pt-2 px-1 border-t text-xs text-muted-foreground">
+                <a
+                    href="https://github.com/gjc14/webie"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="View source code on GitHub"
+                    aria-label="View source code on GitHub"
+                >
+                    <GitHubLogoIcon />
+                </a>
+            </footer>
+        </div>
     )
 })

@@ -21,8 +21,12 @@ export default {
                         'blockquote p::after': {
                             content: 'none',
                         },
+                        maxWidth: 'var(--prose-max-width)',
                     },
                 },
+            },
+            maxWidth: {
+                prose: 'var(--prose-max-width)',
             },
             borderRadius: {
                 lg: 'var(--radius)',

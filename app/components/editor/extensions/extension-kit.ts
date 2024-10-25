@@ -7,6 +7,7 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
+import Typography from '@tiptap/extension-typography'
 import Underline from '@tiptap/extension-underline'
 import Youtube from '@tiptap/extension-youtube'
 import StarterKit from '@tiptap/starter-kit'
@@ -37,9 +38,14 @@ export const ExtensionKit = [
         defaultProtocol: 'https',
         validate: href => /^https?:\/\//.test(href),
     }),
+    Typography, // Input rules, such as (c) -> © or >> -> »
 
     // Nodes
-    Placeholder.configure({ placeholder: 'Write something amazing...' }),
+    Placeholder.configure({
+        placeholder: () => {
+            return 'Press "/" to open commands, "/ai" for continue writing'
+        },
+    }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
     CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
     TextStyle.configure({}),
