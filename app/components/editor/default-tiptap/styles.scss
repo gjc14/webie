@@ -13,4 +13,41 @@
         @apply h-0 float-left text-muted-foreground/50 text-base pointer-events-none;
         content: attr(data-placeholder);
     }
+
+    /* Task list specific styles */
+    // https://tiptap.dev/docs/editor/extensions/nodes/task-list
+    // https://github.com/tailwindlabs/tailwindcss-typography/blob/main/src/styles.js#L124-L126
+    ul[data-type='taskList'] {
+        list-style-type: none;
+        padding-inline-start: 0.2em;
+
+        li {
+            display: flex;
+            align-items: flex-start;
+
+            > label {
+                flex: 0 0 auto;
+                margin-right: 1rem;
+                user-select: none;
+            }
+
+            > div {
+                flex: 1 1 auto;
+                padding-inline-start: em(6, 14);
+
+                > p {
+                    margin-top: 0;
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        input[type='checkbox'] {
+            cursor: pointer;
+        }
+
+        ul[data-type='taskList'] {
+            margin: 0;
+        }
+    }
 }

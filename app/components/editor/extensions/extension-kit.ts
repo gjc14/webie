@@ -8,6 +8,8 @@ import Superscript from '@tiptap/extension-superscript'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
 import Typography from '@tiptap/extension-typography'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
 import Underline from '@tiptap/extension-underline'
 import Youtube from '@tiptap/extension-youtube'
 import StarterKit from '@tiptap/starter-kit'
@@ -47,10 +49,14 @@ export const ExtensionKit = [
         },
     }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
     TextStyle.configure({}),
+    CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
     ImageBlock,
     Youtube,
+    TaskList,
+    TaskItem.configure({
+        nested: true,
+    }),
 ]
 
 export default ExtensionKit
