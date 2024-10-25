@@ -1,9 +1,6 @@
-import { google } from '@ai-sdk/google'
-import { openai } from '@ai-sdk/openai'
 import { User } from '@prisma/client'
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
+import { json, LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { CoreMessage, streamText } from 'ai'
 import { useChat } from 'ai/react'
 import { CheckCheck, Copy, SendHorizonal, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -32,61 +29,17 @@ import {
 import { userIs } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
 import {
+    Provider,
+    Providers,
+    providers,
+} from '~/routes/_webie.admin.api.ai.chat'
+import {
     AdminActions,
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
 } from '~/routes/_webie.admin/components/admin-wrapper'
 import { LoaderHR } from './components/loader'
-
-const googleModels = [
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-pro-latest',
-] as const
-const openaiModels = [
-    'o1-mini',
-    'gpt-4o-mini',
-    'gpt-4-turbo',
-    'gpt-3.5-turbo',
-] as const
-
-export const providers = [...googleModels, ...openaiModels] as const
-
-export type Providers = typeof providers
-export type Provider = Providers[number]
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-    if (request.method !== 'POST') {
-        throw new Response('Method not allowed', { status: 405 })
-    }
-
-    const admin = await userIs(request, 'ADMIN', '/admin/signin')
-
-    const {
-        messages,
-        provider,
-    }: { messages: CoreMessage[]; provider: Provider } = await request.json()
-
-    if (googleModels.includes(provider as (typeof googleModels)[number])) {
-        const result = await streamText({
-            model: google(provider),
-            system: 'You are a helpful assistant.',
-            messages,
-        })
-        return result.toDataStreamResponse()
-    } else if (
-        openaiModels.includes(provider as (typeof openaiModels)[number])
-    ) {
-        const result = await streamText({
-            model: openai(provider),
-            system: 'You are a helpful assistant.',
-            messages,
-        })
-        return result.toDataStreamResponse()
-    } else {
-        return null
-    }
-}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { id: userId } = await userIs(request, 'ADMIN', '/admin/signin')
@@ -112,7 +65,7 @@ export default function AdminGenerativeAI() {
     )
     const { messages, input, handleSubmit, handleInputChange, isLoading } =
         useChat({
-            api: '/admin/blog/generative?_data',
+            api: '/admin/api/ai/chat',
             body: {
                 provider,
             },
@@ -120,6 +73,7 @@ export default function AdminGenerativeAI() {
                 if (response.ok) {
                     setIsSubmitting(false)
                 }
+                console.log('Response:', response)
             },
         })
 
