@@ -7,6 +7,8 @@ import { CoreMessage, streamText } from 'ai'
 import { useChat } from 'ai/react'
 import { CheckCheck, Copy, SendHorizonal, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
@@ -306,7 +308,7 @@ const ChatUser = ({ message, user }: { message: string; user?: User }) => {
 
     return (
         <div className="max-w-[75%] flex items-start justify-end gap-2 ml-auto">
-            <div className="grid space-y-2 border rounded-3xl px-[2ch] py-[1.5ch] bg-accent/60">
+            <div className="grid space-y-2 border rounded-3xl px-[2ch] py-[1.5ch] bg-accent/50">
                 <p className="text-pretty">{message}</p>
                 <div className="flex items-center gap-1">
                     <TooltipProvider>
@@ -362,7 +364,11 @@ const ChatAI = ({ message }: { message: string }) => {
                 <Sparkles size={20} strokeWidth={1.5} />
             </Avatar>
             <div className="grid space-y-2">
-                <p className="text-pretty max-w-[80%]">{message}</p>
+                <article className="text-pretty max-w-[80%] prose">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message}
+                    </ReactMarkdown>
+                </article>
                 <div className="flex items-center gap-1">
                     <TooltipProvider>
                         <Tooltip>
