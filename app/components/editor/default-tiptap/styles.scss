@@ -50,4 +50,23 @@
             margin: 0;
         }
     }
+
+    /* For ColorHighlighter Extension */
+    // https://tiptap.dev/docs/examples/advanced/clever-editor
+    .color {
+        white-space: nowrap;
+
+        &::before {
+            background-color: var(--color);
+            border: 1px solid hsl(var(--muted-foreground));
+            border-radius: 1px;
+            content: ' ';
+            display: inline-block;
+            height: 0.8em;
+            margin-bottom: 0.15em;
+            margin-right: 0.1em;
+            vertical-align: middle;
+            width: 0.8em;
+        }
+    }
 }

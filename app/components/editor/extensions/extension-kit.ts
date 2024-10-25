@@ -15,6 +15,9 @@ import Youtube from '@tiptap/extension-youtube'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import { common, createLowlight } from 'lowlight'
+// import { SlashCommand } from './slash-command'
+import { SmilieReplacer } from './smilie-replacer'
+import { ColorHighlighter } from './color-highlighter'
 
 export const ExtensionKit = [
     StarterKit.configure({
@@ -57,6 +60,11 @@ export const ExtensionKit = [
     TaskItem.configure({
         nested: true,
     }),
+
+    // Plugins
+    // SlashCommand,
+    SmilieReplacer,
+    ColorHighlighter,
 ]
 
 export default ExtensionKit
