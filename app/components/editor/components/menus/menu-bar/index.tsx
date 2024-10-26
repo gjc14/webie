@@ -23,15 +23,11 @@ export const MenuBar = ({
     editor,
     className,
     onComplete,
-    isLoading,
-    onStop,
     onAiProviderSelect,
 }: {
     editor: Editor
     className?: string
     onComplete?: () => void
-    isLoading?: boolean
-    onStop?: () => void
     onAiProviderSelect?: (ai: Provider) => void
 }) => {
     const [height, setHeight] = useState('480')
@@ -287,15 +283,9 @@ export const MenuBar = ({
                         variant="outline"
                         className="w-fit h-7 ml-2 px-2"
                         size={'sm'}
-                        onClick={() =>
-                            isLoading ? onStop?.() : onComplete?.()
-                        }
+                        onClick={() => onComplete?.()}
                     >
-                        {isLoading ? (
-                            <Loader className="animate-spin-slow" />
-                        ) : (
-                            <WandSparkles />
-                        )}
+                        <WandSparkles />
                         AI Completion
                     </Button>
                 </TooltipWrapper>

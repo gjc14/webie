@@ -2,11 +2,9 @@ import 'highlight.js/styles/base16/atelier-dune.min.css'
 import './styles.scss'
 
 import { Editor, EditorContent, useEditor } from '@tiptap/react'
-import { useCompletion } from 'ai/react'
 import {
     forwardRef,
     useCallback,
-    useEffect,
     useImperativeHandle,
     useRef,
     useState,
@@ -88,18 +86,11 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
     const [aiProvider, setAiProvider] = useState<ChatAPICustomBody['provider']>(
         'gemini-1.5-flash-latest'
     )
-    const { completion, complete, isLoading, stop } = useCompletion({
-        api: 'admin/api/ai/chat',
-        body: { provider: aiProvider },
-    })
 
-    const lastCompletion = useRef(0)
     const onComplete = useCallback(
         (editor: Editor) => {
             const { selection, doc } = editor.state
             const { $head, from, to } = selection
-
-            lastCompletion.current = 0
 
             const defaultPrompt =
                 'Please write a post about human education and its impact on eliminating Inequality Gap between Rich and Poor.'
@@ -118,9 +109,7 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                         .slice(-20)
                         .join(' | ') || defaultPrompt
 
-                complete(prompt, {
-                    body: { provider: aiProvider },
-                })
+                editor.commands.setStreamView({ prompt, provider: aiProvider })
             } else {
                 // Use selected text as prompt
                 const content = doc.textBetween(from, to, '[webie | split]')
@@ -130,28 +119,11 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                         .filter(Boolean)
                         .join(' | ') || defaultPrompt
 
-                complete(prompt, {
-                    body: { provider: aiProvider },
-                })
+                editor.commands.setStreamView({ prompt, provider: aiProvider })
             }
         },
-        [editor, complete]
+        [editor]
     )
-
-    useEffect(() => {
-        if (!editor || !completion) return
-
-        let newCompletion = completion.slice(lastCompletion.current)
-
-        if (lastCompletion.current === 0 && editor.state.selection.empty) {
-            // If generate with selected text, it will just replace the selected text, no "\n" needed
-            newCompletion = '\n' + newCompletion
-        }
-
-        editor.commands.insertContent(newCompletion)
-
-        lastCompletion.current = completion.length
-    }, [editor, completion])
 
     return (
         <div
@@ -165,8 +137,6 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                     editor={editor}
                     className={props.menuBarClassName}
                     onComplete={() => onComplete(editor)}
-                    isLoading={isLoading}
-                    onStop={stop}
                     onAiProviderSelect={ai => setAiProvider(ai)}
                 />
             )}

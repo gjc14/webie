@@ -18,6 +18,7 @@ import { common, createLowlight } from 'lowlight'
 // import { SlashCommand } from './slash-command'
 import { SmilieReplacer } from './smilie-replacer'
 import { ColorHighlighter } from './color-highlighter'
+import { StreamView } from './stream-view'
 
 export const ExtensionKit = [
     StarterKit.configure({
@@ -65,6 +66,7 @@ export const ExtensionKit = [
     // SlashCommand,
     SmilieReplacer,
     ColorHighlighter,
+    StreamView,
 ]
 
 export default ExtensionKit
