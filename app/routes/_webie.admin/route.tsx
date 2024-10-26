@@ -77,7 +77,7 @@ export default function Admin() {
                     </div>
                 </header>
 
-                <Outlet />
+                <Outlet context={{ admin, pluginRoutes }} />
             </SidebarInset>
         </SidebarProvider>
     )
