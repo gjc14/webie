@@ -16,6 +16,7 @@ import {
     editParagraphOptions,
 } from '../../../edit-options'
 import { ToggleButton } from '../../toggle-button'
+import { TooltipWrapper } from '../../tooltip-wrapper'
 import { AIProviderSelector } from './ai-provider-selector'
 
 export const MenuBar = ({
@@ -277,19 +278,27 @@ export const MenuBar = ({
                 />
 
                 {/* AI */}
-                <Button
-                    variant="outline"
-                    className="w-fit h-7 ml-2 px-2"
-                    size={'sm'}
-                    onClick={() => (isLoading ? onStop?.() : onComplete?.())}
+                <TooltipWrapper
+                    asChild
+                    tooltip="Generate content with AI"
+                    shortcut={'/ai'}
                 >
-                    {isLoading ? (
-                        <Loader className="animate-spin-slow" />
-                    ) : (
-                        <WandSparkles />
-                    )}
-                    AI Completion
-                </Button>
+                    <Button
+                        variant="outline"
+                        className="w-fit h-7 ml-2 px-2"
+                        size={'sm'}
+                        onClick={() =>
+                            isLoading ? onStop?.() : onComplete?.()
+                        }
+                    >
+                        {isLoading ? (
+                            <Loader className="animate-spin-slow" />
+                        ) : (
+                            <WandSparkles />
+                        )}
+                        AI Completion
+                    </Button>
+                </TooltipWrapper>
 
                 <AIProviderSelector
                     onAiProviderSelect={onAiProviderSelect}

@@ -16,6 +16,7 @@ import {
     Italic,
     List,
     ListOrdered,
+    ListTodoIcon,
     Minus,
     Pilcrow,
     Quote,
@@ -234,6 +235,17 @@ const editListOptions: EditOptionProps[] = [
         onClick: (editor: Editor) =>
             editor.chain().focus().toggleBulletList().run(),
         isActive: (editor: Editor) => editor.isActive('bulletList'),
+        can: () => true,
+    },
+    {
+        tooltip: 'Check List',
+        shortcut: 'Ctrl + Shift + 9',
+        icon: (size = 14) => {
+            return <ListTodoIcon size={size} />
+        },
+        onClick: (editor: Editor) =>
+            editor.chain().focus().toggleTaskList().run(),
+        isActive: (editor: Editor) => editor.isActive('taskList'),
         can: () => true,
     },
     {
