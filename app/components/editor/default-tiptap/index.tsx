@@ -1,10 +1,19 @@
 import 'highlight.js/styles/base16/atelier-dune.min.css'
 import './styles.scss'
 
-import { EditorContent, useEditor } from '@tiptap/react'
-import { forwardRef, useImperativeHandle } from 'react'
+import { Editor, EditorContent, useEditor } from '@tiptap/react'
+import { useCompletion } from 'ai/react'
+import {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState,
+} from 'react'
 
 import { cn } from '~/lib/utils'
+import { ChatAPICustomBody } from '~/routes/_webie.admin.api.ai.chat'
 import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
 // import { DefaultFloatingMenu } from '../components/menus/floating-menu'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
@@ -73,9 +82,78 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
         [editor]
     )
 
+    ////////////////////////
+    ///        AI        ///
+    ////////////////////////
+    const [aiProvider, setAiProvider] = useState<ChatAPICustomBody['provider']>(
+        'gemini-1.5-flash-latest'
+    )
+    const { completion, complete, isLoading, stop } = useCompletion({
+        api: 'admin/api/ai/chat',
+        body: { provider: aiProvider },
+    })
+
+    const lastCompletion = useRef(0)
+    const onComplete = useCallback(
+        (editor: Editor) => {
+            const { selection, doc } = editor.state
+            const { $head, from, to } = selection
+
+            lastCompletion.current = 0
+
+            const defaultPrompt =
+                'Please write a post about human education and its impact on eliminating Inequality Gap between Rich and Poor.'
+            if (selection.empty) {
+                // Use last 20 "lines" as prompt
+                const textBefore = doc.textBetween(
+                    0,
+                    $head.pos,
+                    '[webie | split]'
+                )
+
+                const prompt =
+                    textBefore
+                        .split('[webie | split]')
+                        .filter(Boolean)
+                        .slice(-20)
+                        .join(' | ') || defaultPrompt
+
+                complete(prompt, {
+                    body: { provider: aiProvider },
+                })
+            } else {
+                // Use selected text as prompt
+                const content = doc.textBetween(from, to, '[webie | split]')
+                const prompt =
+                    content
+                        .split('[webie | split]')
+                        .filter(Boolean)
+                        .join(' | ') || defaultPrompt
+
+                complete(prompt, {
+                    body: { provider: aiProvider },
+                })
+            }
+        },
+        [editor, complete]
+    )
+
+    useEffect(() => {
+        if (!editor || !completion) return
+
+        let newCompletion = completion.slice(lastCompletion.current)
+
+        if (lastCompletion.current === 0 && editor.state.selection.empty) {
+            // If generate with selected text, it will just replace the selected text, no "\n" needed
+            newCompletion = '\n' + newCompletion
+        }
+
+        editor.commands.insertContent(newCompletion)
+
+        lastCompletion.current = completion.length
+    }, [editor, completion])
+
     return (
-        // To make tippy (BubbleMenu/FloatingMenu under the hood) interactive with keyboard, wrap it with <div> or <span>
-        // see: https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity
         <div
             className={cn(
                 'relative max-w-prose grow flex flex-col gap-3',
@@ -83,7 +161,14 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
             )}
         >
             {editor && (
-                <MenuBar editor={editor} className={props.menuBarClassName} />
+                <MenuBar
+                    editor={editor}
+                    className={props.menuBarClassName}
+                    onComplete={() => onComplete(editor)}
+                    isLoading={isLoading}
+                    onStop={stop}
+                    onAiProviderSelect={ai => setAiProvider(ai)}
+                />
             )}
             {editor && <DefaultBubbleMenu editor={editor} />}
             {/* {editor && <DefaultFloatingMenu editor={editor} />} */}

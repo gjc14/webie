@@ -33,9 +33,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
     try {
         const {
+            prompt,
             messages,
             provider,
-        }: { messages: CoreMessage[] } & ChatAPICustomBody =
+        }: { prompt?: string; messages?: CoreMessage[] } & ChatAPICustomBody =
             await request.json()
 
         if (googleModels.includes(provider as (typeof googleModels)[number])) {
@@ -43,6 +44,7 @@ export async function action({ request }: ActionFunctionArgs) {
                 model: google(provider),
                 system: 'You are a helpful assistant.',
                 messages,
+                prompt,
             })
             const stream = result.toDataStream()
 
@@ -61,6 +63,7 @@ export async function action({ request }: ActionFunctionArgs) {
                 model: openai(provider),
                 system: 'You are a helpful assistant.',
                 messages,
+                prompt,
             })
             const stream = result.toDataStream()
 
