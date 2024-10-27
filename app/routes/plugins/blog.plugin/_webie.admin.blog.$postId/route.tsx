@@ -142,11 +142,7 @@ export default function AdminPost() {
                     </Link>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button
-                                className="space-x-1.5"
-                                size={'sm'}
-                                variant={'destructive'}
-                            >
+                            <Button size={'sm'} variant={'destructive'}>
                                 <Trash height={16} width={16} />
                                 <p className="text-xs">Discard</p>
                             </Button>
@@ -177,11 +173,7 @@ export default function AdminPost() {
                         </AlertDialogContent>
                     </AlertDialog>
 
-                    <Button
-                        form="update-post"
-                        className="space-x-1.5"
-                        size={'sm'}
-                    >
+                    <Button form="update-post" size={'sm'}>
                         {isSubmitting ? (
                             <Loader2 size={16} className="animate-spin" />
                         ) : (

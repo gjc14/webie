@@ -28,6 +28,7 @@ const MainNavItems: WebieAdminMenuItem[] = [
         sub: [{ title: 'Admin', url: 'admins' }],
     },
     { iconName: 'text-search', title: 'SEO', url: '/admin/seo' },
+    { iconName: 'database', title: 'Assets', url: '/admin/assets' },
 ]
 
 const SecondaryNavItems: NavSecondaryItem[] = [

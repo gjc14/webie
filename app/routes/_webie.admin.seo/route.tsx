@@ -87,11 +87,7 @@ export default function AdminSEO() {
                     SEO
                 </AdminTitle>
                 <AdminActions>
-                    <Button
-                        className="space-x-1.5"
-                        size={'sm'}
-                        onClick={() => setOpen(true)}
-                    >
+                    <Button size={'sm'} onClick={() => setOpen(true)}>
                         <PlusCircle size={16} />
                         <p className="text-xs">Create seo</p>
                     </Button>
