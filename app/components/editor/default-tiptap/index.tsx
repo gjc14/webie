@@ -2,13 +2,7 @@ import 'highlight.js/styles/base16/atelier-dune.min.css'
 import './styles.scss'
 
 import { Editor, EditorContent, useEditor } from '@tiptap/react'
-import {
-    forwardRef,
-    useCallback,
-    useImperativeHandle,
-    useRef,
-    useState,
-} from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
 
 import { cn } from '~/lib/utils'
 import { ChatAPICustomBody } from '~/routes/_webie.admin.api.ai.chat'
