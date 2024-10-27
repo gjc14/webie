@@ -1,5 +1,7 @@
 import { CloudUploadIcon, CupSoda } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+
 import { Button } from '~/components/ui/button'
 import {
     Dialog,
@@ -48,12 +50,83 @@ const FileGridMain = ({
     onFileSelect,
     onFileUpdate,
     onFileDelete,
+    uploadMode,
+    onUpload,
 }: FileGridProps) => {
-    const [fileState, setFileState] = useState<FileGridProps['files']>(files)
+    ///////////////////////////////////////////
+    ///        Drag, Drop and Upload        ///
+    ///////////////////////////////////////////
     const [filesUploaded, setFilesUploaded] = useState<
         ({ file: File } & FileMeta)[]
     >([])
-    const isUploadActive = filesUploaded.length > 0
+    const [acceptedTypes, setAcceptedTypes] = useState({
+        images: true,
+        videos: true,
+        audio: true,
+        documents: true,
+    })
+
+    const getAcceptedFileTypes = useCallback(() => {
+        const types: { [type: string]: [] } = {}
+        if (acceptedTypes.images) types['image/*'] = []
+        if (acceptedTypes.videos) types['video/*'] = []
+        if (acceptedTypes.audio) types['audio/*'] = []
+        if (acceptedTypes.documents) {
+            types['application/pdf'] = []
+            types['text/plain'] = []
+        }
+        return types
+    }, [acceptedTypes])
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        accept: getAcceptedFileTypes(),
+        onDrop: acceptedFiles => {
+            setFilesUploaded(prev => {
+                // see: https://react-dropzone.js.org/#section-previews
+                const newFiles = acceptedFiles.map(file => ({
+                    file,
+                    id: crypto.randomUUID(),
+                    url: URL.createObjectURL(file),
+                    name: file.name,
+                    description: '',
+                }))
+
+                return [...prev, ...newFiles]
+            })
+        },
+    })
+
+    const updateFilesUploaded = (fileMeta: FileMeta) => {
+        setFilesUploaded(prev => {
+            return prev.map(file => {
+                if (file.id === fileMeta.id) {
+                    return { ...file, ...fileMeta }
+                }
+                return file
+            })
+        })
+    }
+
+    const removeFileUploaded = (fileId: string) => {
+        setFilesUploaded(prev => {
+            const fileToRemove = prev.find(f => f.id === fileId)
+            if (fileToRemove) {
+                URL.revokeObjectURL(fileToRemove.url)
+            }
+            return prev.filter(f => f.id !== fileId)
+        })
+    }
+
+    useEffect(() => {
+        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+        return () =>
+            filesUploaded.forEach(fileData => URL.revokeObjectURL(fileData.url))
+    }, [filesUploaded])
+
+    ////////////////////////////////////////////
+    ///   File handling for existing files   ///
+    ////////////////////////////////////////////
+    const [fileState, setFileState] = useState<FileGridProps['files']>(files)
 
     const handleFileSelect = (file: File) => {
         onFileSelect?.(file)
@@ -69,6 +142,9 @@ const FileGridMain = ({
             })
         })
         onFileUpdate?.(fileMeta)
+
+        // Handle uploaded files
+        updateFilesUploaded(fileMeta)
     }
 
     const handleFileDelete = (fileId: string) => {
@@ -76,28 +152,47 @@ const FileGridMain = ({
             return prev.filter(file => file.id !== fileId)
         })
         onFileDelete?.(fileId)
-    }
 
-    // TODO: DnD
+        // Handle uploaded files
+        removeFileUploaded(fileId)
+    }
 
     return (
         <div
             className={cn(
-                'relative h-auto grow p-3 border-2 border-dashed rounded-xl'
-                // isDragActive ? 'border-4 border-sky-600 dark:border-sky-600' : ''
+                'relative h-auto grow p-3 border-2 border-dashed rounded-xl',
+                isDragActive
+                    ? 'border-4 border-sky-600 dark:border-sky-600'
+                    : ''
             )}
+            {...getRootProps()}
         >
+            <input {...getInputProps()} />
             <div
                 className={cn(
                     'z-10 absolute h-full w-full inset-0 flex justify-center items-center bg-muted rounded-lg',
-                    // isDragActive ? '' : 'hidden'
-                    'hidden'
+                    isDragActive ? '' : 'hidden'
                 )}
             >
                 <CloudUploadIcon className="w-12 h-12 text-primary" />
             </div>
             {/* TODO: Fix when length < 5 the FileCard takes all the width and grows too wide */}
-            {fileState.length > 0 ? (
+            {filesUploaded.length > 0 ? (
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2">
+                    {filesUploaded.map((file, index) => {
+                        return (
+                            <FileCard
+                                key={index}
+                                file={file.file}
+                                fileMeta={file}
+                                onSelect={handleFileSelect}
+                                onUpdate={handleFileUpdate}
+                                onDelete={handleFileDelete}
+                            />
+                        )
+                    })}
+                </div>
+            ) : fileState.length > 0 ? (
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2">
                     {fileState.map((file, index) => {
                         return (
