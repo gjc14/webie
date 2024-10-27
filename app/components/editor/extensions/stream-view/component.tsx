@@ -1,6 +1,6 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import { useCompletion } from 'ai/react'
-import { Loader, StopCircle } from 'lucide-react'
+import { Loader, RotateCcw, StopCircle } from 'lucide-react'
 import { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -30,7 +30,6 @@ export default (props: NodeViewProps) => {
         if (!completion) return
 
         const pos = getPos()
-        console.log('Completion:', completion)
 
         // Update the node's content attribute as streaming happens
         editor.commands.updateStreamContent(pos, completion)
@@ -40,10 +39,8 @@ export default (props: NodeViewProps) => {
     const handleSave = () => {
         if (!editor) return
 
-        const pos = getPos()
-
         // Save the streaming content as regular text
-        editor.commands.saveStreamView(pos, completion)
+        editor.commands.saveStreamView(completion)
     }
 
     const handleDiscard = () => {
@@ -53,11 +50,20 @@ export default (props: NodeViewProps) => {
         editor.commands.removeStreamView()
     }
 
+    const handleRetry = () => {
+        if (!prompt) return
+        complete(prompt)
+    }
+
     return (
-        <NodeViewWrapper className="relative flex flex-col items-center p-3 gap-3 border rounded-lg">
-            <div className="w-full flex justify-end gap-2 pb-3 border-b">
+        <NodeViewWrapper className="relative flex flex-col items-center p-3 gap-3">
+            <div className="w-full flex items-center justify-end gap-2 pb-3 border-b">
                 {!isLoading ? (
                     <>
+                        <RotateCcw
+                            onClick={handleRetry}
+                            className="size-5 cursor-pointer"
+                        />
                         <Button
                             variant={'destructive'}
                             size={'sm'}

@@ -1,33 +1,47 @@
-import { mergeAttributes, Node, Command } from '@tiptap/core'
+import { Command, mergeAttributes, Node } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import MarkdownIt from 'markdown-it'
 
-import Component from './component'
 import { Provider } from '~/routes/_webie.admin.api.ai.chat'
+import Component from './component'
 
-interface StreamViewAttributes {
+interface StreamViewProps {
     prompt: string
     provider: Provider
     content?: string
+    status: 'loading' | 'idle' | 'error'
 }
 
 declare module '@tiptap/core' {
     interface Commands<ReturnType> {
         streamView: {
-            setStreamView: (attrs: StreamViewAttributes) => ReturnType
-            saveStreamView: (pos: number, content: string) => ReturnType
+            setStreamView: (props: StreamViewProps) => ReturnType
+            saveStreamView: (content: string) => ReturnType
             removeStreamView: () => ReturnType
             updateStreamContent: (pos: number, content: string) => ReturnType
         }
     }
 }
 
-export const StreamView = Node.create<StreamViewAttributes>({
+export const StreamView = Node.create<StreamViewProps>({
     name: 'streamView',
 
     group: 'block',
 
+    inline: false,
+
+    draggable: false,
+
     atom: true,
+
+    addOptions() {
+        return {
+            prompt: '',
+            provider: 'gemini-1.5-flash-latest',
+            content: '',
+            status: 'idle',
+        }
+    },
 
     addAttributes() {
         return {
@@ -35,10 +49,13 @@ export const StreamView = Node.create<StreamViewAttributes>({
                 default: '',
             },
             provider: {
-                default: '',
+                default: this.options.provider,
             },
             content: {
                 default: '',
+            },
+            status: {
+                default: this.options.status,
             },
         }
     },
@@ -46,70 +63,20 @@ export const StreamView = Node.create<StreamViewAttributes>({
     addCommands() {
         return {
             setStreamView:
-                (attrs: StreamViewAttributes): Command =>
-                ({ tr, dispatch }) => {
-                    if (dispatch) {
-                        let existingNodePos = null
-
-                        tr.doc.descendants((node, pos) => {
-                            if (node.type.name === 'streamView') {
-                                existingNodePos = pos
-                                return false
-                            }
-                            return true
+                (props): Command =>
+                ({ commands, editor }) => {
+                    const current = editor.$nodes('streamView')
+                    if (!current || current.length === 0) {
+                        // No existing stream view nodes
+                        const node = this.type.create(props)
+                        commands.insertContent({
+                            type: this.name,
+                            attrs: props,
                         })
-
-                        if (existingNodePos !== null) {
-                        } else {
-                            const node = this.type.create(attrs)
-                            tr.replaceSelectionWith(node)
-                        }
+                        return true
+                    } else {
+                        return false
                     }
-                    return true
-                },
-
-            saveStreamView:
-                (pos: number, content: string): Command =>
-                ({ tr, editor }) => {
-                    // Get the current stream view node
-                    const node = tr.doc.nodeAt(pos)
-                    if (!node) return false
-
-                    const md = new MarkdownIt()
-                    const htmlContent = md.render(content)
-
-                    // Chain remove this stream view node and insert the converted html content
-                    editor
-                        .chain()
-                        .focus()
-                        .deleteRange({ from: pos, to: pos + node.nodeSize })
-                        .insertContent(htmlContent)
-                        .run()
-
-                    return true
-                },
-
-            removeStreamView:
-                (): Command =>
-                ({ tr, state, dispatch }) => {
-                    if (dispatch) {
-                        // Find all stream view nodes
-                        const positions: number[] = []
-                        state.doc.descendants((node, pos) => {
-                            if (node.type.name === this.name) {
-                                positions.push(pos)
-                            }
-                        })
-
-                        // Delete them in reverse order to maintain positions
-                        positions.reverse().forEach(pos => {
-                            const node = state.doc.nodeAt(pos)
-                            if (node) {
-                                tr.delete(pos, pos + node.nodeSize)
-                            }
-                        })
-                    }
-                    return true
                 },
 
             updateStreamContent:
@@ -123,6 +90,57 @@ export const StreamView = Node.create<StreamViewAttributes>({
                     }
                     return true
                 },
+
+            saveStreamView:
+                (content: string): Command =>
+                ({ tr, commands, state }) => {
+                    const positions: number[] = []
+                    state.doc.descendants((node, pos) => {
+                        if (node.type.name === this.name) {
+                            positions.push(pos)
+                        }
+                    })
+
+                    const md = new MarkdownIt()
+                    const htmlContent = md.render(content)
+
+                    commands.insertContent(htmlContent) // Insert at the current position
+
+                    // Delete them in reverse order to maintain positions
+                    positions.reverse().forEach(pos => {
+                        const node = state.doc.nodeAt(pos)
+                        if (node) {
+                            tr.delete(pos, pos + node.nodeSize)
+                        } else {
+                            console.warn('Node not found at position:', pos)
+                        }
+                    })
+
+                    return true
+                },
+
+            removeStreamView:
+                (): Command =>
+                ({ tr, state }) => {
+                    // Find all stream view nodes
+                    const positions: number[] = []
+                    state.doc.descendants((node, pos) => {
+                        if (node.type.name === this.name) {
+                            positions.push(pos)
+                        }
+                    })
+
+                    // Delete them in reverse order to maintain positions
+                    positions.reverse().forEach(pos => {
+                        const node = state.doc.nodeAt(pos)
+                        if (node) {
+                            tr.delete(pos, pos + node.nodeSize)
+                        } else {
+                            console.warn('Node not found at position:', pos)
+                        }
+                    })
+                    return true
+                },
         }
     },
 
@@ -130,14 +148,6 @@ export const StreamView = Node.create<StreamViewAttributes>({
         return [
             {
                 tag: 'stream-view',
-                getAttrs: dom => {
-                    if (!(dom instanceof HTMLElement)) return false
-                    return {
-                        prompt: dom.getAttribute('data-prompt'),
-                        provider: dom.getAttribute('data-provider'),
-                        content: dom.getAttribute('data-content'),
-                    }
-                },
             },
         ]
     },
@@ -149,6 +159,7 @@ export const StreamView = Node.create<StreamViewAttributes>({
                 'data-prompt': HTMLAttributes.prompt,
                 'data-provider': HTMLAttributes.provider,
                 'data-content': HTMLAttributes.content,
+                'data-status': HTMLAttributes.status,
             }),
         ]
     },

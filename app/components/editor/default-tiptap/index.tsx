@@ -109,7 +109,11 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                         .slice(-20)
                         .join(' | ') || defaultPrompt
 
-                editor.commands.setStreamView({ prompt, provider: aiProvider })
+                editor.commands.setStreamView({
+                    prompt,
+                    provider: aiProvider,
+                    status: 'loading',
+                })
             } else {
                 // Use selected text as prompt
                 const content = doc.textBetween(from, to, '[webie | split]')
@@ -119,7 +123,11 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                         .filter(Boolean)
                         .join(' | ') || defaultPrompt
 
-                editor.commands.setStreamView({ prompt, provider: aiProvider })
+                editor.commands.setStreamView({
+                    prompt,
+                    provider: aiProvider,
+                    status: 'loading',
+                })
             }
         },
         [editor]
