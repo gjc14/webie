@@ -99,7 +99,6 @@ export default function AdminSEO() {
                     />
                 </AdminActions>
             </AdminHeader>
-            {/* TODO: horizontal scrollable table */}
             <DataTable columns={columns} data={seo}>
                 {table => (
                     <Input
