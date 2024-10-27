@@ -144,7 +144,13 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                         onAiProviderSelect={ai => setAiProvider(ai)}
                     />
                 )}
-                {editor && <DefaultBubbleMenu editor={editor} />}
+                {/* TODO: Many bubble menus like image/youtube/link */}
+                {editor && (
+                    <DefaultBubbleMenu
+                        editor={editor}
+                        onComplete={() => onComplete(editor)}
+                    />
+                )}
                 {/* {editor && <DefaultFloatingMenu editor={editor} />} */}
                 <EditorContent
                     onClick={() => editor?.commands.focus()}

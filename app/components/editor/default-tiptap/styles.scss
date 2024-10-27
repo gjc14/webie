@@ -9,7 +9,7 @@
         @apply bg-muted rounded-lg py-1 px-2;
     }
 
-    p.is-editor-empty:first-child::before {
+    p.is-empty::before {
         @apply h-0 float-left text-muted-foreground/50 text-base pointer-events-none;
         content: attr(data-placeholder);
     }

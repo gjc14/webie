@@ -1,5 +1,5 @@
 import { BubbleMenu, Editor } from '@tiptap/react'
-import { AlignLeft, MoreVertical, Pilcrow } from 'lucide-react'
+import { AlignLeft, MoreVertical, Pilcrow, WandSparkles } from 'lucide-react'
 import {
     editAlignOptions,
     editHistoryOptions,
@@ -12,7 +12,13 @@ import { Separator } from '~/components/ui/separator'
 import { PopoverMenuOptions } from '../popover-options'
 import { ToggleButton } from '../toggle-button'
 
-export const DefaultBubbleMenu = ({ editor }: { editor: Editor }) => {
+export const DefaultBubbleMenu = ({
+    editor,
+    onComplete,
+}: {
+    editor: Editor
+    onComplete?: () => void
+}) => {
     const activeParagraphOption = editParagraphOptions.find(option =>
         option.isActive?.(editor)
     )
@@ -34,6 +40,7 @@ export const DefaultBubbleMenu = ({ editor }: { editor: Editor }) => {
     )
 
     return (
+        // TODO: Fix: Tooltip has a lower z-index than the bubble menu
         <BubbleMenu
             tippyOptions={{
                 duration: 100,
@@ -42,6 +49,21 @@ export const DefaultBubbleMenu = ({ editor }: { editor: Editor }) => {
             editor={editor}
             className="flex items-center p-1 gap-0.5 bg-primary-foreground border border-border rounded-md shadow-md"
         >
+            {/* AI Write */}
+            <ToggleButton
+                onClick={onComplete}
+                disabled={undefined}
+                tooltip={'AI Continue Writing'}
+            >
+                <WandSparkles size={16} />
+            </ToggleButton>
+
+            <Separator
+                orientation="vertical"
+                className="h-full min-h-[1.5rem]"
+            />
+
+            {/* Paragraph options */}
             <PopoverMenuOptions
                 editor={editor}
                 activeIcon={
