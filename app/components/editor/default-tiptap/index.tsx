@@ -134,21 +134,28 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                 props.className
             )}
         >
-            {editor && (
-                <MenuBar
+            {/* Editor part */}
+            <div className="grow">
+                {editor && (
+                    <MenuBar
+                        editor={editor}
+                        className={props.menuBarClassName}
+                        onComplete={() => onComplete(editor)}
+                        onAiProviderSelect={ai => setAiProvider(ai)}
+                    />
+                )}
+                {editor && <DefaultBubbleMenu editor={editor} />}
+                {/* {editor && <DefaultFloatingMenu editor={editor} />} */}
+                <EditorContent
+                    onClick={() => editor?.commands.focus()}
                     editor={editor}
-                    className={props.menuBarClassName}
-                    onComplete={() => onComplete(editor)}
-                    onAiProviderSelect={ai => setAiProvider(ai)}
+                    className={cn(
+                        'grow cursor-text',
+                        props.editorContentClassName
+                    )}
                 />
-            )}
-            {editor && <DefaultBubbleMenu editor={editor} />}
-            {/* {editor && <DefaultFloatingMenu editor={editor} />} */}
-            <EditorContent
-                onClick={() => editor?.commands.focus()}
-                editor={editor}
-                className={cn('grow cursor-text', props.editorContentClassName)}
-            />
+            </div>
+
             <footer className="flex justify-end items-center pt-2 px-1 border-t text-xs text-muted-foreground">
                 <a
                     href="https://github.com/gjc14/webie"
