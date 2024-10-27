@@ -23,7 +23,7 @@ export default defineConfig({
         tsconfigPaths(),
     ],
     ssr: {
-        noExternal: ['lucide-react'],
+        noExternal: ['lucide-react', 'react-dropzone'],
     },
 })
 

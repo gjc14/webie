@@ -77,6 +77,7 @@
         "react": "^18.2.0",
         "react-day-picker": "^8.10.1",
         "react-dom": "^18.2.0",
+        "react-dropzone": "^14.2.10",
         "react-markdown": "^9.0.1",
         "remark-gfm": "^4.0.0",
         "resend": "^4.0.0",
