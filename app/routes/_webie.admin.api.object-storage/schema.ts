@@ -19,6 +19,7 @@ export const FilePresignArgsSchema = z.object({
     name: z.string(),
     type: z.string(),
     size: z.number(),
+    checksum: z.string(),
     description: z.string().optional(),
 })
 export const PresignRequestSchema = z.array(FilePresignArgsSchema)

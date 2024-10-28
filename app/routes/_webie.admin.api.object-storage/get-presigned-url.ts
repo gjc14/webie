@@ -10,25 +10,28 @@ export const getUploadUrl = async ({
     key,
     size,
     type,
+    checksum,
     Metadata,
 }: {
     bucket?: string
     key: string
     size: number
     type: string
+    checksum: string
     Metadata?: Record<string, any>
 }) => {
     if (!S3) return null
 
     try {
+        // https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html
         const presignedUrl = await getSignedUrl(
             S3,
             new PutObjectCommand({
-                // TODO: Add checksum
                 Bucket: bucket,
                 Key: key,
                 ContentLength: size,
                 ContentType: type,
+                ChecksumSHA256: checksum,
                 Metadata: Metadata,
             }),
             { expiresIn: 300 }

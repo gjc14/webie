@@ -4,6 +4,14 @@ import {
     PresignResponseSchema,
 } from '~/routes/_webie.admin.api.object-storage/schema'
 
+async function generateChecksum(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer()
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    return hashHex
+}
+
 /**
  * Fetch the api to get presigned URLs for the files
  * @param files
@@ -13,15 +21,21 @@ export const fetchPresignedUrls = async (
     files: FileUploaded[]
 ): Promise<(FileUploaded & { presignedUrl: string })[]> => {
     try {
-        // Prepare file metadata
-        const fileMetadata: PresignRequest = files.map(file => ({
-            // TODO: Implement checksum generation
-            id: file.id,
-            name: file.name,
-            type: file.file.type,
-            size: file.file.size,
-            description: file.description,
-        }))
+        const fileMetadataPromise = files.map(async file => {
+            const fileChecksum = await generateChecksum(file.file)
+            return {
+                id: file.id,
+                name: file.name,
+                type: file.file.type,
+                size: file.file.size,
+                checksum: fileChecksum,
+                description: file.description,
+            }
+        })
+
+        const fileMetadata: PresignRequest = await Promise.all(
+            fileMetadataPromise
+        )
 
         const res = await fetch('/admin/api/object-storage', {
             method: 'POST',

@@ -31,10 +31,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             fileMetadata.map(async file => {
                 const key = generateStorageKey(file)
                 const presignedUrl = await getUploadUrl({
-                    // TODO: Implement checksum generation
                     key,
                     size: file.size,
                     type: file.type,
+                    checksum: file.checksum,
                     Metadata: {
                         userId: admin.id,
                         description: file.description,
