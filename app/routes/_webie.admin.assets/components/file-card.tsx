@@ -34,7 +34,7 @@ import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import { FileMeta } from '~/routes/_webie.admin.api.object-storage/type'
+import { FileMeta } from '~/routes/_webie.admin.api.object-storage/schema'
 
 export type FileCardProps = {
     file: File

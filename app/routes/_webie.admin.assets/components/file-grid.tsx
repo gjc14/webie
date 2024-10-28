@@ -13,7 +13,11 @@ import {
     DialogTrigger,
 } from '~/components/ui/dialog'
 import { cn } from '~/lib/utils'
-import { FileMeta } from '~/routes/_webie.admin.api.object-storage/type'
+import {
+    FileMeta,
+    FileUploaded,
+} from '~/routes/_webie.admin.api.object-storage/schema'
+import { fetchPresignedUrls } from '../utils'
 import { FileCard } from './file-card'
 
 export interface FileGridProps {
@@ -66,9 +70,7 @@ const FileGridMain = ({
     ///////////////////////////////////////////
     ///        Drag, Drop and Upload        ///
     ///////////////////////////////////////////
-    const [filesUploaded, setFilesUploaded] = useState<
-        ({ file: File } & FileMeta)[]
-    >([])
+    const [filesUploaded, setFilesUploaded] = useState<FileUploaded[]>([])
     const [acceptedTypes, setAcceptedTypes] = useState({
         images: true,
         videos: true,
@@ -132,6 +134,17 @@ const FileGridMain = ({
         return () =>
             filesUploaded.forEach(fileData => URL.revokeObjectURL(fileData.url))
     }, [filesUploaded])
+
+    // Handle submitting files uploaded
+    const onSubmit = async () => {
+        try {
+            const presignedFiles = await fetchPresignedUrls(filesUploaded)
+            console.log('Presigned files', presignedFiles)
+            // Upload with presigned URLs
+        } catch (error) {
+            console.error('Error uploading files', error)
+        }
+    }
 
     ////////////////////////////////////////////
     ///   File handling for existing files   ///

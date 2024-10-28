@@ -1,13 +1,8 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
-import { z } from 'zod'
 import { userIs } from '~/lib/db/auth.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
 import { getSignedUrl } from './get-presigned-url'
-
-export const ActionResponseSchema = z.object({
-    url: z.string().url(),
-})
-export type ActionResponseData = z.infer<typeof ActionResponseSchema>
+import { PresignRequestSchema, PresignResponseSchema } from './schema'
 
 // Presign url for uploading assets
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -18,25 +13,50 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
     const jsonData = await request.json()
-    console.log('jsonData', jsonData)
 
-    const prsignURL = await getSignedUrl({ key: 'my-first-obj' })
-    console.log('prsignURL', prsignURL)
-    if (!prsignURL) {
+    // Validate request data
+    const {
+        data: fileMetadata,
+        success,
+        error,
+    } = PresignRequestSchema.safeParse(jsonData)
+    if (!success) {
+        console.error('Invalidate request data', error)
+        return new Response('Bad Request', { status: 400 })
+    }
+
+    try {
+        // Get presigned URLs for all files
+        const presignedUrls = await Promise.all(
+            fileMetadata.map(async file => {
+                const key = generateStorageKey(file)
+                const presignedUrl = await getSignedUrl({ key })
+                return {
+                    id: file.id,
+                    presignedUrl,
+                }
+            })
+        )
+
+        const validatedResponse = PresignResponseSchema.parse({
+            urls: presignedUrls,
+        })
+
+        return json<ConventionalSuccess>({
+            msg: 'Presign urls generated successfully',
+            data: validatedResponse,
+            options: { preventAlert: true },
+        })
+    } catch (error) {
+        console.log('Error generating presigned URLs', error)
         return json<ConventionalError>({
-            err: 'Cloud storage not available, please try again',
+            err: 'Failed to generate presigned URLs',
         })
     }
+}
 
-    const data: ActionResponseData = {
-        url: prsignURL,
-    }
-    const responseData: ConventionalSuccess = {
-        msg: 'Presign url success',
-        data,
-        options: {
-            preventAlert: true,
-        },
-    }
-    return json(responseData)
+const generateStorageKey = (file: { type: string; name: string }) => {
+    const fileType = file.type.split('/')[0]
+    const timestamp = Date.now()
+    return `asset/${fileType}/${file.name}-${timestamp}`
 }
