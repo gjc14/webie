@@ -5,7 +5,7 @@ import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
 
 import { cn } from '~/lib/utils'
-import { ChatAPICustomBody } from '~/routes/_webie.admin.api.ai.chat'
+import { ChatAPICustomBody } from '~/routes/_webie.admin.api.ai.chat/route'
 import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
 // import { DefaultFloatingMenu } from '../components/menus/floating-menu'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'

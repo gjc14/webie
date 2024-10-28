@@ -13,8 +13,18 @@ import {
     DialogTrigger,
 } from '~/components/ui/dialog'
 import { cn } from '~/lib/utils'
+import { FileMeta } from '~/routes/_webie.admin.api.object-storage/type'
 import { FileCard } from './file-card'
-import { FileGridProps, FileMeta } from './type'
+
+export interface FileGridProps {
+    files: ({ file: File } & FileMeta)[]
+    onFileSelect?: (file: File) => void
+    onFileUpdate?: (fileMeta: FileMeta) => void
+    onFileDelete?: (fileId: string) => void
+    dialogTrigger?: React.ReactNode
+    uploadMode?: 'single' | 'multiple'
+    onUpload?: (files: File[]) => void
+}
 
 /**
  * FileGrid Component should be wrap in display: flex as it uses flex: 1 to grow

@@ -14,7 +14,7 @@ import {
 } from '~/components/ui/popover'
 import { Separator } from '~/components/ui/separator'
 import { cn } from '~/lib/utils'
-import { Provider } from '~/routes/_webie.admin.api.ai.chat'
+import { Provider } from '~/routes/_webie.admin.api.ai.chat/route'
 import {
     editAlignOptions,
     editHistoryOptions,

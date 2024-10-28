@@ -28,7 +28,7 @@ import {
     Provider,
     Providers,
     providers,
-} from '~/routes/_webie.admin.api.ai.chat'
+} from '~/routes/_webie.admin.api.ai.chat/route'
 import {
     AdminActions,
     AdminHeader,

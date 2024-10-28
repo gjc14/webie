@@ -34,7 +34,16 @@ import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import { FileCardProps } from './type'
+import { FileMeta } from '~/routes/_webie.admin.api.object-storage/type'
+
+export type FileCardProps = {
+    file: File
+    fileMeta: FileMeta
+    className?: string
+    onSelect?: (file: File, fileMeta: FileMeta) => void
+    onUpdate?: (fileMeta: FileMeta) => void
+    onDelete?: (fileId: string) => void
+}
 
 export const FileCard = ({
     file,

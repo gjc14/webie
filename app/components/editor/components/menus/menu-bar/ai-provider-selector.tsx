@@ -16,7 +16,7 @@ import {
     PopoverTrigger,
 } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
-import { Provider, providers } from '~/routes/_webie.admin.api.ai.chat'
+import { Provider, providers } from '~/routes/_webie.admin.api.ai.chat/route'
 
 export const AIProviderSelector = ({
     className,
