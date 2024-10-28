@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 import { userIs } from '~/lib/db/auth.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
-import { getSignedUrl } from './get-presigned-url'
+import { getUploadUrl } from './get-presigned-url'
 import { PresignRequestSchema, PresignResponseSchema } from './schema'
 
 // Presign url for uploading assets
@@ -30,10 +30,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const presignedUrls = await Promise.all(
             fileMetadata.map(async file => {
                 const key = generateStorageKey(file)
-                const presignedUrl = await getSignedUrl({ key })
+                const presignedUrl = await getUploadUrl({
+                    // TODO: Implement checksum generation
+                    key,
+                    size: file.size,
+                    type: file.type,
+                    Metadata: {
+                        userId: admin.id,
+                        description: file.description,
+                    },
+                })
                 return {
                     id: file.id,
                     presignedUrl,
+                    key,
                 }
             })
         )
@@ -56,7 +66,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 const generateStorageKey = (file: { type: string; name: string }) => {
+    // TODO: Authenticate user and generate key based on user id
     const fileType = file.type.split('/')[0]
     const timestamp = Date.now()
-    return `asset/${fileType}/${file.name}-${timestamp}`
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase()
+    return `asset/${fileType}/Webie@${timestamp}$${random}-${file.name}`
 }

@@ -17,7 +17,7 @@ import {
     FileMeta,
     FileUploaded,
 } from '~/routes/_webie.admin.api.object-storage/schema'
-import { fetchPresignedUrls } from '../utils'
+import { fetchPresignedUrls, useFileUpload } from '../utils'
 import { FileCard } from './file-card'
 
 export interface FileGridProps {
@@ -135,12 +135,12 @@ const FileGridMain = ({
             filesUploaded.forEach(fileData => URL.revokeObjectURL(fileData.url))
     }, [filesUploaded])
 
-    // Handle submitting files uploaded
+    // Handle files uploaded submitting
+    const { uploadProgress, uploadToPresignedUrl } = useFileUpload()
     const onSubmit = async () => {
         try {
             const presignedFiles = await fetchPresignedUrls(filesUploaded)
-            console.log('Presigned files', presignedFiles)
-            // Upload with presigned URLs
+            await uploadToPresignedUrl(presignedFiles)
         } catch (error) {
             console.error('Error uploading files', error)
         }
@@ -190,6 +190,47 @@ const FileGridMain = ({
             )}
             {...getRootProps()}
         >
+            <Button
+                onClick={e => {
+                    e.stopPropagation()
+                    onSubmit()
+                }}
+            >
+                Submit
+            </Button>
+            {Object.values(uploadProgress).map(
+                ({ id, progress, status, error }) => {
+                    return (
+                        <div key={id} className="mb-4">
+                            <div className="flex justify-between mb-1">
+                                <span className="text-sm font-medium">
+                                    {filesUploaded.find(f => f.id === id)?.name}
+                                </span>
+                                <span className="text-sm font-medium">
+                                    {progress}%
+                                </span>
+                            </div>
+                            <div className="w-full bg-primary rounded-full h-2.5">
+                                <div
+                                    className={`h-2.5 rounded-full ${
+                                        status === 'error'
+                                            ? 'bg-red-600'
+                                            : status === 'completed'
+                                            ? 'bg-green-600'
+                                            : 'bg-blue-600'
+                                    }`}
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                            {error && (
+                                <p className="text-sm text-red-600 mt-1">
+                                    {error}
+                                </p>
+                            )}
+                        </div>
+                    )
+                }
+            )}
             <input {...getInputProps()} />
             <div
                 className={cn(

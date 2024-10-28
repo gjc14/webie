@@ -19,6 +19,7 @@ export const FilePresignArgsSchema = z.object({
     name: z.string(),
     type: z.string(),
     size: z.number(),
+    description: z.string().optional(),
 })
 export const PresignRequestSchema = z.array(FilePresignArgsSchema)
 export type PresignRequest = z.infer<typeof PresignRequestSchema>
@@ -27,6 +28,7 @@ export type PresignRequest = z.infer<typeof PresignRequestSchema>
 export const PresignedUrlSchema = z.object({
     id: z.string(),
     presignedUrl: z.string().url(),
+    key: z.string(),
 })
 export const PresignResponseSchema = z.object({
     urls: z.array(PresignedUrlSchema),
