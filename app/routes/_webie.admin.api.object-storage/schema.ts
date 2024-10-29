@@ -8,11 +8,6 @@ export type FileMeta = {
     [key: string]: any
 }
 
-export type FileUploaded = FileMeta & {
-    file: File
-    presignedUrl?: string
-}
-
 // Request schemas
 export const FilePresignArgsSchema = z.object({
     id: z.string(),
