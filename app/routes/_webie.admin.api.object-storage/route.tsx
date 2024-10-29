@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 import { userIs } from '~/lib/db/auth.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
-import { getUploadUrl } from './get-presigned-url'
+import { getUploadUrl } from '../../lib/db/asset.server'
 import { PresignRequestSchema, PresignResponseSchema } from './schema'
 
 // Presign url for uploading assets
@@ -29,7 +29,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         // Get presigned URLs for all files
         const presignedUrls = await Promise.all(
             fileMetadata.map(async file => {
-                const key = generateStorageKey(file)
+                const key = generateStorageKey(file, 'private')
                 const presignedUrl = await getUploadUrl({
                     key,
                     size: file.size,
@@ -65,10 +65,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 }
 
-const generateStorageKey = (file: { type: string; name: string }) => {
-    // TODO: Authenticate user and generate key based on user id
+/**
+ * Generate a role and type based storage key for the file, for example:
+ * asset/private/image/webie@1234567890-ABCD-ddd0bbb-88ee-1234-8abc-c098765b1b1b
+ * @param file pass in file type and file name
+ * @param access role based authentication
+ * @returns the key (path) of the file
+ */
+const generateStorageKey = (
+    file: { type: string; name: string },
+    access: 'private' | 'public'
+) => {
     const fileType = file.type.split('/')[0]
     const timestamp = Date.now()
-    const random = Math.random().toString(36).substring(2, 6).toUpperCase()
-    return `asset/${fileType}/Webie@${timestamp}$${random}-${file.name}`
+    const randomRef = Math.random().toString(36).substring(2, 6).toUpperCase()
+    const randomUUID = crypto.randomUUID()
+    return `asset/${access}/${fileType}/webie@${timestamp}-${randomRef}-${randomUUID}`
 }
