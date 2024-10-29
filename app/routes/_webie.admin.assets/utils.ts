@@ -1,9 +1,12 @@
+import { useState } from 'react'
+
 import {
     FileMeta,
     PresignRequest,
     PresignResponseSchema,
 } from '~/routes/_webie.admin.api.object-storage/schema'
 
+// Generate SHA-256 checksum for a file
 async function generateChecksum(file: File): Promise<string> {
     const arrayBuffer = await file.arrayBuffer()
     const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
@@ -69,11 +72,6 @@ export const fetchPresignedUrls = async (
     }
 }
 
-/**
- * Hook to get upload function progress for files
- */
-import { useState } from 'react'
-
 // Types for upload progress tracking
 type UploadProgress = {
     id: string
@@ -81,9 +79,11 @@ type UploadProgress = {
     status: 'pending' | 'uploading' | 'completed' | 'error'
     error?: string
 }
-
 type UploadState = Record<string, UploadProgress>
 
+/**
+ * Hook to get upload function progress for files
+ */
 export const useFileUpload = () => {
     const [uploadProgress, setUploadProgress] = useState<UploadState>({})
 

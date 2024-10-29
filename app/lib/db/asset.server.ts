@@ -1,7 +1,7 @@
 /**
  * @see https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/
  */
-import { PutObjectCommand } from '@aws-sdk/client-s3'
+import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3 } from '~/lib/db/_db.server'
 
@@ -43,6 +43,21 @@ export const getUploadUrl = async ({
     }
 }
 
-export const getDownloadUrl = async ({}) => {
-    // TODO: Implement download url and auth
+export const getDownloadUrl = async (key: string) => {
+    if (!S3) return null
+
+    try {
+        const presignedUrl = await getSignedUrl(
+            S3,
+            new GetObjectCommand({
+                Bucket: 'webie',
+                Key: key,
+            }),
+            { expiresIn: 300 }
+        )
+        return presignedUrl
+    } catch (error) {
+        console.error('Presign url error', error)
+        return null
+    }
 }
