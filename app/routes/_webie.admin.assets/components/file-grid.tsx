@@ -8,7 +8,6 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -49,8 +48,6 @@ export const FileGrid = (props: FileGridProps) => {
                     </DialogHeader>
 
                     <FileGridMain {...props} />
-
-                    <DialogFooter></DialogFooter>
                 </DialogContent>
             </Dialog>
         )
@@ -64,6 +61,7 @@ const FileGridMain = ({
     onFileDelete,
     uploadMode,
     onUpload,
+    dialogTrigger,
 }: FileGridProps) => {
     ///////////////////////////////////////////
     ///        Drag, Drop and Upload        ///
@@ -94,26 +92,32 @@ const FileGridMain = ({
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: getAcceptedFileTypes(),
         onDrop: async acceptedFiles => {
-            const newFiles = acceptedFiles.map(file => ({
-                file,
-                id: crypto.randomUUID(),
-                url: URL.createObjectURL(file),
-                name: file.name,
-                description: '',
-            }))
+            const newFiles: ({ file: File } & FileMeta)[] = acceptedFiles.map(
+                file => ({
+                    file,
+                    id: crypto.randomUUID(),
+                    url: URL.createObjectURL(file),
+                    name: file.name,
+                    description: '',
+                })
+            )
+            uploadFiles(newFiles)
             setFileUploading(prev => [...prev, ...newFiles])
-            try {
-                const presignedFiles = await fetchPresignedUrls(newFiles)
-                await uploadToPresignedUrl(presignedFiles)
-            } catch (error) {
-                console.error('Error uploading files', error)
-            }
         },
     })
 
-    ////////////////////////////////////////////
-    ///   File handling for existing files   ///
-    ////////////////////////////////////////////
+    const uploadFiles = async (newFiles: ({ file: File } & FileMeta)[]) => {
+        try {
+            const presignedFiles = await fetchPresignedUrls(newFiles)
+            await uploadToPresignedUrl(presignedFiles)
+        } catch (error) {
+            console.error('Error uploading files', error)
+        }
+    }
+
+    /////////////////////////
+    ///   File handling   ///
+    /////////////////////////
     const [fileState, setFileState] = useState<FileGridProps['files']>(files)
 
     const handleFileSelect = (file: File) => {
@@ -121,6 +125,7 @@ const FileGridMain = ({
     }
 
     const handleFileUpdate = (fileMeta: FileMeta) => {
+        // Handle object storage connection
         setFileState(prev => {
             return prev.map(file => {
                 if (file.id === fileMeta.id) {
@@ -133,6 +138,7 @@ const FileGridMain = ({
     }
 
     const handleFileDelete = (fileId: string) => {
+        // Handle object storage connection
         setFileState(prev => {
             return prev.filter(file => file.id !== fileId)
         })
@@ -154,7 +160,7 @@ const FileGridMain = ({
     return (
         <div
             className={cn(
-                'relative h-auto grow p-3 border-2 border-dashed rounded-xl',
+                'relative h-auto grow p-3 border-4 border-dashed rounded-xl',
                 isDragActive
                     ? 'border-4 border-sky-600 dark:border-sky-600'
                     : ''
@@ -177,7 +183,9 @@ const FileGridMain = ({
                         fileState.length === 1
                             ? 'grid-cols-2'
                             : 'grid-cols-[repeat(auto-fit,minmax(100px,1fr))]',
-                        'sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7'
+                        dialogTrigger
+                            ? 'sm:grid-cols-3 md:grid-cols-4'
+                            : 'sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7'
                     )}
                 >
                     {fileState.map((file, index) => {
@@ -196,14 +204,10 @@ const FileGridMain = ({
             ) : (
                 <div className="w-full h-full min-h-60 grow flex flex-col items-center justify-center gap-3 text-muted-foreground">
                     <CupSoda size={50} />
-                    <p>
+                    <p className="text-center text-pretty max-w-sm">
                         No file found, drag and drop, or click to select files
                         now
                     </p>
-                    <Button size={'sm'}>
-                        <CloudUploadIcon className="size-6" />
-                        Upload now
-                    </Button>
                 </div>
             )}
 
