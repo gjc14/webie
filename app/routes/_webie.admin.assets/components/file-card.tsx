@@ -6,7 +6,7 @@ import {
     Film,
     Trash2,
 } from 'lucide-react'
-import { forwardRef, useCallback, useRef, useState } from 'react'
+import { forwardRef, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -34,23 +34,18 @@ import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import {
-    FileMeta,
-    FileWithMeta,
-} from '~/routes/_webie.admin.api.object-storage/schema'
+import { FileMeta } from '~/routes/_webie.admin.api.object-storage/schema'
 
 export type FileCardProps = {
-    file: File
-    fileMeta: FileMeta
+    file: FileMeta
     className?: string
-    onSelect?: (file: FileWithMeta) => void
-    onUpdate?: (fileMeta: FileMeta) => void
-    onDelete?: (file: FileWithMeta) => void
+    onSelect?: (file: FileMeta) => void
+    onUpdate?: (file: FileMeta) => void
+    onDelete?: (file: FileMeta) => void
 }
 
 export const FileCard = ({
     file,
-    fileMeta,
     className,
     onSelect,
     onUpdate,
@@ -60,40 +55,23 @@ export const FileCard = ({
     const descRef = useRef<HTMLTextAreaElement>(null)
     const [open, setOpen] = useState(false)
     const [deleteAlert, setDeleteAlert] = useState(false)
-    const fileWithMeta = { file, ...fileMeta }
-
-    const getFileType = useCallback(
-        (file: File): 'image' | 'video' | 'audio' | 'unknown' => {
-            if (file.type.startsWith('image/')) {
-                return 'image'
-            } else if (file.type.startsWith('video/')) {
-                return 'video'
-            } else if (file.type.startsWith('audio/')) {
-                return 'audio'
-            } else {
-                return 'unknown'
-            }
-        },
-        [file]
-    )
-
-    const fileType = getFileType(file)
+    const fileGeneralType = file.type.split('/')[0]
 
     const handleSelect = () => {
-        onSelect?.(fileWithMeta)
+        onSelect?.(file)
     }
 
     const handleUpdate = () => {
         onUpdate?.({
-            ...fileMeta,
-            name: nameRef.current?.value || fileMeta.name,
-            description: descRef.current?.value || fileMeta.description,
+            ...file,
+            name: nameRef.current?.value || file.name,
+            description: descRef.current?.value || file.description,
         })
         setOpen(false)
     }
 
     const handleDelete = () => {
-        onDelete?.(fileWithMeta)
+        onDelete?.(file)
         setDeleteAlert(false)
         setOpen(false)
     }
@@ -106,11 +84,11 @@ export const FileCard = ({
             )}
             onClick={e => e.stopPropagation()}
         >
-            {fileType === 'image' ? (
-                <img src={fileMeta.url} alt={fileMeta.name} className="" />
-            ) : fileType === 'video' ? (
+            {fileGeneralType === 'image' ? (
+                <img src={file.url} alt={file.name} className="" />
+            ) : fileGeneralType === 'video' ? (
                 <Film />
-            ) : fileType === 'audio' ? (
+            ) : fileGeneralType === 'audio' ? (
                 <AudioWaveform />
             ) : (
                 <File />
@@ -177,14 +155,14 @@ export const FileCard = ({
                                 ref={nameRef}
                                 id="name"
                                 placeholder="File name"
-                                defaultValue={fileMeta.name}
+                                defaultValue={file.name}
                                 className="grow"
                                 onChange={e =>
                                     console.log('name', e.target.value)
                                 }
                             />
                             <a
-                                href={fileMeta.url}
+                                href={file.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
@@ -194,24 +172,24 @@ export const FileCard = ({
                             </a>
                         </DialogTitle>
                         <DialogDescription className="min-h-36 flex flex-col justify-center items-center gap-2 border rounded-lg overflow-hidden">
-                            {fileType === 'image' ? (
+                            {fileGeneralType === 'image' ? (
                                 <img
                                     className="max-h-[50vh]"
-                                    src={fileMeta.url}
-                                    alt={fileMeta.name}
+                                    src={file.url}
+                                    alt={file.name}
                                 />
-                            ) : fileType === 'video' ? (
+                            ) : fileGeneralType === 'video' ? (
                                 <video
-                                    src={fileMeta.url}
+                                    src={file.url}
                                     controls
                                     className="w-full"
                                 >
                                     Your browser does not support the
                                     <code>video</code> element.
                                 </video>
-                            ) : fileType === 'audio' ? (
+                            ) : fileGeneralType === 'audio' ? (
                                 <audio
-                                    src={fileMeta.url}
+                                    src={file.url}
                                     controls
                                     className="w-full"
                                 >
@@ -231,25 +209,25 @@ export const FileCard = ({
                         <p
                             className="shadow-sm w-full min-h-0 text-sm border rounded-lg py-1 px-1.5 overflow-y-auto cursor-copy"
                             onClick={() => {
-                                navigator.clipboard.writeText(fileMeta.id)
+                                navigator.clipboard.writeText(file.id)
                                 toast.success('Copied to clipboard')
                             }}
                         >
-                            {fileMeta.id}
+                            {file.id}
                         </p>
                         <p
                             className="shadow-sm w-full min-h-0 text-sm border rounded-lg py-1 px-1.5 overflow-y-auto cursor-copy"
                             onClick={() => {
-                                navigator.clipboard.writeText(fileMeta.url)
+                                navigator.clipboard.writeText(file.url)
                                 toast.success('Copied to clipboard')
                             }}
                         >
-                            {fileMeta.url}
+                            {file.url}
                         </p>
                         <Textarea
                             ref={descRef}
                             placeholder="Description"
-                            defaultValue={fileMeta.description}
+                            defaultValue={file.description}
                             onChange={e => console.log('desc', e.target.value)}
                         ></Textarea>
 
@@ -276,8 +254,7 @@ export const FileCard = ({
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
                                         This action cannot be undone. This will
-                                        permanently delete {fileMeta.name}{' '}
-                                        servers.
+                                        permanently delete {file.name} servers.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>

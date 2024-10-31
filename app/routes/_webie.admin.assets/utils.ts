@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import {
-    FileWithMeta,
+    FileMetaWithFile,
     PresignRequest,
     PresignResponseSchema,
 } from '~/routes/_webie.admin.api.object-storage/schema'
@@ -41,8 +41,8 @@ const objectStorageAPI = '/admin/api/object-storage'
  * @returns files with presigned Put URLs and key as new id
  */
 export const fetchPresignedPutUrls = async (
-    files: FileWithMeta[]
-): Promise<(FileWithMeta & { presignedUrl: string })[]> => {
+    files: FileMetaWithFile[]
+): Promise<(FileMetaWithFile & { presignedUrl: string })[]> => {
     try {
         const fileDataPromise = files.map(async file => {
             const fileChecksum = await generateChecksum(file.file)
@@ -130,7 +130,7 @@ export const useFileUpload = () => {
     const [uploadProgress, setUploadProgress] = useState<UploadState>({})
 
     const uploadSingleFile = async (
-        file: FileWithMeta & { presignedUrl: string }
+        file: FileMetaWithFile & { presignedUrl: string }
     ) => {
         return new Promise<void>((resolve, reject) => {
             const xhr = new XMLHttpRequest()
@@ -206,7 +206,7 @@ export const useFileUpload = () => {
     }
 
     const uploadSingleFileWithRetry = async (
-        file: FileWithMeta & { presignedUrl: string },
+        file: FileMetaWithFile & { presignedUrl: string },
         retries = 3
     ): Promise<void> => {
         try {
@@ -225,7 +225,7 @@ export const useFileUpload = () => {
     }
 
     const uploadToPresignedUrl = async (
-        files: (FileWithMeta & { presignedUrl: string })[]
+        files: (FileMetaWithFile & { presignedUrl: string })[]
     ) => {
         // Initialize progress state for all files
         setUploadProgress(prev => {

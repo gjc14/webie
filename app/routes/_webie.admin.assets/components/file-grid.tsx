@@ -15,7 +15,7 @@ import {
 import { cn } from '~/lib/utils'
 import {
     FileMeta,
-    FileWithMeta,
+    FileMetaWithFile,
 } from '~/routes/_webie.admin.api.object-storage/schema'
 import {
     deleteFile,
@@ -26,10 +26,10 @@ import {
 import { FileCard } from './file-card'
 
 export interface FileGridProps {
-    files: FileWithMeta[]
-    onFileSelect?: (file: FileWithMeta) => void
+    files: FileMeta[]
+    onFileSelect?: (file: FileMeta) => void
     onFileUpdate?: (fileMeta: FileMeta) => void
-    onFileDelete?: (file: FileWithMeta) => void
+    onFileDelete?: (file: FileMeta) => void
     dialogTrigger?: React.ReactNode
     uploadMode?: 'single' | 'multiple'
     onUpload?: (files: File[]) => void
@@ -46,7 +46,7 @@ export const FileGrid = (props: FileGridProps) => {
         return (
             <Dialog>
                 <DialogTrigger asChild>{props.dialogTrigger}</DialogTrigger>
-                <DialogContent className="max-h-[80vh] overflow-scroll">
+                <DialogContent className="max-h-[80vh] max-w-xl overflow-scroll">
                     <DialogHeader>
                         <DialogTitle>Assets</DialogTitle>
                         <DialogDescription>
@@ -93,15 +93,16 @@ const FileGridMain = ({
         return types
     }, [acceptedTypes])
 
-    const [fileUploading, setFileUploading] = useState<FileWithMeta[]>([])
+    const [fileUploading, setFileUploading] = useState<FileMeta[]>([])
     const { uploadProgress, uploadToPresignedUrl } = useFileUpload()
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: getAcceptedFileTypes(),
         onDrop: async acceptedFiles => {
-            const newFiles: FileWithMeta[] = acceptedFiles.map(file => ({
+            const newFiles: FileMetaWithFile[] = acceptedFiles.map(file => ({
                 file,
                 id: generateStorageKey(file, 'private'),
                 url: URL.createObjectURL(file),
+                type: file.type,
                 name: file.name,
                 description: '',
             }))
@@ -110,7 +111,7 @@ const FileGridMain = ({
         },
     })
 
-    const uploadFiles = async (newFiles: FileWithMeta[]) => {
+    const uploadFiles = async (newFiles: FileMetaWithFile[]) => {
         try {
             const presignedFiles = await fetchPresignedPutUrls(newFiles) // With key and presignedUrl
             await uploadToPresignedUrl(presignedFiles)
@@ -124,7 +125,7 @@ const FileGridMain = ({
     /////////////////////////
     const [fileState, setFileState] = useState<FileGridProps['files']>(files)
 
-    const handleFileSelect = (file: FileWithMeta) => {
+    const handleFileSelect = (file: FileMeta) => {
         onFileSelect?.(file)
     }
 
@@ -141,9 +142,9 @@ const FileGridMain = ({
         onFileUpdate?.(fileMeta)
     }
 
-    const handleFileDelete = (file: FileWithMeta) => {
+    const handleFileDelete = (file: FileMeta) => {
         setFileState(prev => {
-            return prev.filter(file => file.id !== file.id)
+            return prev.filter(prevFile => prevFile.id !== file.id)
         })
 
         try {
@@ -202,8 +203,7 @@ const FileGridMain = ({
                         return (
                             <FileCard
                                 key={index}
-                                file={file.file}
-                                fileMeta={file}
+                                file={file}
                                 onSelect={handleFileSelect}
                                 onUpdate={handleFileUpdate}
                                 onDelete={handleFileDelete}
@@ -278,6 +278,26 @@ const FileGridMain = ({
                                                     {status === 'completed'
                                                         ? 'Mark as incomplete'
                                                         : 'Mark as complete'}
+                                                </span>
+                                            </Button>
+                                        ) : status === 'error' ? (
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                className="w-5 h-5 rounded-full bg-red-500 dark:bg-red-600 hover:bg-transparent dark:hover:bg-transparent hover:border border-0 border-primary transition-colors duration-200 group"
+                                                onClick={e => {
+                                                    e.stopPropagation()
+                                                    setFileUploading(prev =>
+                                                        prev.filter(
+                                                            file =>
+                                                                file.id !== id
+                                                        )
+                                                    )
+                                                }}
+                                            >
+                                                <X className="h-4 w-4" />
+                                                <span className="sr-only">
+                                                    {status}
                                                 </span>
                                             </Button>
                                         ) : (

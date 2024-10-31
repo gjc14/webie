@@ -3,12 +3,13 @@ import { z } from 'zod'
 export type FileMeta = {
     id: string
     url: string
+    type: string
     name: string
     description: string
     [key: string]: any
 }
 
-export type FileWithMeta = {
+export type FileMetaWithFile = {
     file: File
 } & FileMeta
 
