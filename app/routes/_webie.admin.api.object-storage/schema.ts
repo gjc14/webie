@@ -5,7 +5,7 @@ export type FileMeta = {
     url: string
     type: string
     name: string
-    description: string
+    description: string | null
     [key: string]: any
 }
 

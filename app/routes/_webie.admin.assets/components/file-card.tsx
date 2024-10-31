@@ -206,30 +206,51 @@ export const FileCard = ({
                     </DialogHeader>
 
                     <div className="flex flex-col items-center gap-1.5 overflow-scroll px-1">
-                        <p
-                            className="shadow-sm w-full min-h-0 text-sm border rounded-lg py-1 px-1.5 overflow-y-auto cursor-copy"
-                            onClick={() => {
-                                navigator.clipboard.writeText(file.id)
-                                toast.success('Copied to clipboard')
-                            }}
-                        >
-                            {file.id}
-                        </p>
-                        <p
-                            className="shadow-sm w-full min-h-0 text-sm border rounded-lg py-1 px-1.5 overflow-y-auto cursor-copy"
-                            onClick={() => {
-                                navigator.clipboard.writeText(file.url)
-                                toast.success('Copied to clipboard')
-                            }}
-                        >
-                            {file.url}
-                        </p>
-                        <Textarea
-                            ref={descRef}
-                            placeholder="Description"
-                            defaultValue={file.description}
-                            onChange={e => console.log('desc', e.target.value)}
-                        ></Textarea>
+                        <div className="w-full gap-2">
+                            <Label htmlFor="id" className="px-1">
+                                ID
+                            </Label>
+                            <p
+                                id="id"
+                                className="shadow-sm flex-1 min-h-0 text-sm border rounded-lg py-1 px-1.5 overflow-y-auto cursor-copy"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(file.id)
+                                    toast.success('Copied to clipboard')
+                                }}
+                            >
+                                {file.id}
+                            </p>
+                        </div>
+                        <div className="w-full gap-2">
+                            <Label htmlFor="url" className="px-1">
+                                URL
+                            </Label>
+                            <p
+                                id="url"
+                                className="shadow-sm flex-1 min-h-0 text-sm border rounded-lg py-1 px-1.5 overflow-y-auto cursor-copy"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(file.url)
+                                    toast.success('Copied to clipboard')
+                                }}
+                            >
+                                {file.url}
+                            </p>
+                        </div>
+
+                        <div className="w-full gap-2">
+                            <Label htmlFor="description" className="px-1">
+                                Description
+                            </Label>
+                            <Textarea
+                                id="description"
+                                ref={descRef}
+                                placeholder="Description"
+                                defaultValue={file.description ?? ''}
+                                onChange={e =>
+                                    console.log('desc', e.target.value)
+                                }
+                            ></Textarea>
+                        </div>
 
                         {
                             <Button className="w-full" onClick={handleUpdate}>
