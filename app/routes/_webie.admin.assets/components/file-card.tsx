@@ -34,15 +34,18 @@ import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
-import { FileMeta } from '~/routes/_webie.admin.api.object-storage/schema'
+import {
+    FileMeta,
+    FileWithMeta,
+} from '~/routes/_webie.admin.api.object-storage/schema'
 
 export type FileCardProps = {
     file: File
     fileMeta: FileMeta
     className?: string
-    onSelect?: (file: File, fileMeta: FileMeta) => void
+    onSelect?: (file: FileWithMeta) => void
     onUpdate?: (fileMeta: FileMeta) => void
-    onDelete?: (fileId: string) => void
+    onDelete?: (file: FileWithMeta) => void
 }
 
 export const FileCard = ({
@@ -57,6 +60,7 @@ export const FileCard = ({
     const descRef = useRef<HTMLTextAreaElement>(null)
     const [open, setOpen] = useState(false)
     const [deleteAlert, setDeleteAlert] = useState(false)
+    const fileWithMeta = { file, ...fileMeta }
 
     const getFileType = useCallback(
         (file: File): 'image' | 'video' | 'audio' | 'unknown' => {
@@ -75,6 +79,10 @@ export const FileCard = ({
 
     const fileType = getFileType(file)
 
+    const handleSelect = () => {
+        onSelect?.(fileWithMeta)
+    }
+
     const handleUpdate = () => {
         onUpdate?.({
             ...fileMeta,
@@ -85,7 +93,8 @@ export const FileCard = ({
     }
 
     const handleDelete = () => {
-        onDelete?.(fileMeta.id)
+        onDelete?.(fileWithMeta)
+        setDeleteAlert(false)
         setOpen(false)
     }
 
@@ -112,10 +121,7 @@ export const FileCard = ({
                         variant={'destructive'}
                         size={'sm'}
                         className="h-7 px-1.5 text-[10px]"
-                        onClick={() => {
-                            handleDelete()
-                            setDeleteAlert(false)
-                        }}
+                        onClick={handleDelete}
                     >
                         Delete permanently
                     </Button>
@@ -159,9 +165,7 @@ export const FileCard = ({
                             {onSelect ? (
                                 <Button
                                     size={'sm'}
-                                    onClick={() => {
-                                        onSelect?.(file, fileMeta)
-                                    }}
+                                    onClick={handleSelect}
                                     asChild
                                 >
                                     <DialogClose>Select</DialogClose>
@@ -250,10 +254,7 @@ export const FileCard = ({
                         ></Textarea>
 
                         {
-                            <Button
-                                className="w-full"
-                                onClick={() => handleUpdate()}
-                            >
+                            <Button className="w-full" onClick={handleUpdate}>
                                 Save
                             </Button>
                         }

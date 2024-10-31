@@ -13,15 +13,18 @@ import {
     DialogTrigger,
 } from '~/components/ui/dialog'
 import { cn } from '~/lib/utils'
-import { FileMeta } from '~/routes/_webie.admin.api.object-storage/schema'
+import {
+    FileMeta,
+    FileWithMeta,
+} from '~/routes/_webie.admin.api.object-storage/schema'
 import { fetchPresignedUrls, useFileUpload } from '../utils'
 import { FileCard } from './file-card'
 
 export interface FileGridProps {
-    files: ({ file: File } & FileMeta)[]
-    onFileSelect?: (file: File) => void
+    files: FileWithMeta[]
+    onFileSelect?: (file: FileWithMeta) => void
     onFileUpdate?: (fileMeta: FileMeta) => void
-    onFileDelete?: (fileId: string) => void
+    onFileDelete?: (file: FileWithMeta) => void
     dialogTrigger?: React.ReactNode
     uploadMode?: 'single' | 'multiple'
     onUpload?: (files: File[]) => void
@@ -85,28 +88,24 @@ const FileGridMain = ({
         return types
     }, [acceptedTypes])
 
-    const [fileUploading, setFileUploading] = useState<
-        ({ file: File } & FileMeta)[]
-    >([])
+    const [fileUploading, setFileUploading] = useState<FileWithMeta[]>([])
     const { uploadProgress, uploadToPresignedUrl } = useFileUpload()
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: getAcceptedFileTypes(),
         onDrop: async acceptedFiles => {
-            const newFiles: ({ file: File } & FileMeta)[] = acceptedFiles.map(
-                file => ({
-                    file,
-                    id: crypto.randomUUID(),
-                    url: URL.createObjectURL(file),
-                    name: file.name,
-                    description: '',
-                })
-            )
+            const newFiles: FileWithMeta[] = acceptedFiles.map(file => ({
+                file,
+                id: crypto.randomUUID(),
+                url: URL.createObjectURL(file),
+                name: file.name,
+                description: '',
+            }))
             uploadFiles(newFiles)
             setFileUploading(prev => [...prev, ...newFiles])
         },
     })
 
-    const uploadFiles = async (newFiles: ({ file: File } & FileMeta)[]) => {
+    const uploadFiles = async (newFiles: FileWithMeta[]) => {
         try {
             const presignedFiles = await fetchPresignedUrls(newFiles)
             await uploadToPresignedUrl(presignedFiles)
@@ -120,7 +119,7 @@ const FileGridMain = ({
     /////////////////////////
     const [fileState, setFileState] = useState<FileGridProps['files']>(files)
 
-    const handleFileSelect = (file: File) => {
+    const handleFileSelect = (file: FileWithMeta) => {
         onFileSelect?.(file)
     }
 
@@ -137,12 +136,12 @@ const FileGridMain = ({
         onFileUpdate?.(fileMeta)
     }
 
-    const handleFileDelete = (fileId: string) => {
+    const handleFileDelete = (file: FileWithMeta) => {
         // Handle object storage connection
         setFileState(prev => {
-            return prev.filter(file => file.id !== fileId)
+            return prev.filter(file => file.id !== file.id)
         })
-        onFileDelete?.(fileId)
+        onFileDelete?.(file)
     }
 
     useEffect(() => {

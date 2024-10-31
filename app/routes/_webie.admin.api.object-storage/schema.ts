@@ -8,6 +8,10 @@ export type FileMeta = {
     [key: string]: any
 }
 
+export type FileWithMeta = {
+    file: File
+} & FileMeta
+
 // Request schemas
 export const FilePresignArgsSchema = z.object({
     id: z.string(),
