@@ -165,6 +165,13 @@ const FileGridMain = ({
                 return fileUploading.find(file => file.id === upload.id)
             })
             .filter(file => !!file)
+            .map(file => {
+                const updatedFileUrl = `/assets/private?key=${file.id}`
+                return {
+                    ...file,
+                    url: window.location.origin + updatedFileUrl,
+                }
+            })
         setFileState(prev => [...prev, ...fileUploaded])
     }, [uploadProgress])
 

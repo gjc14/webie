@@ -15,14 +15,12 @@ export const getUploadUrl = async ({
     size,
     type,
     checksum,
-    metadata,
 }: {
     bucket?: string
     key: string
     size: number
     type: string
     checksum: string
-    metadata?: Record<string, any>
 }) => {
     if (!S3) return null
 
@@ -36,7 +34,6 @@ export const getUploadUrl = async ({
                 ContentLength: size,
                 ContentType: type,
                 ChecksumSHA256: checksum,
-                Metadata: metadata,
             }),
             { expiresIn: 300 }
         )
