@@ -64,7 +64,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                     size: file.size,
                     type: file.type,
                     checksum: file.checksum,
-                    Metadata: {
+                    metadata: {
                         userId: admin.id,
                         name: file.name,
                         description: file.description,

@@ -15,14 +15,14 @@ export const getUploadUrl = async ({
     size,
     type,
     checksum,
-    Metadata,
+    metadata,
 }: {
     bucket?: string
     key: string
     size: number
     type: string
     checksum: string
-    Metadata?: Record<string, any>
+    metadata?: Record<string, any>
 }) => {
     if (!S3) return null
 
@@ -36,7 +36,7 @@ export const getUploadUrl = async ({
                 ContentLength: size,
                 ContentType: type,
                 ChecksumSHA256: checksum,
-                Metadata: Metadata,
+                Metadata: metadata,
             }),
             { expiresIn: 300 }
         )
@@ -47,18 +47,15 @@ export const getUploadUrl = async ({
     }
 }
 
-export const getDownloadUrl = async (key: string) => {
+export const getFileUrl = async (key: string) => {
     if (!S3) return null
 
     try {
-        const presignedUrl = await getSignedUrl(
-            S3,
-            new GetObjectCommand({
-                Bucket: 'webie',
-                Key: key,
-            }),
-            { expiresIn: 300 }
-        )
+        const command = new GetObjectCommand({
+            Bucket: 'webie',
+            Key: key,
+        })
+        const presignedUrl = await getSignedUrl(S3, command, { expiresIn: 300 })
         return presignedUrl
     } catch (error) {
         console.error('Presign url error', error)

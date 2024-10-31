@@ -3,7 +3,7 @@
  */
 import { LoaderFunctionArgs } from '@remix-run/node'
 import { json } from '@remix-run/react'
-import { getDownloadUrl } from '~/lib/db/asset.server'
+import { getFileUrl } from '~/lib/db/asset.server'
 
 // Usage: webie.dev/assets/my-file-key?visibility=public
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -21,7 +21,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
         // Handle the case where the file is private
     }
 
-    const presignedUrl = await getDownloadUrl(key)
+    const presignedUrl = await getFileUrl(key)
 
     if (!presignedUrl) {
         return json(null)
