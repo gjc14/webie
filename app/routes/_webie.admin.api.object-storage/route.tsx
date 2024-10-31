@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 
-import { S3 } from '~/lib/db/_db.server'
+import { prisma, S3 } from '~/lib/db/_db.server'
 import { deleteFile, getUploadUrl } from '~/lib/db/asset.server'
 import { userIs } from '~/lib/db/auth.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
@@ -30,7 +30,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }
 
         try {
+            // Delete file from ObjectStorage and DB
             await deleteFile(key)
+            await prisma.objectStorage.delete({
+                where: { key },
+            })
 
             return json<ConventionalSuccess>({
                 msg: 'Files deleted successfully',
@@ -75,6 +79,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const validatedResponse = PresignResponseSchema.parse({
             urls: presignedUrls,
         })
+
+        // Store file metadata in DB
+        await prisma.$transaction(
+            fileMetadata.map(file =>
+                prisma.objectStorage.create({
+                    data: {
+                        key: file.id,
+                        name: file.name,
+                        description: file.description,
+                        userId: admin.id,
+                        type: file.type,
+                        size: file.size,
+                    },
+                })
+            )
+        )
 
         return json<ConventionalSuccess>({
             msg: 'Presign urls generated successfully',

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { isConventionalError } from '~/lib/utils'
 import {
     FileMetaWithFile,
     PresignRequest,
@@ -72,6 +73,11 @@ export const fetchPresignedPutUrls = async (
         }
 
         const responsePayload = await putPresignedUrlsres.json()
+
+        if (isConventionalError(responsePayload)) {
+            throw new Error(responsePayload.err)
+        }
+
         const validatedData = PresignResponseSchema.parse(responsePayload.data)
 
         // Update files with presigned URLs
@@ -174,6 +180,7 @@ export const useFileUpload = () => {
                             error,
                         },
                     }))
+                    deleteFile(file.id)
                     reject(new Error(error))
                 }
             }
@@ -189,6 +196,7 @@ export const useFileUpload = () => {
                         error,
                     },
                 }))
+                deleteFile(file.id)
                 reject(new Error(error))
             }
 
