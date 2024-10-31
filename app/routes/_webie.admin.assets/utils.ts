@@ -1,10 +1,28 @@
 import { useState } from 'react'
 
 import {
-    FileMeta,
+    FileWithMeta,
     PresignRequest,
     PresignResponseSchema,
 } from '~/routes/_webie.admin.api.object-storage/schema'
+
+/**
+ * Generate a role and type based storage key for the file, for example:
+ * asset/private/image/webie@1234567890-ABCD-ddd0bbb-88ee-1234-8abc-c098765b1b1b
+ * @param file pass in file type and file name
+ * @param access role based authentication
+ * @returns the key (path) of the file
+ */
+export const generateStorageKey = (
+    file: { type: string; name: string },
+    access: 'private' | 'public'
+) => {
+    const fileType = file.type.split('/')[0]
+    const timestamp = Date.now()
+    const randomRef = Math.random().toString(36).substring(2, 6).toUpperCase()
+    const randomUUID = crypto.randomUUID()
+    return `asset/${access}/${fileType}/webie@${timestamp}-${randomRef}-${randomUUID}`
+}
 
 // Generate SHA-256 checksum for a file
 async function generateChecksum(file: File): Promise<string> {
@@ -15,18 +33,20 @@ async function generateChecksum(file: File): Promise<string> {
     return hashHex
 }
 
+const objectStorageAPI = '/admin/api/object-storage'
+
 /**
- * Fetch the api to get presigned URLs for the files
+ * Fetch the api to get presigned Put URLs for the files
  * @param files
- * @returns files with presigned URLs
+ * @returns files with presigned Put URLs and key as new id
  */
-export const fetchPresignedUrls = async (
-    files: ({ file: File } & FileMeta)[]
-): Promise<(({ file: File } & FileMeta) & { presignedUrl: string })[]> => {
+export const fetchPresignedPutUrls = async (
+    files: FileWithMeta[]
+): Promise<(FileWithMeta & { presignedUrl: string })[]> => {
     try {
-        const fileMetadataPromise = files.map(async file => {
+        const fileDataPromise = files.map(async file => {
             const fileChecksum = await generateChecksum(file.file)
-            return {
+            const fileData: PresignRequest[number] = {
                 id: file.id,
                 name: file.name,
                 type: file.file.type,
@@ -34,25 +54,24 @@ export const fetchPresignedUrls = async (
                 checksum: fileChecksum,
                 description: file.description,
             }
+            return fileData
         })
 
-        const fileMetadata: PresignRequest = await Promise.all(
-            fileMetadataPromise
-        )
+        const fileData: PresignRequest = await Promise.all(fileDataPromise)
 
-        const res = await fetch('/admin/api/object-storage', {
-            method: 'POST',
-            body: JSON.stringify(fileMetadata),
+        const putPresignedUrlsres = await fetch(objectStorageAPI, {
+            method: 'PUT',
+            body: JSON.stringify(fileData),
             headers: {
                 'Content-Type': 'application/json',
             },
         })
 
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`)
+        if (!putPresignedUrlsres.ok) {
+            throw new Error(`HTTP error! status: ${putPresignedUrlsres.status}`)
         }
 
-        const responsePayload = await res.json()
+        const responsePayload = await putPresignedUrlsres.json()
         const validatedData = PresignResponseSchema.parse(responsePayload.data)
 
         // Update files with presigned URLs
@@ -67,6 +86,29 @@ export const fetchPresignedUrls = async (
             }
         })
         return updatedFiles
+    } catch (error) {
+        throw error
+    }
+}
+
+/**
+ * Delete file from object storage
+ * @param key
+ * @returns void
+ */
+export const deleteFile = async (key: string) => {
+    try {
+        const res = await fetch(objectStorageAPI, {
+            method: 'DELETE',
+            body: JSON.stringify({ key }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        if (!res.ok) {
+            throw new Error(`Failed to delete key: ${key}`)
+        }
     } catch (error) {
         throw error
     }
@@ -88,7 +130,7 @@ export const useFileUpload = () => {
     const [uploadProgress, setUploadProgress] = useState<UploadState>({})
 
     const uploadSingleFile = async (
-        file: { file: File } & FileMeta & { presignedUrl: string }
+        file: FileWithMeta & { presignedUrl: string }
     ) => {
         return new Promise<void>((resolve, reject) => {
             const xhr = new XMLHttpRequest()
@@ -164,7 +206,7 @@ export const useFileUpload = () => {
     }
 
     const uploadSingleFileWithRetry = async (
-        file: { file: File } & FileMeta & { presignedUrl: string },
+        file: FileWithMeta & { presignedUrl: string },
         retries = 3
     ): Promise<void> => {
         try {
@@ -183,7 +225,7 @@ export const useFileUpload = () => {
     }
 
     const uploadToPresignedUrl = async (
-        files: ({ file: File } & FileMeta & { presignedUrl: string })[]
+        files: (FileWithMeta & { presignedUrl: string })[]
     ) => {
         // Initialize progress state for all files
         setUploadProgress(prev => {

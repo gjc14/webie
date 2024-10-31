@@ -17,7 +17,12 @@ import {
     FileMeta,
     FileWithMeta,
 } from '~/routes/_webie.admin.api.object-storage/schema'
-import { fetchPresignedUrls, useFileUpload } from '../utils'
+import {
+    deleteFile,
+    fetchPresignedPutUrls,
+    generateStorageKey,
+    useFileUpload,
+} from '../utils'
 import { FileCard } from './file-card'
 
 export interface FileGridProps {
@@ -95,7 +100,7 @@ const FileGridMain = ({
         onDrop: async acceptedFiles => {
             const newFiles: FileWithMeta[] = acceptedFiles.map(file => ({
                 file,
-                id: crypto.randomUUID(),
+                id: generateStorageKey(file, 'private'),
                 url: URL.createObjectURL(file),
                 name: file.name,
                 description: '',
@@ -107,7 +112,7 @@ const FileGridMain = ({
 
     const uploadFiles = async (newFiles: FileWithMeta[]) => {
         try {
-            const presignedFiles = await fetchPresignedUrls(newFiles)
+            const presignedFiles = await fetchPresignedPutUrls(newFiles) // With key and presignedUrl
             await uploadToPresignedUrl(presignedFiles)
         } catch (error) {
             console.error('Error uploading files', error)
@@ -137,10 +142,16 @@ const FileGridMain = ({
     }
 
     const handleFileDelete = (file: FileWithMeta) => {
-        // Handle object storage connection
         setFileState(prev => {
             return prev.filter(file => file.id !== file.id)
         })
+
+        try {
+            deleteFile(file.id)
+        } catch (error) {
+            console.error('Error deleting file', error)
+        }
+
         onFileDelete?.(file)
     }
 

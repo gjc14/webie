@@ -1,7 +1,11 @@
 /**
  * @see https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/
  */
-import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import {
+    DeleteObjectCommand,
+    GetObjectCommand,
+    PutObjectCommand,
+} from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3 } from '~/lib/db/_db.server'
 
@@ -60,4 +64,20 @@ export const getDownloadUrl = async (key: string) => {
         console.error('Presign url error', error)
         return null
     }
+}
+
+/**
+ * Please handle the error in the caller function
+ * @param key
+ * @returns void
+ */
+export const deleteFile = async (key: string) => {
+    if (!S3) return null
+
+    await S3.send(
+        new DeleteObjectCommand({
+            Bucket: 'webie',
+            Key: key,
+        })
+    )
 }

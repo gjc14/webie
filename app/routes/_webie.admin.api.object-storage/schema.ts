@@ -28,7 +28,6 @@ export type PresignRequest = z.infer<typeof PresignRequestSchema>
 export const PresignedUrlSchema = z.object({
     id: z.string(),
     presignedUrl: z.string().url(),
-    key: z.string(),
 })
 export const PresignResponseSchema = z.object({
     urls: z.array(PresignedUrlSchema),

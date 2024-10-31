@@ -1,20 +1,50 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
+
+import { S3 } from '~/lib/db/_db.server'
+import { deleteFile, getUploadUrl } from '~/lib/db/asset.server'
 import { userIs } from '~/lib/db/auth.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
-import { getUploadUrl } from '../../lib/db/asset.server'
 import { PresignRequestSchema, PresignResponseSchema } from './schema'
 
-// Presign url for uploading assets
+// Presign url for uploading assets, and delete function
 export const action = async ({ request }: ActionFunctionArgs) => {
-    if (request.method !== 'POST') {
+    if (request.method !== 'PUT' && request.method !== 'DELETE') {
         return new Response('Method Not Allowed', { status: 405 })
+    }
+
+    if (!S3) {
+        return json<ConventionalError>({
+            err: 'Object storage not configured',
+        })
     }
 
     const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
     const jsonData = await request.json()
 
-    // Validate request data
+    // Validate delete request data
+    if (request.method === 'DELETE') {
+        const { key } = jsonData
+        if (!key || typeof key !== 'string') {
+            return new Response('Bad Request', { status: 400 })
+        }
+
+        try {
+            await deleteFile(key)
+
+            return json<ConventionalSuccess>({
+                msg: 'Files deleted successfully',
+                options: { preventAlert: true },
+            })
+        } catch (error) {
+            console.log('Error deleting files', error)
+            return json<ConventionalError>({
+                err: 'Failed to delete files',
+            })
+        }
+    }
+
+    // Validate put request data
     const {
         data: fileMetadata,
         success,
@@ -29,21 +59,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         // Get presigned URLs for all files
         const presignedUrls = await Promise.all(
             fileMetadata.map(async file => {
-                const key = generateStorageKey(file, 'private')
                 const presignedUrl = await getUploadUrl({
-                    key,
+                    key: file.id,
                     size: file.size,
                     type: file.type,
                     checksum: file.checksum,
                     Metadata: {
                         userId: admin.id,
+                        name: file.name,
                         description: file.description,
                     },
                 })
                 return {
                     id: file.id,
                     presignedUrl,
-                    key,
                 }
             })
         )
@@ -63,22 +92,4 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             err: 'Failed to generate presigned URLs',
         })
     }
-}
-
-/**
- * Generate a role and type based storage key for the file, for example:
- * asset/private/image/webie@1234567890-ABCD-ddd0bbb-88ee-1234-8abc-c098765b1b1b
- * @param file pass in file type and file name
- * @param access role based authentication
- * @returns the key (path) of the file
- */
-const generateStorageKey = (
-    file: { type: string; name: string },
-    access: 'private' | 'public'
-) => {
-    const fileType = file.type.split('/')[0]
-    const timestamp = Date.now()
-    const randomRef = Math.random().toString(36).substring(2, 6).toUpperCase()
-    const randomUUID = crypto.randomUUID()
-    return `asset/${access}/${fileType}/webie@${timestamp}-${randomRef}-${randomUUID}`
 }
