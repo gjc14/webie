@@ -157,9 +157,6 @@ export const FileCard = ({
                                 placeholder="File name"
                                 defaultValue={file.name}
                                 className="grow"
-                                onChange={e =>
-                                    console.log('name', e.target.value)
-                                }
                             />
                             <a
                                 href={file.url}
@@ -246,10 +243,29 @@ export const FileCard = ({
                                 ref={descRef}
                                 placeholder="Description"
                                 defaultValue={file.description ?? ''}
-                                onChange={e =>
-                                    console.log('desc', e.target.value)
-                                }
                             ></Textarea>
+                        </div>
+
+                        <div id="file-details" className="w-full my-2 px-1">
+                            <p className="text-sm">
+                                <strong>File Type:</strong> {file.type}
+                            </p>
+                            <p className="text-sm">
+                                <strong>File Size:</strong>{' '}
+                                {file.size > 1024 * 1024 * 1024
+                                    ? `${Math.round(
+                                          file.size / 1024 / 1024 / 1024
+                                      )} GB`
+                                    : file.size > 1024 * 1024
+                                    ? `${Math.round(
+                                          file.size / 1024 / 1024
+                                      )} MB`
+                                    : `${Math.round(file.size / 1024)} KB`}
+                            </p>
+                            <p className="text-sm">
+                                <strong>Last Modified:</strong>{' '}
+                                {new Date(file.updatedAt).toLocaleString()}
+                            </p>
                         </div>
 
                         {

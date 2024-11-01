@@ -136,9 +136,9 @@ const FileGridMain = ({
     /////////////////////////
     const [fileState, setFileState] = useState<FileGridProps['files']>(files)
 
-    const handleFileSelect = (file: FileMeta) => {
-        onFileSelect?.(file)
-    }
+    useEffect(() => {
+        setFileState(files)
+    }, [files])
 
     const handleFileUpdate = (fileMeta: FileMeta) => {
         // Handle object storage connection
@@ -235,7 +235,7 @@ const FileGridMain = ({
                             <FileCard
                                 key={index}
                                 file={file}
-                                onSelect={handleFileSelect}
+                                onSelect={onFileSelect}
                                 onUpdate={handleFileUpdate}
                                 onDelete={handleFileDelete}
                             />

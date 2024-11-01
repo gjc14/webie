@@ -1,13 +1,15 @@
 import { z } from 'zod'
 
-export type FileMeta = {
-    id: string
-    url: string
-    type: string
-    name: string
-    description: string | null
-    [key: string]: any
-}
+export const FileMetaSchema = z
+    .object({
+        id: z.string(),
+        url: z.string(),
+        type: z.string(),
+        name: z.string(),
+        description: z.string().nullable(),
+    })
+    .catchall(z.any())
+export type FileMeta = z.infer<typeof FileMetaSchema>
 
 export type FileMetaWithFile = {
     file: File

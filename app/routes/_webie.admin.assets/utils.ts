@@ -53,7 +53,7 @@ export const fetchPresignedPutUrls = async (
                 type: file.file.type,
                 size: file.file.size,
                 checksum: fileChecksum,
-                description: file.description,
+                description: file.description ?? '',
             }
             return fileData
         })
