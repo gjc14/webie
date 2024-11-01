@@ -108,14 +108,11 @@ export const SeoContent = ({
                     </div>
                 </Form>
                 <DialogFooter>
-                    <Button form="seo-content">
+                    <Button form="seo-content" type="submit">
                         {isSubmitting ? (
-                            <Loader2
-                                size={16}
-                                className="mr-1.5 animate-spin"
-                            />
+                            <Loader2 size={16} className="animate-spin" />
                         ) : (
-                            <Save size={16} className="mr-1.5" />
+                            <Save size={16} />
                         )}
                         {seo ? 'Save changes' : 'Create'}
                     </Button>

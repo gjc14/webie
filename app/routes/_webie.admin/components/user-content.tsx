@@ -126,14 +126,11 @@ export const UserContent = ({
                     </div>
                 </Form>
                 <DialogFooter>
-                    <Button form="user-content">
+                    <Button form="user-content" type="submit">
                         {isSubmitting ? (
-                            <Loader2
-                                size={16}
-                                className="mr-1.5 animate-spin"
-                            />
+                            <Loader2 size={16} className="animate-spin" />
                         ) : (
-                            <Save size={16} className="mr-1.5" />
+                            <Save size={16} />
                         )}
                         Save changes
                     </Button>

@@ -257,7 +257,14 @@ export const AdminDataTableMoreMenu = ({
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                             This action cannot be undone. This will permanently
-                            delete {deleteTarget ? deleteTarget : 'this data'}{' '}
+                            delete{' '}
+                            {deleteTarget ? (
+                                <span className="font-bold text-primary">
+                                    {deleteTarget}
+                                </span>
+                            ) : (
+                                'this data'
+                            )}{' '}
                             (id: {id}).
                         </AlertDialogDescription>
                     </AlertDialogHeader>

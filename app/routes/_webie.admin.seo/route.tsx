@@ -163,10 +163,15 @@ export const columns: ColumnDef<SerializedSeo>[] = [
         cell: ({ row }) => {
             const [open, setOpen] = useState(false)
             const id = row.original.id
+            const title = row.original.title ?? undefined
 
             return (
                 <>
-                    <AdminDataTableMoreMenu route="seo" id={id}>
+                    <AdminDataTableMoreMenu
+                        route="seo"
+                        id={id}
+                        deleteTarget={title}
+                    >
                         <DropdownMenuItem onClick={() => setOpen(true)}>
                             Edit
                         </DropdownMenuItem>

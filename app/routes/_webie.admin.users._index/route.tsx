@@ -76,10 +76,15 @@ export const columns: ColumnDef<SerializedUser>[] = [
         cell: ({ row }) => {
             const [open, setOpen] = useState(false)
             const id = row.original.id
+            const userEmail = row.original.email
 
             return (
                 <>
-                    <AdminDataTableMoreMenu route="admins" id={id}>
+                    <AdminDataTableMoreMenu
+                        route="admins"
+                        id={id}
+                        deleteTarget={userEmail}
+                    >
                         <DropdownMenuItem onClick={() => setOpen(true)}>
                             Edit
                         </DropdownMenuItem>

@@ -99,9 +99,14 @@ export const columns: ColumnDef<SerializedPost>[] = [
         header: 'Edit',
         cell: ({ row }) => {
             const id = row.original.id
+            const title = row.original.title
 
             return (
-                <AdminDataTableMoreMenu route="blog" id={id}>
+                <AdminDataTableMoreMenu
+                    route="blog"
+                    id={id}
+                    deleteTarget={title}
+                >
                     <Link to={`/admin/blog/${id}`}>
                         <DropdownMenuItem>Edit</DropdownMenuItem>
                     </Link>
