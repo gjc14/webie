@@ -1,6 +1,9 @@
 import { ReactNode } from 'react'
 import { cn } from '~/lib/utils'
 
+/**
+ * If you'd like the children scrollable, add classname `max-h-full` to <AdminSectionWrapper>
+ */
 const AdminSectionWrapper = ({
     children,
     className,

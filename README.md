@@ -83,6 +83,11 @@ mv .env.sample .env
 7. `RESEND_API_KEY`: Send emails via Resend.
 8. `BASE_URL`: This is the domain where you're hosting your Webie. e.g.
    `BASE_URL=webie.dev`
+9. (optional) `GOOGLE_GENERATIVE_AI_API_KEY`, `OPENAI_API_KEY`,
+   `ANTHROPIC_API_KEY`: For use of Generative AI in `/admin/api/ai`
+10. `OBJECT_STORAGE_ACCESS_KEY_ID`, `OBJECT_STORAGE_SECRET_ACCESS_KEY`,
+    `OBJECT_STORAGE_ACCOUNT_ID`: Where you save your objects, accept S3
+    compatible services. Using in route `/admin/api/object-storage`
 
 <!-- prettier-ignore -->
 > [!WARNING]

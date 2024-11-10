@@ -52,7 +52,7 @@ export const sendMagicLink = async (
             : ''
     }`
 
-    const resend = new Resend(process.env.EMIAL_API_KEY)
+    const resend = new Resend(process.env.RESEND_API_KEY)
     let from
     if (!process.env.BASE_URL) {
         console.warn(
