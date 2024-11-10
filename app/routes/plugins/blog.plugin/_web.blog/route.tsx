@@ -1,9 +1,9 @@
 import { Outlet } from '@remix-run/react'
 
 import { MainWrapper } from '~/components/wrappers'
+import { Footer } from '../../_web.plugin/_web/components/footer'
+import { Nav } from '../../_web.plugin/_web/components/nav'
 import { CTA } from '../components/cta'
-import { Footer } from '../components/footer'
-import { Nav } from '../components/nav'
 
 export default function Blog() {
     return (
