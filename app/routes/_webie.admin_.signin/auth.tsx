@@ -40,7 +40,7 @@ export const SignInForm = () => {
                 </Form>
             </CardContent>
             <CardFooter>
-                <Button className="w-full" form="signIn">
+                <Button type="submit" className="w-full" form="signIn">
                     {isSubmitting ? <Loading /> : 'Sign in'}
                 </Button>
             </CardFooter>
