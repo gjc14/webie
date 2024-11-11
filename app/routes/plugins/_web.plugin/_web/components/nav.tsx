@@ -18,7 +18,7 @@ export const Nav = () => {
             {/* Add your own routes here */}
             <CustomNav to="/blog">Blog</CustomNav>
             <CustomNav to="/cv">CV</CustomNav>
-            <ThemeToggle size="sm" />
+            <ThemeToggle className="border-0 rounded-full p-0" />
         </nav>
     )
 }
