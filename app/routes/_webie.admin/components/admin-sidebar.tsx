@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import { Command, LifeBuoy, Send } from 'lucide-react'
+import { Building, Command, LifeBuoy, Send } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -54,6 +54,11 @@ const SecondaryNavItems: NavSecondaryItem[] = [
             alert('Feedback')
         },
         icon: Send,
+    },
+    {
+        title: 'Company',
+        url: '/admin/company',
+        icon: Building,
     },
 ]
 

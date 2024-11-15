@@ -1,12 +1,13 @@
-import { Form, useNavigation } from '@remix-run/react'
+import { Form, Link, useNavigation } from '@remix-run/react'
 import {
     BadgeCheck,
     Bell,
-    ChevronsUpDown,
+    ChevronRight,
     CreditCard,
     LogOut,
     LucideIcon,
     Moon,
+    Shield,
     Sparkles,
     Sun,
 } from 'lucide-react'
@@ -71,7 +72,7 @@ export const NavUser = ({ user }: NavUserProps) => {
                                     {user.email}
                                 </span>
                             </div>
-                            <ChevronsUpDown className="ml-auto size-4" />
+                            <ChevronRight className="ml-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -107,9 +108,7 @@ export const NavUser = ({ user }: NavUserProps) => {
                             <ActionButton
                                 icon={Sparkles}
                                 title="Upgrade to Pro"
-                                onClick={() => {
-                                    alert('Upgrade to Pro')
-                                }}
+                                route="/admin/account/upgrade"
                             />
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
@@ -143,7 +142,7 @@ export const NavUser = ({ user }: NavUserProps) => {
                                 <button className="w-full flex items-center gap-2">
                                     <LogOut
                                         size={16}
-                                        className="transition-transform group-hover:translate-x-1"
+                                        className="transition-transform group-hover:translate-x-0.5"
                                     />
                                     <p className="text-sm">Sign Out</p>
                                 </button>
@@ -160,37 +159,49 @@ const DefaultUserOptions: ActionButtonProps[] = [
     {
         title: 'Account',
         icon: BadgeCheck,
-        onClick: () => {
-            alert('Account')
-        },
+        route: '/admin/account',
+    },
+    {
+        title: 'Security',
+        icon: Shield,
+        route: '/admin/account/security',
     },
     {
         title: 'Billing',
         icon: CreditCard,
-        onClick: () => {
-            alert('Billing')
-        },
+        route: '/admin/account/billing',
     },
     {
-        title: 'Notifications',
+        title: 'Notification',
         icon: Bell,
-        onClick: () => {
-            alert('Notifications')
-        },
+        route: '/admin/account/notification',
     },
 ]
 
 interface ActionButtonProps {
     icon: LucideIcon
     title: string
-    onClick: () => void
+    route?: string
 }
 
 const ActionButton = (props: ActionButtonProps) => {
+    if (props.route) {
+        return (
+            <Link to={props.route}>
+                <DropdownMenuItem className="group flex items-center gap-2">
+                    <props.icon
+                        size={16}
+                        className="transition-transform group-hover:rotate-[25deg]"
+                    />
+                    <p className="text-sm">{props.title}</p>
+                </DropdownMenuItem>
+            </Link>
+        )
+    }
     return (
         <DropdownMenuItem
             className="group flex items-center gap-2"
-            onClick={props.onClick}
+            onClick={() => alert(props.title + ' not implemented')}
         >
             <props.icon
                 size={16}
