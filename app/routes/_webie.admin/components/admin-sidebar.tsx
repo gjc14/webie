@@ -66,7 +66,11 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
     }
 }
 
-export function AppSidebar({ pluginRoutes, user, ...props }: AppSidebarProps) {
+export function AdminSidebar({
+    user,
+    pluginRoutes,
+    ...props
+}: AppSidebarProps) {
     return (
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>

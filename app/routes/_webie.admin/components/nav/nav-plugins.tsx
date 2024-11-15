@@ -34,12 +34,13 @@ export function NavPlugins({ plugins }: { plugins: WebieAdminMenuItem[] }) {
         )
     }
 
-    if (plugins.length <= 0)
+    if (plugins.length <= 0) {
         return (
             <SidebarGroup className="group-data-[collapsible=icon]:hidden">
                 <SidebarGroupLabel>You have no plugin</SidebarGroupLabel>
             </SidebarGroup>
         )
+    }
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Plugins</SidebarGroupLabel>

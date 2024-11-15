@@ -1,7 +1,7 @@
+import { Link } from '@remix-run/react'
 import { type LucideIcon } from 'lucide-react'
 import * as React from 'react'
 
-import { Link } from '@remix-run/react'
 import {
     SidebarGroup,
     SidebarGroupContent,

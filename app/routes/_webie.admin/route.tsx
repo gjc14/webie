@@ -11,6 +11,7 @@ import {
     useLocation,
     useOutletContext,
 } from '@remix-run/react'
+import { memo, useMemo } from 'react'
 
 import { Breadcrumb, BreadcrumbList } from '~/components/ui/breadcrumb'
 import { Separator } from '~/components/ui/separator'
@@ -22,7 +23,7 @@ import {
 import { userIs } from '~/lib/db/auth.server'
 import { getUserById } from '~/lib/db/user.server'
 import { generateBreadcrumbs } from '~/lib/utils'
-import { AppSidebar } from '~/routes/_webie.admin/components/admin-sidebar'
+import { AdminSidebar } from '~/routes/_webie.admin/components/admin-sidebar'
 import { getPluginConfigs } from '~/routes/plugins/utils/get-plugin-configs.server'
 
 export const meta: MetaFunction = () => {
@@ -48,20 +49,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     })
 }
 
+const MemoAdminSidebar = memo(AdminSidebar)
+
 export default function Admin() {
     const { admin, pluginRoutes } = useLoaderData<typeof loader>()
     const location = useLocation()
     const breadcrumbPaths = generateBreadcrumbs(location.pathname)
 
+    const memoizedUser = useMemo(
+        () => ({
+            name: admin.name ?? 'u-webie',
+            email: admin.email,
+            avatar: admin.imageUri ?? '/placeholders/avatar.png',
+        }),
+        [admin.name, admin.email, admin.imageUri]
+    )
+
+    const memoizedPluginRoutes = useMemo(() => pluginRoutes, [pluginRoutes])
+
     return (
         <SidebarProvider>
-            <AppSidebar
-                pluginRoutes={pluginRoutes}
-                user={{
-                    name: admin.name ?? 'webie-pro',
-                    email: admin.email,
-                    avatar: admin.imageUri ?? '/placeholders/avatar.png',
-                }}
+            <MemoAdminSidebar
+                user={memoizedUser}
+                pluginRoutes={memoizedPluginRoutes}
             />
             <SidebarInset className="h-[calc(100svh-theme(spacing.4))] overflow-x-hidden">
                 <header className="flex my-3 shrink-0 items-center gap-2">

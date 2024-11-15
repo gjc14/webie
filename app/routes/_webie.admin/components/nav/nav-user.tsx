@@ -10,9 +10,9 @@ import {
     Sparkles,
     Sun,
 } from 'lucide-react'
+
 import { FullScreenLoading } from '~/components/loading'
 import { ThemeDropDownMenu } from '~/components/theme-toggle'
-
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import {
     DropdownMenu,
@@ -30,15 +30,15 @@ import {
     useSidebar,
 } from '~/components/ui/sidebar'
 
-export function NavUser({
-    user,
-}: {
+interface NavUserProps {
     user: {
         name: string
         email: string
         avatar: string
     }
-}) {
+}
+
+export const NavUser = ({ user }: NavUserProps) => {
     const { isMobile } = useSidebar()
     const navigation = useNavigation()
 
