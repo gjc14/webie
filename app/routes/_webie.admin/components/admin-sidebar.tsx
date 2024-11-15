@@ -27,6 +27,15 @@ const MainNavItems: WebieAdminMenuItem[] = [
         url: '/admin/users',
         sub: [{ title: 'Admin', url: 'admins' }],
     },
+    {
+        iconName: 'pen',
+        title: 'Blog',
+        url: '/admin/blog',
+        sub: [
+            { title: 'Taxonomies', url: 'taxonomy' },
+            { title: 'Generative AI', url: 'generative' },
+        ],
+    },
     { iconName: 'text-search', title: 'SEO', url: '/admin/seo' },
     { iconName: 'database', title: 'Assets', url: '/admin/assets' },
 ]
@@ -59,7 +68,6 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 
 export function AppSidebar({ pluginRoutes, user, ...props }: AppSidebarProps) {
     return (
-        // TODO: Close sidebar on click menu button
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>
                 <SidebarMenu>

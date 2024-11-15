@@ -6,10 +6,10 @@ import {
 } from '@remix-run/node'
 import { ClientLoaderFunctionArgs, useLoaderData } from '@remix-run/react'
 
+import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 import { SectionWrapper } from '../components/max-width-wrapper'
 import { PostCollection } from '../components/posts'
-import { getPosts } from '../lib/db/post.server'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return data?.seo

@@ -1,9 +1,9 @@
 import { json, SerializeFrom } from '@remix-run/node'
 import { Outlet, useLoaderData, useOutletContext } from '@remix-run/react'
 
+import { getCategories, getTags } from '~/lib/db/blog-taxonomy.server'
+import { getPosts } from '~/lib/db/post.server'
 import { useAdminContext } from '~/routes/_webie.admin/route'
-import { getCategories, getTags } from '../lib/db/blog-taxonomy.server'
-import { getPosts } from '../lib/db/post.server'
 
 export const loader = async () => {
     try {

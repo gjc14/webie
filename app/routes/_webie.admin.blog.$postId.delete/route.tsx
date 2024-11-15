@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 import { userIs } from '~/lib/db/auth.server'
+import { deletePost } from '~/lib/db/post.server'
 import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
-import { deletePost } from '../lib/db/post.server'
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
     await userIs(request, 'ADMIN', '/admin/signin')

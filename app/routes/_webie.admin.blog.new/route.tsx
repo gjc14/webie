@@ -1,9 +1,10 @@
-import { ActionFunctionArgs, json } from '@remix-run/node'
-import { Form, Link, useFetcher, useParams } from '@remix-run/react'
-import { ExternalLink, Loader2, Save, Trash } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { Form, Link, useFetcher } from '@remix-run/react'
+import { Loader2, PlusCircle, Trash } from 'lucide-react'
+import { useState } from 'react'
 import { z } from 'zod'
 
+import { PostContent } from '~/components/cms/post-content'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,52 +18,41 @@ import {
 } from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
 import { userIs } from '~/lib/db/auth.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { createPost } from '~/lib/db/post.server'
+import { commitFlashSession, getFlashSession } from '~/lib/sessions.server'
+import { ConventionalError } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
 } from '~/routes/_webie.admin/components/admin-wrapper'
-import { PostContent } from '~/routes/plugins/blog.plugin/components/post-content'
 import { PostStatus } from '~/schema/database'
-import { useAdminBlogContext } from '../_webie.admin.blog/route'
-import { updatePost } from '../lib/db/post.server'
 
-const PostContentUpdateSchema = z
-    .object({
-        id: z.string(),
-        title: z.string(),
-        content: z.string(),
-        excerpt: z.string().optional().default(''),
-        slug: z.string(),
-        status: PostStatus,
-        'seo-title': z.string(),
-        'seo-description': z.string(),
-    })
-    .refine(data => {
-        if (!data.excerpt) {
-            const content = data.content
-            const excerpt = content.match(/[\s\S]{1,50}/u)?.[0] || ''
-            data.excerpt = excerpt
-        }
-        return true
-    })
+const PostCreateSchema = z.object({
+    title: z.string(),
+    content: z.string(),
+    excerpt: z.string(),
+    slug: z.string(),
+    status: PostStatus,
+    'seo-title': z.string(),
+    'seo-description': z.string(),
+})
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const admin = await userIs(request, 'ADMIN', '/admin/signin')
 
-    if (request.method !== 'PUT') {
+    if (request.method !== 'POST') {
         throw new Response('Method not allowed', { status: 405 })
     }
 
     const formData = await request.formData()
-    const updatePostData = Object.fromEntries(formData)
+    const createPostData = Object.fromEntries(formData)
 
-    const zResult = PostContentUpdateSchema.safeParse(updatePostData)
+    const zResult = PostCreateSchema.safeParse(createPostData)
 
     if (!zResult.success || !zResult.data) {
-        console.log('updatePostData', zResult.error.issues)
+        console.log('createPostData', zResult.error.issues)
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
@@ -70,8 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     try {
-        const { post } = await updatePost({
-            id: zResult.data.id,
+        const { post } = await createPost({
             title: zResult.data.title,
             content: zResult.data.content,
             excerpt: zResult.data.excerpt,
@@ -84,62 +73,35 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         })
 
-        return json<ConventionalSuccess>({
-            msg: `Post ${post.title} updated successfully`,
+        const flashSession = await getFlashSession()
+        flashSession.flash('success', [
+            `Post "${post.title}" created successfully`,
+        ])
+
+        return redirect(`/admin/blog/${post.id}`, {
+            headers: {
+                'Set-Cookie': await commitFlashSession(flashSession),
+            },
         })
     } catch (error) {
         console.error(error)
-        return json<ConventionalError>({
-            data: null,
-            err: 'Failed to create post',
-        })
+        return json<ConventionalError>(
+            { err: 'Failed to create post' },
+            { status: 500 }
+        )
     }
 }
 
 export default function AdminPost() {
     const fetcher = useFetcher()
-    const params = useParams()
-    const postId = params.postId
-    const { posts } = useAdminBlogContext()
-    const post = posts.find(p => p.id === postId)
-
-    if (!post) {
-        return (
-            <h2 className="grow flex items-center justify-center">Not found</h2>
-        )
-    }
-
     const [isDirty, setIsDirty] = useState(false)
-
-    const postContent = useMemo(() => {
-        return {
-            ...post,
-            createdAt: new Date(post.createdAt),
-            updatedAt: new Date(post.updatedAt),
-        }
-    }, [post])
-
     const isSubmitting = fetcher.state === 'submitting'
 
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle description={'Post id: ' + post.id}>
-                    Edit Post
-                </AdminTitle>
+                <AdminTitle>New Post</AdminTitle>
                 <AdminActions>
-                    <Link
-                        to={`/blog/${post.slug}?preview=true`}
-                        target="_blank"
-                    >
-                        <Button variant={'link'}>
-                            {postContent.status !== 'PUBLISHED'
-                                ? 'Preview'
-                                : 'See'}{' '}
-                            post
-                            <ExternalLink size={12} className="ml-1" />
-                        </Button>
-                    </Link>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button size={'sm'} variant={'destructive'}>
@@ -153,7 +115,7 @@ export default function AdminPost() {
                                     Discard Post
                                 </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Are you sure you want to discard this post
+                                    Are you sure you want to discard this post?
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -162,7 +124,7 @@ export default function AdminPost() {
                                     <AlertDialogAction
                                         onClick={() => {
                                             window.localStorage.removeItem(
-                                                `dirty-post-${postContent.id}`
+                                                `dirty-post-new`
                                             )
                                         }}
                                     >
@@ -173,11 +135,11 @@ export default function AdminPost() {
                         </AlertDialogContent>
                     </AlertDialog>
 
-                    <Button form="update-post" size={'sm'}>
+                    <Button form="new-post" size={'sm'}>
                         {isSubmitting ? (
                             <Loader2 size={16} className="animate-spin" />
                         ) : (
-                            <Save size={16} />
+                            <PlusCircle size={16} />
                         )}
                         <p className="text-xs">Save</p>
                     </Button>
@@ -185,18 +147,14 @@ export default function AdminPost() {
             </AdminHeader>
 
             <Form
-                id="update-post"
+                id="new-post"
                 onSubmit={e => {
                     e.preventDefault()
-                    fetcher.submit(e.currentTarget, { method: 'PUT' })
+                    fetcher.submit(e.currentTarget, { method: 'POST' })
                     setIsDirty(false)
                 }}
             >
-                <input hidden name="id" defaultValue={post.id} />
-                <PostContent
-                    post={postContent}
-                    onPostChange={(_, dirty) => setIsDirty(dirty)}
-                />
+                <PostContent onPostChange={(_, dirty) => setIsDirty(dirty)} />
             </Form>
         </AdminSectionWrapper>
     )
