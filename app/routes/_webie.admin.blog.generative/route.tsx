@@ -103,9 +103,10 @@ export default function AdminGenerativeAI() {
     return (
         <AdminSectionWrapper className="relative overflow-auto">
             <AdminHeader>
-                <AdminTitle description="Generative AI powers all the content generating for you!">
-                    Generative AI
-                </AdminTitle>
+                <AdminTitle
+                    title="Generative AI"
+                    description="Generative AI powers all the content generating for you!"
+                ></AdminTitle>
                 <AdminActions>
                     <Label htmlFor="provider">Select your ai assitant</Label>
                     <SelectProvider

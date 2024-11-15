@@ -121,9 +121,10 @@ export default function AdminAsset() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle description="Manage all your assets on Webie platform">
-                    Assets
-                </AdminTitle>
+                <AdminTitle
+                    title="Assets"
+                    description="Manage all your assets on Webie platform"
+                ></AdminTitle>
                 <AdminActions>
                     <Label htmlFor="asset-filter">Filter by</Label>
                     <Select

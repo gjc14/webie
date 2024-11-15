@@ -101,7 +101,7 @@ export default function AdminAdminUsers() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle>Admins</AdminTitle>
+                <AdminTitle title="Admins"></AdminTitle>
                 <AdminActions>
                     <Dialog>
                         <DialogTrigger asChild>

@@ -22,7 +22,7 @@ export default function AdminAllUsers() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle>Users</AdminTitle>
+                <AdminTitle title="Users"></AdminTitle>
             </AdminHeader>
             <DataTable columns={columns} data={users} hideColumnFilter>
                 {table => (

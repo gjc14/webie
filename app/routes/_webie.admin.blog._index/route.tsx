@@ -24,7 +24,7 @@ export default function AdminPost() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle>Posts</AdminTitle>
+                <AdminTitle title="Posts"></AdminTitle>
                 <AdminActions>
                     <TaxonomyDialog tags={tags} categories={categories} />
                     <Link to="/admin/blog/new">

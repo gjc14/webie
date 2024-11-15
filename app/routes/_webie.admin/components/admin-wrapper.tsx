@@ -14,7 +14,7 @@ const AdminSectionWrapper = ({
     return (
         <section
             className={cn(
-                'relative grow flex flex-col p-3 w-full h-auto gap-5 md:p-6',
+                'relative grow flex flex-col p-2 w-full h-auto gap-5 md:px-5 md:py-3',
                 className
             )}
         >
@@ -43,20 +43,24 @@ const AdminHeader = ({
 }
 
 const AdminTitle = ({
-    children,
     className,
+    title,
+    titleClassName,
     description,
     descriptionClassName,
+    children,
 }: {
-    children?: ReactNode
     className?: string
+    title?: string
+    titleClassName?: string
     description?: string
     descriptionClassName?: string
+    children?: ReactNode
 }) => {
-    if (description) {
-        return (
-            <div className="space-y-2">
-                <h2 className={className}>{children}</h2>
+    return (
+        <div className={cn('space-y-2', className)}>
+            {title && <h2 className={titleClassName}>{title}</h2>}
+            {description && (
                 <p
                     className={cn(
                         'text-sm text-muted-foreground',
@@ -65,10 +69,10 @@ const AdminTitle = ({
                 >
                     {description}
                 </p>
-            </div>
-        )
-    }
-    return <h2 className={className}>{children}</h2>
+            )}
+            {children}
+        </div>
+    )
 }
 
 const AdminActions = ({

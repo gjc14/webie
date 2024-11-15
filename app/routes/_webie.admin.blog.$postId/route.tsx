@@ -124,9 +124,10 @@ export default function AdminPost() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle description={'Post id: ' + post.id}>
-                    Edit Post
-                </AdminTitle>
+                <AdminTitle
+                    title="Edit Post"
+                    description={'Post id: ' + post.id}
+                ></AdminTitle>
                 <AdminActions>
                     <Link
                         to={`/blog/${post.slug}?preview=true`}

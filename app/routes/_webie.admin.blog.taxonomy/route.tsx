@@ -22,9 +22,10 @@ export default function AdminTaxonomy() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle description="SEO data is connect to post or route. You could set in either here or in post or route.">
-                    Taxonomy
-                </AdminTitle>
+                <AdminTitle
+                    title="Taxonomy"
+                    description="SEO data is connect to post or route. You could set in either here or in post or route."
+                ></AdminTitle>
                 <AdminActions>
                     <TaxonomyDialog tags={tags} categories={categories}>
                         <Button size={'sm'}>

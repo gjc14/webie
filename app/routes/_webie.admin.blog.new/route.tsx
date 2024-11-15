@@ -100,7 +100,7 @@ export default function AdminPost() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle>New Post</AdminTitle>
+                <AdminTitle title="New Post"></AdminTitle>
                 <AdminActions>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>

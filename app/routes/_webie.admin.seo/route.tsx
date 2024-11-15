@@ -83,9 +83,10 @@ export default function AdminSEO() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle description="SEO data is connect to post or route. You could set in either here or in post or route.">
-                    SEO
-                </AdminTitle>
+                <AdminTitle
+                    title="SEO"
+                    description="SEO data is connect to post or route. You could set in either here or in post or route."
+                ></AdminTitle>
                 <AdminActions>
                     <Button size={'sm'} onClick={() => setOpen(true)}>
                         <PlusCircle size={16} />

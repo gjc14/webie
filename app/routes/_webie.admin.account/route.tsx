@@ -1,5 +1,6 @@
-import { NavLink, Outlet, useOutletContext } from '@remix-run/react'
+import { Outlet, useOutletContext } from '@remix-run/react'
 
+import { AnimatedNav, RouteButton } from '~/components/animated-horizontal-nav'
 import {
     AdminHeader,
     AdminSectionWrapper,
@@ -7,7 +8,7 @@ import {
 } from '~/routes/_webie.admin/components/admin-wrapper'
 import { useAdminContext } from '../_webie.admin/route'
 
-const AdminAccountRoutes = [
+const AdminAccountRoutes: RouteButton[] = [
     { to: '.', title: 'Profile' },
     { to: 'billing', title: 'Billing' },
     { to: 'notification', title: 'Notification' },
@@ -20,17 +21,10 @@ export default function AdminAccount() {
     return (
         <AdminSectionWrapper>
             <AdminHeader>
-                <AdminTitle>Account</AdminTitle>
+                <AdminTitle>
+                    <AnimatedNav routes={AdminAccountRoutes} />
+                </AdminTitle>
             </AdminHeader>
-            <nav className="flex gap-2 border-b">
-                {AdminAccountRoutes.map((route, i) => (
-                    <AdminAccountLink
-                        key={i}
-                        to={route.to}
-                        title={route.title}
-                    />
-                ))}
-            </nav>
             <Outlet context={admin} />
         </AdminSectionWrapper>
     )
@@ -38,12 +32,4 @@ export default function AdminAccount() {
 
 export const useAccountContext = () => {
     return useOutletContext<typeof useAdminContext>()
-}
-
-const AdminAccountLink = ({ to, title }: { to: string; title: string }) => {
-    return (
-        <NavLink to={to} className="group flex items-center gap-2">
-            <p className="text-sm">{title}</p>
-        </NavLink>
-    )
 }
