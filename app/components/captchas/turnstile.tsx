@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 
+import { TURNSTILE_SITE_KEY } from '~/constants/env'
+
 interface Turnstile {
     render: (element: HTMLElement, options: { sitekey: string }) => void
 }
@@ -32,14 +34,14 @@ export const TurnstileWidget = () => {
             script.onload = () => {
                 if (widgetRef.current) {
                     window.turnstile?.render(widgetRef.current, {
-                        sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+                        sitekey: TURNSTILE_SITE_KEY,
                     })
                 }
             }
         } else {
             if (widgetRef.current) {
                 window.turnstile?.render(widgetRef.current, {
-                    sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+                    sitekey: TURNSTILE_SITE_KEY,
                 })
             }
         }

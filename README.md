@@ -66,7 +66,8 @@ mv .env.sample .env
 1. `SUPER_EMAIL`: Your super admin email.
 2. `DATABASE_URL`: We are using MongoDB, please replace your Username, Password,
    and name your Database Name.
-3. (optional) `VITE_TURNSTILE_SITE_KEY`: This key is used to
+3. (optional) In `/app/constants/env.ts` set `TURNSTILE_SITE_KEY`: This key is
+   used to
    [get Turnstile token](https://developers.cloudflare.com/turnstile/get-started/)
    in client, if you use
    [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) as
