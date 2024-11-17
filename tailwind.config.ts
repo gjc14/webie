@@ -5,6 +5,9 @@ export default {
     content: ['./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}'],
     theme: {
         extend: {
+            screens: {
+                xs: '480px',
+            },
             typography: {
                 DEFAULT: {
                     // Remove inline code "`" from the default styles
