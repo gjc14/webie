@@ -9,7 +9,8 @@
         "check-admin": "node scripts/check-admin.js",
         "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
         "start": "remix-serve ./build/server/index.js",
-        "typecheck": "tsc"
+        "typecheck": "tsc",
+        "format": "prettier --write ."
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^0.0.53",
