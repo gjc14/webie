@@ -135,7 +135,7 @@ export default function AdminPost() {
                         </AlertDialogContent>
                     </AlertDialog>
 
-                    <Button form="new-post" size={'sm'}>
+                    <Button type="submit" form="new-post" size={'sm'}>
                         {isSubmitting ? (
                             <Loader2 size={16} className="animate-spin" />
                         ) : (

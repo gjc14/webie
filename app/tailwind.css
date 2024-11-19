@@ -129,6 +129,11 @@
         @apply prose tracking-wide leading-loose dark:prose-invert;
     }
 
+    /* Control margin top by article or its wrapper instead of prose */
+    article > *:first-child {
+        margin-top: 0;
+    }
+
     article pre {
         @apply border border-transparent bg-zinc-950 dark:bg-zinc-900 dark:border-border;
     }

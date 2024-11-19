@@ -6,7 +6,7 @@ import {
     useLoaderData,
     useNavigate,
 } from '@remix-run/react'
-import { generateHTML } from '@tiptap/react'
+import { generateHTML } from '@tiptap/html'
 import { common, createLowlight } from 'lowlight'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -36,6 +36,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
         if (!post || post.status !== 'PUBLISHED') {
             throw new Response('Post not found', { status: 404 })
         }
+        post.content = post.content
+            ? generateHTML(JSON.parse(post.content), [...ExtensionKit])
+            : '<p>This is an empty post</p>'
         return json({ post, prev, next })
     } catch (error) {
         console.error(error)
@@ -69,19 +72,14 @@ clientLoader.hydrate = true
 export default function BlogPost() {
     const navigate = useNavigate()
     const { post, prev, next } = useLoaderData<typeof loader>()
-    const [html, setHtml] = useState('')
     const lowlight = createLowlight(common)
     const languages = lowlight.listLanguages()
-
-    useEffect(() => {
-        setHtml(generateHTML(JSON.parse(post.content || ''), [...ExtensionKit]))
-    }, [])
 
     useEffect(() => {
         document.querySelectorAll('pre code').forEach(block => {
             hilightInnerHTML(block, lowlight, languages)
         })
-    }, [html])
+    }, [post])
 
     return (
         <article className="w-full px-5 pt-32 md:px-0">
@@ -103,7 +101,7 @@ export default function BlogPost() {
 
             <div
                 className="w-full mx-auto"
-                dangerouslySetInnerHTML={{ __html: html }}
+                dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
             <div className="not-prose">
