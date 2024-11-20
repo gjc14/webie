@@ -79,6 +79,7 @@ export const getPostBySlug = async (
                 select: {
                     name: true,
                     imageUri: true,
+                    email: true,
                 },
             },
             categories: true,

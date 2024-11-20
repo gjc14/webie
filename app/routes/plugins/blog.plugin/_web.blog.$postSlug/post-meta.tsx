@@ -30,7 +30,7 @@ export const PostMeta = ({ post }: { post: SerializedLoader['post'] }) => {
                             variant={'link'}
                             className="px-0"
                         >
-                            {post.author.name}
+                            {post.author.name ?? post.author.email}
                         </Button>
                     </div>
                     <p className="text-xs md:text-sm">
