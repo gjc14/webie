@@ -29,25 +29,16 @@ import {
 import { PostStatus } from '~/schema/database'
 import { useAdminBlogContext } from '../_webie.admin.blog/route'
 
-const PostContentUpdateSchema = z
-    .object({
-        id: z.string(),
-        title: z.string(),
-        content: z.string(),
-        excerpt: z.string().optional().default(''),
-        slug: z.string(),
-        status: PostStatus,
-        'seo-title': z.string(),
-        'seo-description': z.string(),
-    })
-    .refine(data => {
-        if (!data.excerpt) {
-            const content = data.content
-            const excerpt = content.match(/[\s\S]{1,50}/u)?.[0] || ''
-            data.excerpt = excerpt
-        }
-        return true
-    })
+const PostContentUpdateSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    content: z.string(),
+    excerpt: z.string(),
+    slug: z.string(),
+    status: PostStatus,
+    'seo-title': z.string(),
+    'seo-description': z.string(),
+})
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const admin = await userIs(request, 'ADMIN', '/admin/signin')
