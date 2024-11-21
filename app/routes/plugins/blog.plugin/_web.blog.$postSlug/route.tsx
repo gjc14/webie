@@ -37,7 +37,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
             throw new Response('Post not found', { status: 404 })
         }
         post.content = post.content
-            ? generateHTML(JSON.parse(post.content), [...ExtensionKit])
+            ? generateHTML(JSON.parse(post.content), [
+                  ...ExtensionKit({ openOnClick: true }),
+              ])
             : '<p>This is an empty post</p>'
         return json({ post, prev, next })
     } catch (error) {

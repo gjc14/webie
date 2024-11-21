@@ -1,5 +1,6 @@
 import { BubbleMenu, Editor } from '@tiptap/react'
 import { AlignLeft, MoreVertical, Pilcrow, WandSparkles } from 'lucide-react'
+
 import {
     editAlignOptions,
     editHistoryOptions,
@@ -19,9 +20,10 @@ export const DefaultBubbleMenu = ({
     editor: Editor
     onComplete?: () => void
 }) => {
-    const activeParagraphOption = editParagraphOptions.find(option =>
-        option.isActive?.(editor)
-    )
+    const activeParagraphOption = [
+        ...editParagraphOptions,
+        ...editListOptions,
+    ].find(option => option.isActive?.(editor))
     const activeAlignOption = editAlignOptions.find(option =>
         option.isActive?.(editor)
     )
@@ -40,11 +42,11 @@ export const DefaultBubbleMenu = ({
     )
 
     return (
-        // TODO: Fix: Tooltip has a lower z-index than the bubble menu
         <BubbleMenu
             tippyOptions={{
                 duration: 100,
                 maxWidth: '90vw',
+                zIndex: 45, // Lower than the tooltip z-50
             }}
             editor={editor}
             className="flex items-center p-1 gap-0.5 bg-primary-foreground border border-border rounded-md shadow-md"

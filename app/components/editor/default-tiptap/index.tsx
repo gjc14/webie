@@ -38,7 +38,7 @@ interface EditorProps {
 export default forwardRef<EditorRef, EditorProps>((props, ref) => {
     const editor = useEditor({
         immediatelyRender: false,
-        extensions: [...ExtensionKit],
+        extensions: [...ExtensionKit()],
         content: props.content ? JSON.parse(props.content) : undefined,
         onFocus: () => {
             props.onFocus && props.onFocus()

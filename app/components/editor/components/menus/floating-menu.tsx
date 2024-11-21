@@ -1,3 +1,7 @@
+/**
+ * Floating menu triggered when moved to new line.
+ * @see https://tiptap.dev/docs/editor/extensions/functionality/floatingmenu
+ */
 import { Editor, FloatingMenu } from '@tiptap/react'
 import {
     Heading2,
@@ -8,6 +12,7 @@ import {
     ListOrdered,
 } from 'lucide-react'
 import React from 'react'
+
 import { Button, ButtonProps } from '~/components/ui/button'
 
 export const DefaultFloatingMenu = ({ editor }: { editor: Editor }) => {

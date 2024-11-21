@@ -94,6 +94,8 @@ export const PostContent = ({
         }
     }, [postState])
 
+    const editorSectionMaxWidth = 'calc(65ch+1.5rem)'
+
     return (
         <div className="w-full flex flex-col md:flex-row gap-5">
             <AlertDialog open={open} onOpenChange={setOpen}>
@@ -136,7 +138,9 @@ export const PostContent = ({
                 </AlertDialogContent>
             </AlertDialog>
 
-            <section className="flex flex-col gap-5">
+            <section
+                className={`w-[${editorSectionMaxWidth}] flex flex-col gap-5`}
+            >
                 <div>
                     <Label htmlFor="title">Title</Label>
                     <Input
@@ -162,7 +166,7 @@ export const PostContent = ({
                     <div
                         ref={contentWrapperRef}
                         className="p-3 border border-border rounded-md"
-                        style={{ maxWidth: 'calc(65ch + 1.5rem)' }} // max-w-prose + p-3 padding
+                        style={{ maxWidth: editorSectionMaxWidth }}
                     >
                         <input
                             id="content"
