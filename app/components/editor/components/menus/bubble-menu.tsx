@@ -8,6 +8,9 @@ import {
     editMarkOptions,
     editMiscOptions,
     editParagraphOptions,
+    ImageButton,
+    LinkUnlinkButtons,
+    YoutubeButton,
 } from '~/components/editor/edit-options'
 import { Separator } from '~/components/ui/separator'
 import { PopoverMenuOptions } from '../popover-options'
@@ -116,6 +119,16 @@ export const DefaultBubbleMenu = ({
                 defaultIcon={<AlignLeft size={16} />}
                 options={editAlignOptions}
             />
+
+            <Separator
+                orientation="vertical"
+                className="h-full min-h-[1.5rem]"
+            />
+
+            {/* Resource */}
+            <LinkUnlinkButtons editor={editor} />
+            <ImageButton editor={editor} />
+            <YoutubeButton editor={editor} />
 
             <Separator
                 orientation="vertical"

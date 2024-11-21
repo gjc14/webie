@@ -360,3 +360,7 @@ export {
     editMiscOptions,
     editParagraphOptions,
 }
+
+export * from './link-unlink-buttons'
+export * from './image-button'
+export * from './youtube-button'
