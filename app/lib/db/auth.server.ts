@@ -13,7 +13,7 @@ if (!COOKIE_SECRET) {
     COOKIE_SECRET = 'default-cookie-s3cr3t'
 }
 
-export const authCookie = createCookie('auth', {
+export const authCookie = createCookie(`auth-${process.env.BASE_URL}`, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     path: '/', // Available everywhere on the site
