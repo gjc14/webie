@@ -1,5 +1,4 @@
-import { Link } from '@remix-run/react'
-import { Building, Command, LifeBuoy, Send } from 'lucide-react'
+import { Building, Command, Database, LifeBuoy, Send } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -7,9 +6,6 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
 } from '~/components/ui/sidebar'
 import { NavMain } from '~/routes/_webie.admin/components/nav/nav-main'
 import { NavPlugins } from '~/routes/_webie.admin/components/nav/nav-plugins'
@@ -19,6 +15,22 @@ import {
 } from '~/routes/_webie.admin/components/nav/nav-secondary'
 import { NavUser } from '~/routes/_webie.admin/components/nav/nav-user'
 import { WebieAdminMenuItem } from '~/routes/plugins/utils/get-plugin-configs.server'
+import { ServiceSwicher, ServiceSwicherProps } from './service-swicher'
+
+const services: ServiceSwicherProps['services'] = [
+    {
+        name: 'Webie',
+        logo: () => <Command className="size-4" />,
+        plan: 'Startup',
+        url: '/admin',
+    },
+    {
+        name: 'Webie DB',
+        logo: Database,
+        plan: 'Startup',
+        url: '/admin/database',
+    },
+]
 
 const MainNavItems: WebieAdminMenuItem[] = [
     {
@@ -79,25 +91,7 @@ export function AdminSidebar({
     return (
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link to="/admin">
-                                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                    <Command className="size-5" />
-                                </div>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">
-                                        Webie
-                                    </span>
-                                    <span className="truncate text-xs">
-                                        Startup
-                                    </span>
-                                </div>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <ServiceSwicher services={services} />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={MainNavItems} />
