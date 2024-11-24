@@ -121,7 +121,7 @@ export const TimeSelector = ({
     )
 }
 
-export const CalenderWithTime = ({
+export const CalendarWithTime = ({
     date,
     setDate,
     className,
