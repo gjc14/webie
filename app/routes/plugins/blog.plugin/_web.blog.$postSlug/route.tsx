@@ -33,7 +33,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
     try {
         const { post, prev, next } = await getPostBySlug(params.postSlug)
-        if (!post || post.status !== 'PUBLISHED') {
+        if (!post || (!preview && post.status !== 'PUBLISHED')) {
             throw new Response('Post not found', { status: 404 })
         }
         post.content = post.content
