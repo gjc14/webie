@@ -21,7 +21,6 @@ import {
     SidebarTrigger,
 } from '~/components/ui/sidebar'
 import { userIs } from '~/lib/db/auth.server'
-import { getUserById } from '~/lib/db/user.server'
 import { generateBreadcrumbs } from '~/lib/utils'
 import { AdminSidebar } from '~/routes/_webie.admin/components/admin-sidebar'
 import { getPluginConfigs } from '~/routes/plugins/utils/get-plugin-configs.server'
@@ -31,10 +30,9 @@ export const meta: MetaFunction = () => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const admin = await userIs(request, 'ADMIN', '/admin/signin')
+    const { user: admin } = await userIs(request, 'ADMIN', '/admin/signin')
 
-    const existingUser = await getUserById(admin.id)
-    if (!existingUser || !existingUser.user) {
+    if (!admin) {
         throw redirect('/admin/signin')
     }
 
@@ -44,7 +42,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .filter(routeItem => !!routeItem)
 
     return json({
-        admin: existingUser.user,
+        admin: admin,
         pluginRoutes: pluginRoutes,
     })
 }

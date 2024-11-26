@@ -18,7 +18,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         })
     }
 
-    const admin = await userIs(request, 'ADMIN', '/admin/signin')
+    const { user: admin } = await userIs(request, 'ADMIN', '/admin/signin')
 
     const jsonData = await request.json()
 

@@ -1,3 +1,4 @@
+import { User } from '@prisma/client'
 import { createCookie, redirect } from '@remix-run/node'
 import AES from 'crypto-js/aes'
 import Base64 from 'crypto-js/enc-base64'
@@ -105,7 +106,7 @@ export const userIs = async (
     request: Request,
     role: UserRole,
     redirectToSignIn: string
-): Promise<{ id: string }> => {
+): Promise<{ user: User }> => {
     const cookieString = request.headers.get('Cookie')
     if (!cookieString) throw redirect(redirectToSignIn)
 
@@ -113,7 +114,7 @@ export const userIs = async (
     if (cookie && typeof cookie === 'object' && 'id' in cookie) {
         const { user } = await getUserById(cookie.id)
         if (user && user.status === 'ACTIVE' && user.role === role) {
-            return { id: cookie.id }
+            return { user }
         }
     }
 
