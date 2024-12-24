@@ -41,7 +41,7 @@ export const ImageButton = ({ editor }: { editor: Editor }) => {
                             <Input
                                 ref={urlInputRef}
                                 id="url"
-                                placeholder="https://webie.dev/logo.svg"
+                                placeholder="https://papacms.com/logo.svg"
                                 className="col-span-2 h-8"
                             />
                         </div>

@@ -2,7 +2,7 @@ import { Command, mergeAttributes, Node } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import MarkdownIt from 'markdown-it'
 
-import { Provider } from '~/routes/_webie.admin.api.ai.chat/route'
+import { Provider } from '~/routes/_papa.admin.api.ai.chat/route'
 import Component from './component'
 
 interface StreamViewProps {

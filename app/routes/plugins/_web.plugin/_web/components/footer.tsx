@@ -15,14 +15,14 @@ export const Footer = () => {
             <p className="text-sm text-primary">
                 Built somewhere on the 🌏. © 2024{' '}
                 <a
-                    href="https://webie.dev"
-                    aria-label="Go to webie"
+                    href="https://papacms.com"
+                    aria-label="Go to papa"
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Go to the Webie website"
+                    title="Go to the Papa website"
                     className="hover:underline"
                 >
-                    Webie
+                    Papa
                 </a>
             </p>
         </footer>

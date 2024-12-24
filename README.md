@@ -1,8 +1,8 @@
-# Webie.dev
+# Papa CMS
 
 <!-- prettier-ignore -->
 > [!NOTE]
-> Welcome to webie.dev, this is a open-source project for building modern web.
+> Welcome to papa, this is a open-source project for building modern web.
 
 ## Tech Stack
 
@@ -13,7 +13,7 @@
 -   **UI LIbrary**: [shadcn/ui](https://ui.shadcn.com/)
 -   **Email SDK**: [Resend](https://resend.com/)
 
-## Why use Webie?
+## Why use Papa?
 
 1. Totally free without branding logos.
 2. You own the codebase.
@@ -49,7 +49,7 @@ You should:
    [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
    [hCaptcha](https://www.hcaptcha.com/) (upcoming...) to secure your subscribe
    form.
-5. Chose where to deploy your Webie application.
+5. Chose where to deploy your Papa application.
 
 ## Usage
 
@@ -82,8 +82,8 @@ mv .env.sample .env
    `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` to
    get one
 7. `RESEND_API_KEY`: Send emails via Resend.
-8. `BASE_URL`: This is the domain where you're hosting your Webie. e.g.
-   `BASE_URL=webie.dev`
+8. `BASE_URL`: This is the domain where you're hosting your Papa. e.g.
+   `BASE_URL=papacms.com`
 9. (optional) `GOOGLE_GENERATIVE_AI_API_KEY`, `OPENAI_API_KEY`,
    `ANTHROPIC_API_KEY`: For use of Generative AI in `/admin/api/ai`
 10. `OBJECT_STORAGE_ACCESS_KEY_ID`, `OBJECT_STORAGE_SECRET_ACCESS_KEY`,
@@ -108,7 +108,7 @@ npm i && npx prisma generate && npx prisma db push
 > For first time ever, you should set super admin email address in `.env` file,
 > and make sure your email server has set (fill in your `RESEND_API_KEY`). Then
 > run `npm run check-admin && npm run dev`, it will send a verification email to
-> you. After verify, webie will create an ADMIN role user and you will see
+> you. After verify, papa will create an ADMIN role user and you will see
 > `role : "ADMIN"` in the database **User** table.
 
 Run this in `/` shell to start in dev mode, press `q` to exit application, `r`

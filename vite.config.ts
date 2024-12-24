@@ -14,6 +14,7 @@ export default defineConfig({
                 v3_lazyRouteDiscovery: true,
             },
             routes: async defineRoutes => {
+                // TODO: Exclude papa.config.ts
                 return flatRoutes(
                     ['routes', ...getPluginRoutes()],
                     defineRoutes

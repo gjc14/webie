@@ -5,7 +5,7 @@ import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
 
 import { cn } from '~/lib/utils'
-import { ChatAPICustomBody } from '~/routes/_webie.admin.api.ai.chat/route'
+import { ChatAPICustomBody } from '~/routes/_papa.admin.api.ai.chat/route'
 import { DefaultBubbleMenu } from '../components/menus/bubble-menu'
 // import { DefaultFloatingMenu } from '../components/menus/floating-menu'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
@@ -93,12 +93,12 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                 const textBefore = doc.textBetween(
                     0,
                     $head.pos,
-                    '[webie | split]'
+                    '[papa | split]'
                 )
 
                 const prompt =
                     textBefore
-                        .split('[webie | split]')
+                        .split('[papa | split]')
                         .filter(Boolean)
                         .slice(-20)
                         .join(' | ') || defaultPrompt
@@ -110,10 +110,10 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
                 })
             } else {
                 // Use selected text as prompt
-                const content = doc.textBetween(from, to, '[webie | split]')
+                const content = doc.textBetween(from, to, '[papa | split]')
                 const prompt =
                     content
-                        .split('[webie | split]')
+                        .split('[papa | split]')
                         .filter(Boolean)
                         .join(' | ') || defaultPrompt
 
@@ -164,7 +164,7 @@ export default forwardRef<EditorRef, EditorProps>((props, ref) => {
 
             <footer className="flex justify-end items-center pt-2 px-1 border-t text-xs text-muted-foreground">
                 <a
-                    href="https://github.com/gjc14/webie"
+                    href="https://github.com/gjc14/papa"
                     target="_blank"
                     rel="noopener noreferrer"
                     title="View source code on GitHub"

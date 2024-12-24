@@ -1,9 +1,9 @@
 /**
- * Read all the plugin configs from the `app/routes/plugins/*.plugin/webie.config.ts`
+ * Read all the plugin configs from the `app/routes/plugins/*.plugin/papa.config.ts`
  */
-export const getPluginConfigs = async (): Promise<WebieConfig[]> => {
+export const getPluginConfigs = async (): Promise<PapaConfig[]> => {
     const modules = import.meta.glob(
-        '/app/routes/plugins/*.plugin/webie.config.ts',
+        '/app/routes/plugins/*.plugin/papa.config.ts',
         {
             import: 'default',
         }
@@ -16,14 +16,14 @@ export const getPluginConfigs = async (): Promise<WebieConfig[]> => {
             const mod = await modules[path]()
 
             if (typeof mod !== 'function') {
-                throw new TypeError(`Invalid Webie config type ${typeof mod}`)
+                throw new TypeError(`Invalid Papa config type ${typeof mod}`)
             }
 
             const config = mod()
-            const { success, error, data } = WebieConfigSchema.safeParse(config)
+            const { success, error, data } = PapaConfigSchema.safeParse(config)
 
             if (!success) {
-                throw new TypeError(`Invalid Webie config type: ${error}`)
+                throw new TypeError(`Invalid Papa config type: ${error}`)
             }
 
             configs.push(data)
@@ -45,7 +45,7 @@ const iconOptions = Object.keys(dynamicIconImports) as Array<
     keyof typeof dynamicIconImports
 >
 
-const WebieConfigSchema = z.object({
+const PapaConfigSchema = z.object({
     pluginName: z.string(),
     /**
      * Used to generate button for `Admin` nav bar
@@ -82,5 +82,5 @@ const WebieConfigSchema = z.object({
         .optional(),
     dependencies: z.array(z.string()).optional(),
 })
-export type WebieConfig = z.infer<typeof WebieConfigSchema>
-export type WebieAdminMenuItem = NonNullable<WebieConfig['adminRoutes']>[number]
+export type PapaConfig = z.infer<typeof PapaConfigSchema>
+export type PapaAdminMenuItem = NonNullable<PapaConfig['adminRoutes']>[number]

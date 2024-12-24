@@ -4,7 +4,7 @@ import { WandSparkles } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import { cn } from '~/lib/utils'
-import { Provider } from '~/routes/_webie.admin.api.ai.chat/route'
+import { Provider } from '~/routes/_papa.admin.api.ai.chat/route'
 import {
     editAlignOptions,
     editHistoryOptions,

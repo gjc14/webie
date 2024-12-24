@@ -1,6 +1,6 @@
-import type { WebieConfig } from '../utils/get-plugin-configs.server'
+import type { PapaConfig } from '../utils/get-plugin-configs.server'
 
-const config = (): WebieConfig => {
+const config = (): PapaConfig => {
     return {
         pluginName: 'Blog',
     }

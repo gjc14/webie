@@ -30,11 +30,12 @@ export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
                     </Text>
                 </Section>
                 <Text style={paragraph}>
-                    Best, <br />- Webie Team {'<3'}
+                    Best, <br />- Papa Team {'<3'}
                 </Text>
                 <Hr style={hr} />
                 <Text style={footer}>
-                    Build with <Link href="https://webie.dev">webie.dev</Link>
+                    Build with{' '}
+                    <Link href="https://papacms.com">papacms.com</Link>
                 </Text>
             </Container>
         </Body>

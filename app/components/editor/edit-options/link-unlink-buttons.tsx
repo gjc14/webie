@@ -66,7 +66,7 @@ export const LinkUnlinkButtons = ({ editor }: { editor: Editor }) => {
                     <Label htmlFor="link">URL</Label>
                     <Input
                         id="link"
-                        placeholder="https://webie.dev"
+                        placeholder="https://papacms.com"
                         value={linkInput}
                         onChange={e => setLinkInput(e.target.value ?? '')}
                     />

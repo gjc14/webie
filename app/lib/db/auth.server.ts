@@ -61,7 +61,7 @@ export const sendMagicLink = async (
         )
         from = 'Acme <onboarding@resend.dev>'
     } else {
-        from = `Webie <email@${process.env.BASE_URL}>`
+        from = `Papa <email@${process.env.BASE_URL}>`
     }
 
     const { data, error } = await resend.emails.send({

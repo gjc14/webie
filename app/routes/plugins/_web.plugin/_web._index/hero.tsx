@@ -41,19 +41,10 @@ export const Hero = () => {
                         {...fade()}
                         className="leading text-2xl font-bold mt-1"
                     >
-                        👋 Welcome to <span className="sr-only">Webie</span>
+                        👋 Welcome to <span className="sr-only">Papa</span>
                     </motion.h2>
-                    <div className="h-fit w-[125px]">
-                        <img
-                            src="/logos/webie-black-300.png"
-                            alt="Webie"
-                            className="block w-full dark:hidden"
-                        />
-                        <img
-                            src="/logos/webie-white-300.png"
-                            alt="Webie"
-                            className="hidden w-full dark:block"
-                        />
+                    <div className="h-fit">
+                        <span className="text-5xl">🥔</span>
                     </div>
 
                     <motion.p {...fade()}>
@@ -64,7 +55,7 @@ export const Hero = () => {
                     </motion.p>
                     <motion.ul {...fade()} className="pl-3">
                         <li>
-                            Webie is built on top of&nbsp;
+                            Papa is built on top of&nbsp;
                             <a
                                 href="https://remix.run"
                                 aria-label="Go to Remix docs"
@@ -79,28 +70,28 @@ export const Hero = () => {
                         <li>
                             You could add new plugin via cli&nbsp;
                             <span className="bg-zinc-300 dark:bg-zinc-700 py-0.5 px-1 rounded">
-                                webie add {'<name>.plugin'}
+                                papa add {'<name>.plugin'}
                             </span>
-                            , and add a webie.config.ts file.
+                            , and add a papa.config.ts file.
                         </li>
                     </motion.ul>
 
                     <div className="flex gap-3">
                         <a
-                            href="https://webie.dev"
-                            aria-label="Go to webie"
+                            href="https://papacms.com"
+                            aria-label="Go to papa"
                             target="_blank"
                             rel="noopener noreferrer"
-                            title="Go to the Webie website"
+                            title="Go to the Papa website"
                         >
                             <File className="w-5 h-5" />
                         </a>
                         <a
-                            href="https://github.com/gjc14/webie"
-                            aria-label="Go to webie repo"
+                            href="https://github.com/gjc14/papa"
+                            aria-label="Go to papa repo"
                             target="_blank"
                             rel="noopener noreferrer"
-                            title="Go to the GitHub repository for webie"
+                            title="Go to the GitHub repository for Papa"
                         >
                             <GitHubLogoIcon className="w-5 h-5" />
                         </a>
