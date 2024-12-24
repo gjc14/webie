@@ -48,22 +48,23 @@ export const Hero = () => {
                     </div>
 
                     <motion.p {...fade()}>
-                        To start building your website, please add _web.plugin
-                        and edit the _web._index file. You could also find some
-                        useful components in /app/routes/plugins/components.
-                        Specifically for front-end websites. 🚀
+                        Papa CMS includes front page and CMS admin page. To
+                        start building your website, please edit _web/route.tsx
+                        for front page layout, and the _web._index/route.tsx for
+                        / page. You could also find some useful components in
+                        /app/components. 🚀
                     </motion.p>
                     <motion.ul {...fade()} className="pl-3">
                         <li>
                             Papa is built on top of&nbsp;
                             <a
-                                href="https://remix.run"
-                                aria-label="Go to Remix docs"
+                                href="https://reactrouter.com/home"
+                                aria-label="Go to React Router v7 docs"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                title="Go to the Remix docs"
+                                title="Go to the React Router v7 docs"
                             >
-                                <strong>Remix</strong>
+                                <strong>React Router v7</strong>
                             </a>
                             .
                         </li>
