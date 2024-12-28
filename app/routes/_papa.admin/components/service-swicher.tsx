@@ -1,5 +1,5 @@
-import { Link } from '@remix-run/react'
-import { ChevronsUpDown, Plus } from 'lucide-react'
+import { Link, useLocation } from '@remix-run/react'
+import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 
 import {
@@ -7,8 +7,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import {
@@ -28,8 +26,14 @@ export interface ServiceSwicherProps {
 }
 
 export function ServiceSwicher({ services }: ServiceSwicherProps) {
+    const currentUrl = useLocation().pathname
+    const currentActiveService = services.find(service => {
+        return service.url !== '/admin' && !!currentUrl.startsWith(service.url)
+    })
     const { isMobile } = useSidebar()
-    const [activeService, setActiveService] = useState(services[0])
+    const [activeService, setActiveService] = useState(
+        currentActiveService || services[0]
+    )
 
     return (
         <SidebarMenu>

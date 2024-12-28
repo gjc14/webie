@@ -1,4 +1,4 @@
-import { Building, Command, Database, LifeBuoy, Send } from 'lucide-react'
+import { Building, Command, LifeBuoy, Send } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -23,12 +23,6 @@ const services: ServiceSwicherProps['services'] = [
         logo: () => <Command className="size-4" />,
         plan: 'Startup',
         url: '/admin',
-    },
-    {
-        name: 'Papa DB',
-        logo: Database,
-        plan: 'Startup',
-        url: '/admin/database',
     },
 ]
 
