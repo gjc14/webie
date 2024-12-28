@@ -1,8 +1,14 @@
+/**
+ * Database
+ */
 import { PrismaClient } from '@prisma/client'
 
 export const prisma = new PrismaClient()
 
-import { S3Client } from '@aws-sdk/client-s3'
+/**
+ * Object Storage
+ */
+import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3'
 
 const ACCESS_KEY_ID = process.env.OBJECT_STORAGE_ACCESS_KEY_ID
 const SECRET_ACCESS_KEY = process.env.OBJECT_STORAGE_SECRET_ACCESS_KEY
@@ -30,3 +36,16 @@ export const S3 =
               },
           })
         : null
+
+if (S3) {
+    S3.send(new ListBucketsCommand({})).then(result => {
+        const isPapaExists = !!result.Buckets?.find(
+            bucket => bucket.Name === 'papa'
+        )
+        if (!isPapaExists) {
+            console.warn(
+                'Bucket papa not found, please create it. Refer to ./app/lib/utils.tsx or ./README.md'
+            )
+        }
+    })
+}
