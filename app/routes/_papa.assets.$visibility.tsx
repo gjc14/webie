@@ -20,11 +20,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     }
 
     if (visibility !== 'public') {
-        const { user: admin } = await userIs(request, ['ADMIN'])
+        // TODO: provide allowed roles
+        const { user: userAllowed } = await userIs(request, ['ADMIN'], '')
 
-        // return redirect(
-        //     '/assets/error' + '?status=404' + '&statusText=File not found'
-        // )
+        if (!userAllowed)
+            return redirect(
+                '/assets/error' + '?status=404' + '&statusText=File not found'
+            )
     }
 
     const presignedUrl = await getFileUrl(key)
