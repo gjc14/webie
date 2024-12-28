@@ -18,7 +18,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         )
     }
 
-    await userIs(request, 'ADMIN', '/admin/signin')
+    await userIs(request, ['ADMIN'])
 
     const formData = await request.formData()
     const createSeoData = Object.fromEntries(formData)

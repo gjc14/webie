@@ -28,7 +28,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const preview = searchParams.get('preview')
 
     if (preview) {
-        await userIs(request, 'ADMIN', '/admin/signin')
+        await userIs(request, ['ADMIN'])
     }
 
     try {

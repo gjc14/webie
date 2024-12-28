@@ -11,7 +11,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
         )
     }
 
-    await userIs(request, 'ADMIN', '/admin/signin')
+    await userIs(request, ['ADMIN'])
 
     const id = params.seoId
 

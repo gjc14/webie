@@ -30,7 +30,7 @@ export const meta: MetaFunction = () => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const { user: admin } = await userIs(request, 'ADMIN', '/admin/signin')
+    const { user: admin } = await userIs(request, ['ADMIN'])
 
     if (!admin) {
         throw redirect('/admin/signin')

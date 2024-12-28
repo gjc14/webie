@@ -37,7 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         throw new Response('Method not allowd', { status: 405 })
     }
 
-    await userIs(request, 'ADMIN', '/admin/signin')
+    await userIs(request, ['ADMIN'])
 
     const formData = await request.formData()
     const intent = formData.get('intent')

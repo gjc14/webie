@@ -41,7 +41,7 @@ const PostContentUpdateSchema = z.object({
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const { user: admin } = await userIs(request, 'ADMIN', '/admin/signin')
+    const { user: admin } = await userIs(request, ['ADMIN'])
 
     if (request.method !== 'PUT') {
         throw new Response('Method not allowed', { status: 405 })

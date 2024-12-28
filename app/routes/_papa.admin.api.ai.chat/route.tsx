@@ -35,7 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
         throw new Response('Method not allowed', { status: 405 })
     }
 
-    const { user: admin } = await userIs(request, 'ADMIN', '/admin/signin')
+    const { user: admin } = await userIs(request, ['ADMIN'])
 
     try {
         const {

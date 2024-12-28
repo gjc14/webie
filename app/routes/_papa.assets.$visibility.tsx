@@ -20,7 +20,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     }
 
     if (visibility !== 'public') {
-        const { user: admin } = await userIs(request, 'ADMIN', '/admin/signin')
+        const { user: admin } = await userIs(request, ['ADMIN'])
 
         // return redirect(
         //     '/assets/error' + '?status=404' + '&statusText=File not found'

@@ -102,21 +102,42 @@ export const verifyMagicLink = async (
     }
 }
 
-export const userIs = async (
+/**
+ * Await this function to check if the user is authenticated with specified roles.
+ * When unauthenticated, default to redirect to admin sign in page `/admiin/signin`.
+ * @param redirectToSignIn Pass in "" if you do not want to redirect
+ */
+export function userIs(
     request: Request,
-    role: UserRole,
-    redirectToSignIn: string
-): Promise<{ user: User }> => {
+    roles: string[],
+    redirectToSignIn?: string
+): Promise<{ user: User }>
+
+export function userIs(
+    request: Request,
+    roles: string[],
+    redirectToSignIn: ''
+): Promise<{ user: User | null }>
+
+export async function userIs(
+    request: Request,
+    roles: string[],
+    redirectToSignIn: string = '/admin/signin'
+): Promise<{ user: User | null }> {
     const cookieString = request.headers.get('Cookie')
-    if (!cookieString) throw redirect(redirectToSignIn)
+    if (!cookieString && redirectToSignIn) throw redirect(redirectToSignIn)
 
     const cookie = await authCookie.parse(cookieString)
     if (cookie && typeof cookie === 'object' && 'id' in cookie) {
         const { user } = await getUserById(cookie.id)
-        if (user && user.status === 'ACTIVE' && user.role === role) {
+        if (user && user.status === 'ACTIVE' && roles.includes(user.role)) {
             return { user }
         }
     }
 
-    throw redirect(redirectToSignIn)
+    if (redirectToSignIn) {
+        throw redirect(redirectToSignIn)
+    } else {
+        return { user: null }
+    }
 }
