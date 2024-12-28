@@ -43,17 +43,47 @@ You should:
    [What is PapaCMS (30kB)](https://papacms.com/blog/what-is-papa) post.
 3. Have a [Resend](https://resend.com/) account to send email. Every Resend
    account has a [free 3,000 emails / mo quota](https://resend.com/pricing).
+4. Setup an object storage either in
+   [Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/)
+   or [AWS S3](https://aws.amazon.com/s3/).
 
 <!-- prettier-ignore -->
 > [!INFO]
 > You should allow all IPs, or all posible IPs, to connect to your MongoDB Atlas project when deploy, because deploying services on the market often run their server on various IPs. Go to your project in MongoDB Atlas **Network Access > Actions > EDIT > Allow access from anywhere**.
 
-4. Have either
+5. Have either
    [Cloudflare Turnstile](https://www.cloudflare.com/application-services/products/turnstile/),
-   [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (upcoming...) or
-   [hCaptcha](https://www.hcaptcha.com/) (upcoming...) to secure your subscribe
+   [reCAPTCHA v3](https://www.google.com/recaptcha/about/) (coming soon) or
+   [hCaptcha](https://www.hcaptcha.com/) (coming soon) to secure your subscribe
    form.
-5. Chose where to deploy your PapaCMS application.
+6. Chose where to deploy your PapaCMS application.
+
+### Set up [Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/)
+
+1. Navigate to `Cloudflare dashboard > R2 Object Storage`
+2. `API > Manage API Tokens`: Click **Create API Token** button, and set
+   Permissions to Admin Read & Write and TTL to Forever
+3. Click **Create bucket** button, name it _papa_ (buckets are default to
+   private)
+4. In **papa** bucket, navigate to `Settings > Edit CORS policy`, set as
+   following
+
+```json
+[
+    {
+        "AllowedOrigins": [
+            "http://localhost:5173",
+            "https://your-own-domain.com"
+        ],
+        "AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
+        "AllowedHeaders": ["*"]
+    }
+]
+```
+
+### Set up [AWS S3](https://aws.amazon.com/s3/)
+
+Coming soon
 
 ## Usage
 
