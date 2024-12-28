@@ -1,13 +1,12 @@
 import {
-    json,
     LoaderFunctionArgs,
     SerializeFrom,
     type MetaFunction,
 } from '@remix-run/node'
 import { ClientLoaderFunctionArgs, useLoaderData } from '@remix-run/react'
 
-import { getSEO } from '~/lib/db/seo.server'
 import { MainWrapper } from '~/components/wrappers'
+import { getSEO } from '~/lib/db/seo.server'
 import { Footer } from '../_web/components/footer'
 import { Nav } from '../_web/components/nav'
 import { Hero } from './hero'
@@ -25,10 +24,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { seo } = await getSEO(new URL(request.url).pathname)
 
     try {
-        return json({ seo })
+        return { seo }
     } catch (error) {
         console.error(error)
-        return json({ seo })
+        return { seo }
     }
 }
 

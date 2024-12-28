@@ -71,7 +71,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export const loader = async () => {
     const { seo } = await getSEOs()
 
-    return json({ seo })
+    return { seo }
 }
 
 export type SerializedSeo = SerializeFrom<typeof loader>['seo'][number]

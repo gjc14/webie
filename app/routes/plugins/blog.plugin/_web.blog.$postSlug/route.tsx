@@ -1,6 +1,6 @@
 import 'highlight.js/styles/base16/atelier-dune.min.css'
 
-import { json, LoaderFunctionArgs, SerializeFrom } from '@remix-run/node'
+import { LoaderFunctionArgs, SerializeFrom } from '@remix-run/node'
 import {
     ClientLoaderFunctionArgs,
     useLoaderData,
@@ -9,7 +9,7 @@ import {
 import { generateHTML } from '@tiptap/html'
 import { common, createLowlight } from 'lowlight'
 import { ArrowLeft } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import ExtensionKit from '~/components/editor/extensions/extension-kit'
 import { userIs } from '~/lib/db/auth.server'
@@ -41,7 +41,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
                   ...ExtensionKit({ openOnClick: true }),
               ])
             : '<p>This is an empty post</p>'
-        return json({ post, prev, next })
+        return { post, prev, next }
     } catch (error) {
         console.error(error)
         throw new Response('Post not found', { status: 404 })

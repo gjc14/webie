@@ -70,7 +70,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const url = new URL(request.url)
 
     const objects = await S3?.send(new ListObjectsV2Command({ Bucket: 'papa' }))
-    if (!objects || !objects.Contents) return json({ files: [] as FileMeta[] })
+    if (!objects || !objects.Contents) return { files: [] as FileMeta[] }
 
     const { Contents } = objects
 
@@ -91,9 +91,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     )
     const filteredFiles = files.filter(file => file !== null)
 
-    return json({
+    return {
         files: filteredFiles,
-    })
+    }
 }
 
 export default function AdminAsset() {

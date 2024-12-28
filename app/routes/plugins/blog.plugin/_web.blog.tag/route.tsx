@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
+import { LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 
 import { getPosts } from '~/lib/db/post.server'
@@ -26,10 +26,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             status: 'PUBLISHED',
             tagFilter: query,
         })
-        return json({ seo, posts, query })
+        return { seo, posts, query }
     } catch (error) {
         console.error(error)
-        return json({ seo, posts: [], query })
+        return { seo, posts: [], query }
     }
 }
 

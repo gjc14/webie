@@ -1,6 +1,6 @@
 import './tailwind.css'
 
-import { json, LoaderFunctionArgs } from '@remix-run/node'
+import { data, LoaderFunctionArgs } from '@remix-run/node'
 import {
     isRouteErrorResponse,
     Links,
@@ -64,17 +64,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const errors = flashSession.get('error') ?? []
 
     if (successes.length === 0 && errors.length === 0) {
-        return json({
+        return {
             successes,
             errors,
             requestInfo: {
                 hints: getHints(request),
                 customTheme: getCustomTheme(request),
             },
-        })
+        }
     }
 
-    return json(
+    return data(
         {
             successes,
             errors,
@@ -112,7 +112,7 @@ export default function App() {
                 )
             )
 
-            // Convention: actions return json({ msg, data? } | { err, data?}) refer to README.md or /app/libs/utils.tsx
+            // Convention: actions return json({ msg, data? } | { err, data?}) refer to README.md or ./app/libs/utils.tsx
             const actionResponses = fetchers.filter(fetcher => {
                 return (
                     fetcher.state === 'loading' &&

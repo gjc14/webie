@@ -1,4 +1,4 @@
-import { json, SerializeFrom } from '@remix-run/node'
+import { SerializeFrom } from '@remix-run/node'
 import { Outlet, useLoaderData, useOutletContext } from '@remix-run/react'
 
 import { getCategories, getTags } from '~/lib/db/blog-taxonomy.server'
@@ -10,10 +10,10 @@ export const loader = async () => {
         const { posts } = await getPosts()
         const { tags } = await getTags()
         const { categories } = await getCategories()
-        return json({ posts, tags, categories })
+        return { posts, tags, categories }
     } catch (error) {
         console.error(error)
-        return json({ posts: [], categories: [], tags: [] })
+        return { posts: [], categories: [], tags: [] }
     }
 }
 

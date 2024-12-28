@@ -1,5 +1,4 @@
 import {
-    json,
     LoaderFunctionArgs,
     SerializeFrom,
     type MetaFunction,
@@ -25,10 +24,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     try {
         const { posts } = await getPosts({ status: 'PUBLISHED' })
-        return json({ seo, posts })
+        return { seo, posts }
     } catch (error) {
         console.error(error)
-        return json({ seo, posts: [] })
+        return { seo, posts: [] }
     }
 }
 

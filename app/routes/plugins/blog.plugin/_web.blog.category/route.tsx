@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
+import { LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 
 import { getPosts } from '~/lib/db/post.server'
@@ -29,10 +29,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             categoryFilter: query,
             subCategoryFilter: subCatequery,
         })
-        return json({ seo, posts, query, subCatequery })
+        return { seo, posts, query, subCatequery }
     } catch (error) {
         console.error(error)
-        return json({ seo, posts: [], query, subCatequery })
+        return { seo, posts: [], query, subCatequery }
     }
 }
 

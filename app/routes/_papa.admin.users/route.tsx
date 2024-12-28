@@ -1,4 +1,4 @@
-import { json, SerializeFrom } from '@remix-run/node'
+import { SerializeFrom } from '@remix-run/node'
 import { Outlet, useLoaderData, useOutletContext } from '@remix-run/react'
 import { getUsers } from '~/lib/db/user.server'
 
@@ -7,7 +7,7 @@ export { action } from '~/routes/_papa.admin.users.admins/route'
 export const loader = async () => {
     const { users } = await getUsers()
 
-    return json({ users })
+    return { users }
 }
 
 export default function AdminAllUsers() {

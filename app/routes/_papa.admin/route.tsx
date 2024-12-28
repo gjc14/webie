@@ -1,5 +1,4 @@
 import {
-    json,
     LoaderFunctionArgs,
     MetaFunction,
     redirect,
@@ -41,10 +40,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .flatMap(config => config.adminRoutes)
         .filter(routeItem => !!routeItem)
 
-    return json({
+    return {
         admin: admin,
         pluginRoutes: pluginRoutes,
-    })
+    }
 }
 
 const MemoAdminSidebar = memo(AdminSidebar)

@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs } from '@remix-run/node'
+import { LoaderFunctionArgs } from '@remix-run/node'
 import {
     isRouteErrorResponse,
     Link,
@@ -12,14 +12,15 @@ import { Button } from '~/components/ui/button'
 import { authCookie } from '~/lib/db/auth.server'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+    // TODO: efficiently check if user could access to /admin page
     const cookieString = request.headers.get('Cookie')
-    if (!cookieString) return json({ user: null })
+    if (!cookieString) return { user: null }
 
     const cookie = await authCookie.parse(cookieString)
     if (cookie) {
-        return json({ user: cookie })
+        return { user: cookie }
     } else {
-        return json({ user: null })
+        return { user: null }
     }
 }
 

@@ -1,4 +1,4 @@
-import { json, LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
+import { LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { UnderConstruction } from '~/components/under-construction'
 import { getSEO } from '~/lib/db/seo.server'
@@ -18,10 +18,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { seo } = await getSEO(new URL(request.url).pathname)
 
     try {
-        return json({ seo })
+        return { seo }
     } catch (error) {
         console.error(error)
-        return json({ seo })
+        return { seo }
     }
 }
 
