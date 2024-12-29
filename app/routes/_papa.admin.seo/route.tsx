@@ -1,15 +1,16 @@
-import { ActionFunctionArgs, json, SerializeFrom } from '@remix-run/node'
+import { ActionFunctionArgs, SerializeFrom } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
+
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { userIs } from '~/lib/db/auth.server'
 import { getSEOs, updateSEO } from '~/lib/db/seo.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -30,10 +31,9 @@ export const SeoUpdateSchmea = z.object({
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'PUT') {
-        return json<ConventionalError>(
-            { err: 'Method not allowed' },
-            { status: 405 }
-        )
+        return {
+            err: 'Method not allowed',
+        } satisfies ConventionalActionResponse
     }
 
     await userIs(request, ['ADMIN'])
@@ -47,7 +47,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json<ConventionalError>({ err: message }, { status: 400 })
+        return { err: message } satisfies ConventionalActionResponse
     }
 
     try {
@@ -56,15 +56,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             title: zResult.data.title,
             description: zResult.data.description,
         })
-        return json<ConventionalSuccess>({
+        return {
             msg: `SEO for ${seo.route || seo.title || 'unknown'} updated`,
-        })
+        } satisfies ConventionalActionResponse
     } catch (error) {
         console.error(error)
-        return json<ConventionalError>(
-            { err: 'Failed to update SEO' },
-            { status: 500 }
-        )
+        return {
+            err: 'Failed to update SEO',
+        } satisfies ConventionalActionResponse
     }
 }
 

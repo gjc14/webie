@@ -26,7 +26,10 @@ export const conventionalErrorSchema = z.object({
         .optional(),
 })
 export type ConventionalError = z.infer<typeof conventionalErrorSchema>
-export type ConventionalActionResponse = ConventionalSuccess | ConventionalError
+export type ConventionalActionResponse =
+    | ConventionalSuccess
+    | ConventionalError
+    | null
 
 export const isConventionalSuccess = (
     fetcherData: unknown

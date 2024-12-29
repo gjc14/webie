@@ -1,7 +1,8 @@
-import { ActionFunctionArgs, json } from '@remix-run/node'
+import { ActionFunctionArgs } from '@remix-run/node'
+
 import { userIs } from '~/lib/db/auth.server'
 import { deletePost } from '~/lib/db/post.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
     await userIs(request, ['ADMIN'])
@@ -17,14 +18,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     try {
         const { post } = await deletePost(postId)
-        return json<ConventionalSuccess>({
+        return {
             msg: `${post.title} deleted successfully`,
-        })
+        }
     } catch (error) {
         console.error(error)
-        return json<ConventionalError>(
-            { err: 'Failed to delete post' },
-            { status: 500 }
-        )
+        return {
+            err: 'Failed to delete post',
+        } satisfies ConventionalActionResponse
     }
 }

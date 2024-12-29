@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json } from '@remix-run/node'
+import { ActionFunctionArgs } from '@remix-run/node'
 import { useFetcher } from '@remix-run/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { Loader2, PlusCircle } from 'lucide-react'
@@ -19,7 +19,7 @@ import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { userIs } from '~/lib/db/auth.server'
 import { updateUser } from '~/lib/db/user.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -44,10 +44,10 @@ export const UserUpdateSchema = z.object({
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'PUT') {
-        return json<ConventionalError>(
-            { data: null, err: 'Invalid method' },
-            { status: 400 }
-        )
+        return {
+            data: null,
+            err: 'Invalid method',
+        } satisfies ConventionalActionResponse
     }
 
     await userIs(request, ['ADMIN'])
@@ -62,10 +62,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json<ConventionalError>(
-            { data: zResult.error.issues, err: message },
-            { status: 400 }
-        )
+        return {
+            data: zResult.error.issues,
+            err: message,
+        } satisfies ConventionalActionResponse
     }
 
     try {
@@ -79,15 +79,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         })
 
-        return json<ConventionalSuccess>({
+        return {
             msg: 'Success update ' + (user.name || user.email),
-        })
+        } satisfies ConventionalActionResponse
     } catch (error) {
         console.error(error)
-        return json<ConventionalError>(
-            { data: null, err: 'Failed to update user' },
-            { status: 400 }
-        )
+        return {
+            data: null,
+            err: 'Failed to update user',
+        } satisfies ConventionalActionResponse
     }
 }
 

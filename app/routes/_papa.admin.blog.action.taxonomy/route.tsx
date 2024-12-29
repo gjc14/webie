@@ -1,5 +1,4 @@
 import { ActionFunctionArgs, redirect } from '@remix-run/node'
-import { json } from '@remix-run/react'
 import { z } from 'zod'
 
 import { userIs } from '~/lib/db/auth.server'
@@ -11,7 +10,7 @@ import {
     deleteSubcategory,
     deleteTag,
 } from '~/lib/db/blog-taxonomy.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 
 const intentSchema = z.enum(['category', 'subcategory', 'tag'])
 export type Intents = z.infer<typeof intentSchema>
@@ -60,24 +59,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 if (request.method === 'POST') {
                     const { id, name } = taxonomySchema.parse(formObject)
                     await createCategory({ id, name })
-                    return null
+                    return null satisfies ConventionalActionResponse
                 } else if (request.method === 'DELETE') {
                     const { id } = deleteSchema.parse(formObject)
                     const { category } = await deleteCategory(id)
-                    return json<ConventionalSuccess>({
+                    return {
                         msg: deleteMesage(category.name),
-                    })
+                    } satisfies ConventionalActionResponse
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
-                    return json<ConventionalError>({
+                    return {
                         err: 'Invalid argument',
-                    })
+                    } satisfies ConventionalActionResponse
                 }
                 console.error(error)
-                return json<ConventionalError>({
+                return {
                     err: 'Failed to delete category',
-                })
+                } satisfies ConventionalActionResponse
             }
         }
 
@@ -91,24 +90,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                     const { id, name, parentId } =
                         subTaxonomySchema.parse(formObject)
                     await createSubcategory({ id, name, categoryId: parentId })
-                    return null
+                    return null satisfies ConventionalActionResponse
                 } else if (request.method === 'DELETE') {
                     const { id } = deleteSchema.parse(formObject)
                     const { subcategory } = await deleteSubcategory(id)
-                    return json<ConventionalSuccess>({
+                    return {
                         msg: deleteMesage(subcategory.name),
-                    })
+                    } satisfies ConventionalActionResponse
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
-                    return json<ConventionalError>({
+                    return {
                         err: 'Invalid argument',
-                    })
+                    } satisfies ConventionalActionResponse
                 }
                 console.error(error)
-                return json<ConventionalError>({
+                return {
                     err: 'Failed to delete category',
-                })
+                } satisfies ConventionalActionResponse
             }
         }
 
@@ -121,24 +120,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 if (request.method === 'POST') {
                     const { id, name } = taxonomySchema.parse(formObject)
                     await createTag({ id, name })
-                    return null
+                    return null satisfies ConventionalActionResponse
                 } else if (request.method === 'DELETE') {
                     const { id } = deleteSchema.parse(formObject)
                     const { tag } = await deleteTag(id)
-                    return json<ConventionalSuccess>({
+                    return {
                         msg: deleteMesage(tag.name),
-                    })
+                    } satisfies ConventionalActionResponse
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
-                    return json<ConventionalError>({
+                    return {
                         err: 'Invalid argument',
-                    })
+                    } satisfies ConventionalActionResponse
                 }
                 console.error(error)
-                return json<ConventionalError>({
+                return {
                     err: 'Failed to delete tag',
-                })
+                } satisfies ConventionalActionResponse
             }
         }
 

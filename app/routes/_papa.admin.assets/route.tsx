@@ -1,5 +1,5 @@
 import { ListObjectsV2Command } from '@aws-sdk/client-s3'
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData, useSubmit } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 
@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from '~/components/ui/select'
 import { prisma, S3 } from '~/lib/db/_db.server'
-import { capitalize, ConventionalError } from '~/lib/utils'
+import { capitalize, ConventionalActionResponse } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -45,7 +45,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         error,
     } = FileMetaSchema.safeParse(JSON.parse(newFileMetaString))
     if (!success) {
-        return json<ConventionalError>({ err: 'Invalid file metadata' })
+        return {
+            err: 'Invalid file metadata',
+        } satisfies ConventionalActionResponse
     }
 
     try {
@@ -59,10 +61,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 description: newFileMetaData.description,
             },
         })
-        return json({ msg: 'File updated', data: newFileMetaData })
+        return {
+            msg: 'File updated',
+            data: newFileMetaData,
+        } satisfies ConventionalActionResponse
     } catch (error) {
         console.log('Error updating file', error)
-        return json<ConventionalError>({ err: 'Failed to update file' })
+        return {
+            err: 'Failed to update file',
+        } satisfies ConventionalActionResponse
     }
 }
 

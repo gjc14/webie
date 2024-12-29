@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { ActionFunctionArgs, redirect } from '@remix-run/node'
 import { Form, Link, useFetcher } from '@remix-run/react'
 import { Loader2, PlusCircle, Trash } from 'lucide-react'
 import { useState } from 'react'
@@ -20,7 +20,7 @@ import { Button } from '~/components/ui/button'
 import { userIs } from '~/lib/db/auth.server'
 import { createPost } from '~/lib/db/post.server'
 import { commitFlashSession, getFlashSession } from '~/lib/sessions.server'
-import { ConventionalError } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 import {
     AdminActions,
     AdminHeader,
@@ -56,7 +56,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return json<ConventionalError>({ err: message }, { status: 400 })
+        return { err: message } satisfies ConventionalActionResponse
     }
 
     try {
@@ -85,10 +85,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         })
     } catch (error) {
         console.error(error)
-        return json<ConventionalError>(
-            { err: 'Failed to create post' },
-            { status: 500 }
-        )
+        return {
+            err: 'Failed to create post',
+        } satisfies ConventionalActionResponse
     }
 }
 

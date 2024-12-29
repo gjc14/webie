@@ -1,14 +1,14 @@
-import { ActionFunctionArgs, json } from '@remix-run/node'
+import { ActionFunctionArgs } from '@remix-run/node'
+
 import { userIs } from '~/lib/db/auth.server'
 import { deleteSEO } from '~/lib/db/seo.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
     if (request.method !== 'DELETE') {
-        return json<ConventionalError>(
-            { err: 'Method not allowed' },
-            { status: 405 }
-        )
+        return {
+            err: 'Method not allowed',
+        } satisfies ConventionalActionResponse
     }
 
     await userIs(request, ['ADMIN'])
@@ -17,22 +17,18 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     if (!id) {
         console.log('Invalid arguments', id)
-        return json<ConventionalError>(
-            { err: `Invalid arguments` },
-            { status: 400 }
-        )
+        return { err: `Invalid arguments` } satisfies ConventionalActionResponse
     }
 
     try {
         const { seo } = await deleteSEO(id)
-        return json<ConventionalSuccess>({
+        return {
             msg: `SEO for ${seo.route || seo.title || 'unknown'} delete`,
-        })
+        } satisfies ConventionalActionResponse
     } catch (error) {
         console.error(error)
-        return json<ConventionalError>(
-            { err: 'Failed to delete SEO' },
-            { status: 500 }
-        )
+        return {
+            err: 'Failed to delete SEO',
+        } satisfies ConventionalActionResponse
     }
 }

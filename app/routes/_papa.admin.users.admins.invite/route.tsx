@@ -1,25 +1,22 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { ActionFunctionArgs, json } from '@remix-run/node'
+import { ActionFunctionArgs } from '@remix-run/node'
+
 import { getToken, sendMagicLink } from '~/lib/db/auth.server'
 import { createUser } from '~/lib/db/user.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return json<ConventionalError>(
-            { err: 'Method not allowed' },
-            { status: 405 }
-        )
+        return {
+            err: 'Method not allowed',
+        } satisfies ConventionalActionResponse
     }
 
     const formData = await request.formData()
     const email = formData.get('email')
 
     if (!email || typeof email !== 'string') {
-        return json<ConventionalError>(
-            { err: 'Invalid email' },
-            { status: 400 }
-        )
+        return { err: 'Invalid email' } satisfies ConventionalActionResponse
     }
 
     try {
@@ -30,21 +27,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             searchParams: { role: user.role },
         })
 
-        return json<ConventionalSuccess>({ msg: `Success invite ${email}` })
+        return {
+            msg: `Success invite ${email}`,
+        } satisfies ConventionalActionResponse
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
             if (error.code === 'P2002') {
-                return json<ConventionalError>(
-                    { err: 'Email already exists' },
-                    { status: 200 }
-                )
+                return {
+                    err: 'Email already exists',
+                } satisfies ConventionalActionResponse
             }
         } else {
             console.error('Error creating user:', error)
-            return json<ConventionalError>(
-                { err: 'Failed to invite' },
-                { status: 500 }
-            )
+            return {
+                err: 'Failed to invite',
+            } satisfies ConventionalActionResponse
         }
     }
 }

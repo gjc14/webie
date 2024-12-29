@@ -1,9 +1,9 @@
-import { ActionFunctionArgs, json } from '@remix-run/node'
+import { ActionFunctionArgs } from '@remix-run/node'
 
 import { prisma, S3 } from '~/lib/db/_db.server'
 import { deleteFile, getUploadUrl } from '~/lib/db/asset.server'
 import { userIs } from '~/lib/db/auth.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 import { PresignRequestSchema, PresignResponseSchema } from './schema'
 
 // Presign url for uploading assets, and delete function
@@ -13,9 +13,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     if (!S3) {
-        return json<ConventionalError>({
+        return {
             err: 'Object storage not configured',
-        })
+        } satisfies ConventionalActionResponse
     }
 
     const { user: admin } = await userIs(request, ['ADMIN'])
@@ -36,15 +36,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 where: { key },
             })
 
-            return json<ConventionalSuccess>({
+            return {
                 msg: 'Files deleted successfully',
                 options: { preventAlert: true },
-            })
+            } satisfies ConventionalActionResponse
         } catch (error) {
             console.log('Error deleting files', error)
-            return json<ConventionalError>({
+            return {
                 err: 'Failed to delete files',
-            })
+            } satisfies ConventionalActionResponse
         }
     }
 
@@ -96,15 +96,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             )
         )
 
-        return json<ConventionalSuccess>({
+        return {
             msg: 'Presign urls generated successfully',
             data: validatedResponse,
             options: { preventAlert: true },
-        })
+        } satisfies ConventionalActionResponse
     } catch (error) {
         console.log('Error generating presigned URLs', error)
-        return json<ConventionalError>({
+        return {
             err: 'Failed to generate presigned URLs',
-        })
+        } satisfies ConventionalActionResponse
     }
 }

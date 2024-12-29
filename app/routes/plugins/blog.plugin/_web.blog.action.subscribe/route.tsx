@@ -1,20 +1,19 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { ActionFunctionArgs, redirect } from '@remix-run/node'
 import { z } from 'zod'
 
 import { TurnstileSiteVerify } from '~/components/captchas/turnstile'
 import { createUser } from '~/lib/db/user.server'
-import { ConventionalError, ConventionalSuccess } from '~/lib/utils'
+import { ConventionalActionResponse } from '~/lib/utils'
 import { UserRole, UserStatus } from '~/schema/database'
 
 const captchaSchema = z.enum(['turnstile', 'recaptcha', 'hcaptcha'])
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return json<ConventionalError>(
-            { err: 'Method not allowed' },
-            { status: 405 }
-        )
+        return {
+            err: 'Method not allowed',
+        } satisfies ConventionalActionResponse
     }
 
     const formData = await request.formData()
@@ -24,10 +23,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const zCaptchaResult = captchaSchema.safeParse(captcha)
 
     if (!zCaptchaResult.success) {
-        return json<ConventionalError>(
-            { err: 'Invalid arguments, missing captcha' },
-            { status: 400 }
-        )
+        return {
+            err: 'Invalid arguments, missing captcha',
+        } satisfies ConventionalActionResponse
     }
 
     switch (zCaptchaResult.data) {
@@ -36,10 +34,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
             const zTurnstileResult = z.string().safeParse(turnstileResponse)
             if (!zTurnstileResult.success) {
-                return json<ConventionalError>(
-                    { err: 'Invalid arguments' },
-                    { status: 400 }
-                )
+                return {
+                    err: 'Invalid arguments',
+                } satisfies ConventionalActionResponse
             }
 
             const passed = await TurnstileSiteVerify(
@@ -47,24 +44,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 process.env.TURNSTILE_SECRET_KEY ?? ''
             )
             if (!passed) {
-                return json<ConventionalError>(
-                    { err: 'CAPTCHA Failed! Please try again' },
-                    { status: 400 }
-                )
+                return {
+                    err: 'CAPTCHA Failed! Please try again',
+                } satisfies ConventionalActionResponse
             }
             break
         }
         case 'recaptcha': {
-            return json<ConventionalError>(
-                { err: 'Recaptcha not implemented' },
-                { status: 501 }
-            )
+            return {
+                err: 'Recaptcha not implemented',
+            } satisfies ConventionalActionResponse
         }
         case 'hcaptcha': {
-            return json<ConventionalError>(
-                { err: 'Hcaptcha not implemented' },
-                { status: 501 }
-            )
+            return {
+                err: 'Hcaptcha not implemented',
+            } satisfies ConventionalActionResponse
         }
     }
 
@@ -72,10 +66,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const email = formData.get('email')
     const zResult = z.string().trim().email().safeParse(email)
     if (!zResult.success) {
-        return json<ConventionalError>(
-            { err: 'Invalid arguments' },
-            { status: 400 }
-        )
+        return { err: 'Invalid arguments' } satisfies ConventionalActionResponse
     }
 
     const { role, status } = {
@@ -85,23 +76,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     try {
         const { user } = await createUser(zResult.data, role, status)
 
-        return json<ConventionalSuccess>({
+        return {
             msg: `Welcom! Subscribed with ${user.email}!`,
-        })
+        } satisfies ConventionalActionResponse
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
             if (error.code === 'P2002') {
-                return json<ConventionalError>(
-                    { err: 'Email already exists' },
-                    { status: 200 }
-                )
+                return {
+                    err: 'Email already exists',
+                } satisfies ConventionalActionResponse
             }
         }
         console.error('Error creating user:', error)
-        return json<ConventionalError>(
-            { err: 'Failed to subscribe' },
-            { status: 500 }
-        )
+        return {
+            err: 'Failed to subscribe',
+        } satisfies ConventionalActionResponse
     }
 }
 
