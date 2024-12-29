@@ -1,5 +1,3 @@
-import { useFetcher } from '@remix-run/react'
-import { ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -13,8 +11,8 @@ import {
 } from '~/routes/_papa.admin/components/admin-wrapper'
 import { DataTable } from '~/routes/_papa.admin/components/data-table'
 import { TaxonomyDialog } from '~/routes/_papa.admin/components/taxonomy'
-import { Intents } from '../_papa.admin.blog.action.taxonomy/route'
 import { useAdminBlogContext } from '../_papa.admin.blog/route'
+import { categoryColumns, tagColumns } from './components/columns'
 
 export default function AdminTaxonomy() {
     const { tags, categories } = useAdminBlogContext()
@@ -78,94 +76,3 @@ export default function AdminTaxonomy() {
         </AdminSectionWrapper>
     )
 }
-
-const DeleteTaxonomy = ({
-    id,
-    actionRoute,
-    intent,
-}: {
-    id: string
-    actionRoute: string
-    intent: Intents
-}) => {
-    const fetcher = useFetcher()
-    const isDeleting = fetcher.formData?.get('id') === id
-
-    return (
-        <fetcher.Form method="DELETE" action={actionRoute} className="ml-auto">
-            <input type="hidden" name="id" value={id} />
-            <input type="hidden" name="intent" value={intent} />
-            <Button variant={'destructive'} disabled={isDeleting}>
-                Delete
-            </Button>
-        </fetcher.Form>
-    )
-}
-
-export const tagColumns: ColumnDef<
-    ReturnType<typeof useAdminBlogContext>['tags'][number]
->[] = [
-    {
-        accessorKey: 'name',
-        header: 'Name',
-    },
-    {
-        accessorKey: 'postIDs',
-        header: 'Posts',
-        cell: ({ row }) => {
-            // TODO: Open a dialog to show posts
-            return row.original.postIDs.length
-        },
-    },
-    {
-        accessorKey: 'id',
-        header: () => <div className="w-full text-right">Action</div>,
-        cell: ({ row }) => (
-            <div className="w-full flex">
-                <DeleteTaxonomy
-                    id={row.original.id}
-                    actionRoute={'/admin/blog/action/taxonomy'}
-                    intent={'tag'}
-                />
-            </div>
-        ),
-    },
-]
-
-export const categoryColumns: ColumnDef<
-    ReturnType<typeof useAdminBlogContext>['categories'][number]
->[] = [
-    {
-        accessorKey: 'name',
-        header: 'Name',
-    },
-    {
-        accessorKey: 'postIDs',
-        header: 'Posts',
-        cell: ({ row }) => {
-            // TODO: Open a dialog to show posts
-            return row.original.postIDs.length
-        },
-    },
-    {
-        accessorKey: 'subCategories',
-        header: 'Subcategories',
-        cell: ({ row }) => {
-            // TODO: Open a dialog to show subcategories
-            return row.original.subCategories.length
-        },
-    },
-    {
-        accessorKey: 'id',
-        header: () => <div className="w-full text-right">Action</div>,
-        cell: ({ row }) => (
-            <div className="w-full flex">
-                <DeleteTaxonomy
-                    id={row.original.id}
-                    actionRoute={'/admin/blog/action/taxonomy'}
-                    intent={'category'}
-                />
-            </div>
-        ),
-    },
-]

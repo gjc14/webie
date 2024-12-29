@@ -1,4 +1,3 @@
-import { SerializeFrom } from '@remix-run/node'
 import { Outlet, useLoaderData, useOutletContext } from '@remix-run/react'
 
 import { getCategories, getTags } from '~/lib/db/blog-taxonomy.server'
@@ -17,8 +16,6 @@ export const loader = async () => {
     }
 }
 
-export type SerializedPost = SerializeFrom<typeof loader>
-
 export default function AdminBlog() {
     const loaderDate = useLoaderData<typeof loader>()
     const adminContext = useAdminContext()
@@ -26,6 +23,8 @@ export default function AdminBlog() {
     return <Outlet context={{ ...loaderDate, ...adminContext }} />
 }
 
+export type BlogLoaderType = Awaited<ReturnType<typeof loader>>
+
 export const useAdminBlogContext = () => {
-    return useOutletContext<SerializedPost>()
+    return useOutletContext<BlogLoaderType>()
 }

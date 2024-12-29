@@ -192,7 +192,7 @@ const CategoryItem = (props: { category: Category }) => {
     )
 }
 
-const usePendingSubCategories = (): SubCategory[] => {
+export const usePendingSubCategories = (): SubCategory[] => {
     const matchedFetchers = useFetchers().filter(fetcher => {
         if (!fetcher.formData) return false
         return fetcher.formData.get('intent') === 'subcategory'
@@ -250,7 +250,7 @@ const SubCategoryPart = (props: {
                             categories === null || categories.length === 0
                         }
                     >
-                        <SelectValue placeholder="Select subcategory..." />
+                        <SelectValue placeholder="Select category..." />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
@@ -336,7 +336,7 @@ const SubCategoryPart = (props: {
     )
 }
 
-const SubcategoryItem = (props: { subcategory: SubCategory }) => {
+export const SubcategoryItem = (props: { subcategory: SubCategory }) => {
     const fetcher = useFetcher()
     const isDeleting = fetcher.formData?.get('id') === props.subcategory.id
 
