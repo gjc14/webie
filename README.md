@@ -198,3 +198,73 @@ export type ConventionalActionResponse =
 return { msg: 'Action success 🎉' } satisfies ConventionalActionResponse
 return { err: 'Something went wrong 🚨' } satisfies ConventionalActionResponse
 ```
+
+## Global Components
+
+## Admin Components
+
+### Data Table
+
+Reference:
+[Tanstack Table Columns Definitions Guide](https://tanstack.com/table/latest/docs/guide/column-defs)
+
+```tsx
+import { ColumnDef } from '@tanstack/react-table'
+
+import { DataTable } from '~/routes/_papa.admin/components/data-table'
+
+type TagType = {
+    name: string
+    id: string
+    postIDs: string[]
+}
+
+const tags: TagType[] = [
+    {
+        name: 'Travel',
+        id: 'unique-id-1',
+        postIDs: ['post-1', 'post-2', 'post-3'],
+    },
+    {
+        name: 'Education',
+        id: 'unique-id-2',
+        postIDs: ['post-4', 'post-5', 'post-6'],
+    },
+]
+
+const tagColumns: ColumnDef<TagType>[] = [
+    {
+        // accessorKey is the key of the data your pass into <DataTable>
+        accessorKey: 'name',
+        header: 'Name',
+    },
+    {
+        accessorKey: 'postIDs',
+        header: 'Posts',
+        cell: ({ row }) => {
+            // `row.original` gives you tags data you pass into <DataTable>
+            return row.original.postIDs.length
+        },
+    },
+    {
+        // If header is a function, please pass in id key.
+        // Some of the functions refer to "id" to display as column header,
+        // when header is not a string
+        id: 'Action',
+        accessorKey: 'id',
+        header: () => <div className="w-full text-right">Action</div>,
+        cell: ({ row }) => (
+            <div className="w-full flex">
+                <DeleteTaxonomyButton
+                    id={row.original.id}
+                    actionRoute={'/admin/blog/action/taxonomy'}
+                    intent={'tag'}
+                />
+            </div>
+        ),
+    },
+]
+
+// Usage
+<DataTable columns={tagColumns} data={tags} />
+```

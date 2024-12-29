@@ -23,6 +23,7 @@ export const tagColumns: ColumnDef<
         },
     },
     {
+        id: 'Action',
         accessorKey: 'id',
         header: () => <div className="w-full text-right">Action</div>,
         cell: ({ row }) => (
@@ -69,6 +70,7 @@ export const categoryColumns: ColumnDef<
         },
     },
     {
+        id: 'Action',
         accessorKey: 'id',
         header: () => <div className="w-full text-right">Action</div>,
         cell: ({ row }) => (

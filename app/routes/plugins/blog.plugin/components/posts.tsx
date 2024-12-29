@@ -118,6 +118,7 @@ const Posts = ({
 
 export const columns: ColumnDef<DisplayPost>[] = [
     {
+        id: 'Title',
         accessorKey: 'title',
         header: ({ column }) => {
             return 'Title'

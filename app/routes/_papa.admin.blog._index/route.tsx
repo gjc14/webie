@@ -79,6 +79,7 @@ export const columns: ColumnDef<BlogLoaderType['posts'][number]>[] = [
         accessorFn: row => row.author.name || 'author',
     },
     {
+        id: 'Updated At',
         accessorKey: 'updatedAt',
         header: ({ column }) => {
             return (
