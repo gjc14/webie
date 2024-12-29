@@ -4,7 +4,11 @@ import { Loader2, PlusCircle, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
 
-import { PostContent } from '~/components/cms/post-content'
+import {
+    generatePostSlug,
+    PostContent,
+    PostContentEdit,
+} from '~/components/cms/post-content'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -149,12 +153,55 @@ export default function AdminPost() {
                 id="new-post"
                 onSubmit={e => {
                     e.preventDefault()
-                    fetcher.submit(e.currentTarget, { method: 'POST' })
+                    const formData = new FormData(e.currentTarget)
+
+                    let title = formData.get(
+                        'title'
+                    ) as PostContentEdit['title']
+                    let slug = formData.get('slug') as PostContentEdit['slug']
+
+                    if (!title) {
+                        title = `new-post-${new Date()
+                            .getTime()
+                            .toString()
+                            .slice(-5)}`
+                        formData.set('title', title)
+                    }
+                    if (!slug) {
+                        slug = generatePostSlug(title)
+                        formData.set('slug', slug)
+                    }
+
+                    fetcher.submit(formData, { method: 'POST' })
                     setIsDirty(false)
                 }}
             >
-                <PostContent onPostChange={(_, dirty) => setIsDirty(dirty)} />
+                <PostContent
+                    post={newPost}
+                    onPostChange={(_, dirty) => setIsDirty(dirty)}
+                />
             </Form>
         </AdminSectionWrapper>
     )
+}
+
+const newPost: PostContentEdit = {
+    id: 'new',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    slug: '',
+    title: '',
+    content: '',
+    excerpt: '',
+    featuredImage: null,
+    status: 'DRAFT',
+    authorId: '',
+    seoId: '',
+    tagIDs: [],
+    categoryIDs: [],
+    subCategoryIDs: [],
+    seo: {
+        title: null,
+        description: null,
+    },
 }

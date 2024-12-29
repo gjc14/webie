@@ -34,16 +34,22 @@ export type PostContentEdit = Post & {
 }
 
 interface PostContentProps {
-    post?: PostContentEdit
+    post: PostContentEdit
     onPostChange?: (post: PostContentEdit, dirty: boolean) => void
+}
+
+export const generatePostSlug = (title: string) => {
+    return title
+        .replace(/^\s+|\s+$/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
 }
 
 // TODO: Add featured image; tags, categories, subcategories selection; edit author; publish schedule
 // TODO: Editor upload image; link setting popup
-export const PostContent = ({
-    post = newPost,
-    onPostChange,
-}: PostContentProps) => {
+export const PostContent = ({ post, onPostChange }: PostContentProps) => {
     const editorRef = useRef<EditorRef | null>(null)
     const contentWrapperRef = useRef<HTMLDivElement>(null)
     const localStorageContent = useRef<string | null>(null)
@@ -254,12 +260,7 @@ export const PostContent = ({
                             type="button"
                             variant={'secondary'}
                             onClick={() => {
-                                const slug = postState.title
-                                    .replace(/^\s+|\s+$/g, '')
-                                    .toLowerCase()
-                                    .replace(/[^a-z0-9 -]/g, '')
-                                    .replace(/\s+/g, '-')
-                                    .replace(/-+/g, '-')
+                                const slug = generatePostSlug(postState.title)
 
                                 setPostState(prev => {
                                     const newPost = {
@@ -402,25 +403,4 @@ export const PostContent = ({
             </section>
         </div>
     )
-}
-
-const newPost: PostContentEdit = {
-    id: 'new',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    slug: '',
-    title: '',
-    content: '',
-    excerpt: '',
-    featuredImage: null,
-    status: 'DRAFT',
-    authorId: '',
-    seoId: '',
-    tagIDs: [],
-    categoryIDs: [],
-    subCategoryIDs: [],
-    seo: {
-        title: null,
-        description: null,
-    },
 }

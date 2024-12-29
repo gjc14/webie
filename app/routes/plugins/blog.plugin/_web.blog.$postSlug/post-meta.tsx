@@ -34,7 +34,8 @@ export const PostMeta = ({ post }: { post: SerializedLoader['post'] }) => {
                         </Button>
                     </div>
                     <p className="text-xs md:text-sm">
-                        {new Date(post.updatedAt).toLocaleString('zh-TW')}
+                        Last updated:{' '}
+                        {new Date(post.updatedAt).toLocaleString()}
                     </p>
                 </div>
             </div>
