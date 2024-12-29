@@ -29,7 +29,7 @@ export function NavPlugins({ plugins }: { plugins: PapaAdminMenuItem[] }) {
         return (
             currentPath.endsWith(item.url) ||
             item.sub?.some(subItem =>
-                currentPath.endsWith(`${item.url}/${subItem.url}`)
+                currentPath.endsWith(`${item.url}${subItem.url}`)
             )
         )
     }
@@ -60,7 +60,7 @@ export function NavPlugins({ plugins }: { plugins: PapaAdminMenuItem[] }) {
                             onOpenChange={setIsActive}
                         >
                             <SidebarMenuItem>
-                                <NavLink to={item.url} end>
+                                <NavLink to={'/admin' + item.url} end>
                                     {({ isActive }) => (
                                         <SidebarMenuButton
                                             tooltip={item.title}
@@ -93,8 +93,8 @@ export function NavPlugins({ plugins }: { plugins: PapaAdminMenuItem[] }) {
                                                     >
                                                         <NavLink
                                                             to={
+                                                                '/admin' +
                                                                 item.url +
-                                                                '/' +
                                                                 subItem.url
                                                             }
                                                             end

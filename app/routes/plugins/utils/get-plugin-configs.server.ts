@@ -58,7 +58,7 @@ const PapaConfigSchema = z.object({
                  */
                 title: z.string(),
                 /**
-                 * The path relative to the `admin` route.
+                 * Start with `/`, relative path to `/admin` route
                  */
                 url: z.string(),
                 /**
@@ -73,6 +73,9 @@ const PapaConfigSchema = z.object({
                     .array(
                         z.object({
                             title: z.string(),
+                            /**
+                             * Relative path to the customized `parent` route, start without `/`
+                             */
                             url: z.string(),
                         })
                     )
