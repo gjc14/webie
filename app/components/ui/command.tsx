@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { Command as CommandPrimitive } from 'cmdk'
+import { Command as CommandPrimitive, useCommandState } from 'cmdk'
 
 import { cn } from '~/lib/utils'
 import { Dialog, DialogContent } from '~/components/ui/dialog'
@@ -20,6 +20,34 @@ const Command = React.forwardRef<
     />
 ))
 Command.displayName = CommandPrimitive.displayName
+
+// Refer to useCommandState return type
+type CommandState = {
+    search: string
+    value: string
+    filtered: {
+        count: number
+        items: Map<string, number>
+        groups: Set<string>
+    }
+}
+
+export type GetCommandStateRef = { getCommandState: () => CommandState }
+
+/**
+ * const customRef = React.useRef<GetCommandStateRef>(null)
+ * Get the current state of the Command component, use customRef?.current.getCommandState()
+ * @param ref - Ref to the GetCommandStateRef
+ */
+const GetCommandState = React.forwardRef<GetCommandStateRef>((_, ref) => {
+    const state = useCommandState(currentState => currentState) as CommandState
+
+    React.useImperativeHandle(ref, () => ({
+        getCommandState: () => state,
+    }))
+
+    return null
+})
 
 interface CommandDialogProps extends DialogProps {}
 
@@ -153,4 +181,5 @@ export {
     CommandItem,
     CommandShortcut,
     CommandSeparator,
+    GetCommandState,
 }

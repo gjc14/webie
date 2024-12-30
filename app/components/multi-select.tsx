@@ -8,9 +8,12 @@ import { Command as CommandPrimitive } from 'cmdk'
 import { Badge } from '~/components/ui/badge'
 import {
     Command,
+    CommandEmpty,
     CommandGroup,
     CommandItem,
     CommandList,
+    GetCommandState,
+    GetCommandStateRef,
 } from '~/components/ui/command'
 
 type Option = Record<'value' | 'label', string>
@@ -19,18 +22,29 @@ interface MultiSelectInputProps {
     options: Option[]
     defaultSelected?: Option[]
     onSelectedChange?: (optionsSelected: Option[]) => void
+    onEnterNewValue?: (value: string) => void
     placeholder?: string
     // className?: string  // className is not functional with cn() in div
     // id?: string  // id is controlled by cmdk
 }
 
+/**
+ * @param options - Array of { value, label } to select from
+ * @param defaultSelected - Array of { value, label } to be selected by default
+ * @param onSelectedChange - Callback function to be called when the selected options change, returns option selected
+ * @param onEnterNewValue - Callback function to be called when the Enter key is pressed
+ * @param placeholder - Placeholder text for the input field
+ * @returns
+ */
 export const MultiSelect = ({
     options,
     defaultSelected,
     onSelectedChange,
+    onEnterNewValue,
     placeholder,
 }: MultiSelectInputProps) => {
     const inputRef = React.useRef<HTMLInputElement>(null)
+    const getCommandStateRef = React.useRef<GetCommandStateRef>(null)
     const [open, setOpen] = React.useState(false)
     const [selected, setSelected] = React.useState<Option[]>(
         defaultSelected ?? []
@@ -52,6 +66,23 @@ export const MultiSelect = ({
         (e: React.KeyboardEvent<HTMLDivElement>) => {
             const input = inputRef.current
             if (input) {
+                if (e.key === 'Enter') {
+                    if (
+                        input.value !== '' &&
+                        getCommandStateRef.current?.getCommandState().filtered
+                            .count === 0
+                    ) {
+                        onEnterNewValue?.(input.value)
+                        setSelected(prev => {
+                            const newSelected = [
+                                ...prev,
+                                { value: input.value, label: input.value },
+                            ]
+                            return newSelected
+                        })
+                        setInputValue('')
+                    }
+                }
                 if (e.key === 'Delete' || e.key === 'Backspace') {
                     if (input.value === '') {
                         setSelected(prev => {
@@ -79,9 +110,13 @@ export const MultiSelect = ({
 
     return (
         <Command
-            onKeyDown={handleKeyDown}
+            onKeyDown={e => {
+                e.stopPropagation()
+                handleKeyDown(e)
+            }}
             className="overflow-visible bg-transparent"
         >
+            <GetCommandState ref={getCommandStateRef} />
             <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset">
                 <div className="flex flex-wrap gap-1">
                     {selected.map(option => {
@@ -125,6 +160,7 @@ export const MultiSelect = ({
                     {open &&
                         (selectables.length > 0 ? (
                             <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                                <CommandEmpty>No results found.</CommandEmpty>
                                 <CommandGroup className="h-full overflow-auto">
                                     {selectables.map(option => {
                                         return (
