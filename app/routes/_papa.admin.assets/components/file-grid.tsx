@@ -105,8 +105,13 @@ const FileGridMain = ({
         return types
     }, [acceptedTypes])
 
+    // 1. Add file to fileUploading state and upload to storage by uploadToPresignedUrl via XML
+    // 2. uploadProgress state track file upload progress via XML
+    // 3. With useEffect, check uploadProgress, extract fileUploading that completed
+    // 4. Add to fileUploaded state and update file url with presignedUrl
     const [fileUploading, setFileUploading] = useState<FileMeta[]>([])
     const { uploadProgress, uploadToPresignedUrl } = useFileUpload()
+    const [fileUploaded, setFileUploaded] = useState<Set<string>>(new Set())
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: getAcceptedFileTypes(),
         onDrop: async acceptedFiles => {
@@ -119,8 +124,8 @@ const FileGridMain = ({
                 name: file.name,
                 description: '',
             }))
-            uploadFiles(newFiles)
             setFileUploading(prev => [...prev, ...newFiles])
+            uploadFiles(newFiles)
         },
     })
 
@@ -184,31 +189,43 @@ const FileGridMain = ({
         onFileDelete?.(file)
     }
 
+    // Handle files when status is completed
     useEffect(() => {
-        const uploadComplete = Object.values(uploadProgress).filter(
+        const uploadCompleteXML = Object.values(uploadProgress).filter(
             upload => upload.status === 'completed'
         )
-        const fileUploaded = uploadComplete
-            .map(upload => {
-                return fileUploading.find(file => file.key === upload.key)
+        const newFileUploaded = uploadCompleteXML
+            // Match XML completed, without file in fileUploaded state
+            .map(uploaded => {
+                return fileUploading.find(file => {
+                    return (
+                        file.key === uploaded.key &&
+                        !fileUploaded.has(uploaded.key)
+                    )
+                })
             })
-            .filter(file => !!file)
+            // Save to fileUploaded state and update file url with presignedUrl
             .map(file => {
+                if (!file) return null
+                setFileUploaded(prev => {
+                    const newSet = new Set(prev)
+                    newSet.add(file.key)
+                    return newSet
+                })
                 const updatedFileUrl = `/assets/private?key=${file.key}`
                 return {
                     ...file,
                     url: window.location.origin + updatedFileUrl,
                 }
             })
+            .filter(file => !!file)
+
         setFileState(prev => {
-            const newFiles = fileUploaded.filter(
-                newFile =>
-                    !prev.some(existingFile => existingFile.id === newFile.id)
-            )
-            return [...prev, ...newFiles]
+            return [...prev, ...newFileUploaded]
         })
     }, [uploadProgress])
 
+    // When file progress display was clicked to hide
     const [hiddenProgressCards, setHiddenProgressCards] = useState<Set<string>>(
         new Set()
     )
