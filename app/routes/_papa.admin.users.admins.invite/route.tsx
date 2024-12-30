@@ -7,16 +7,18 @@ import { ConventionalActionResponse } from '~/lib/utils'
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return {
+        return Response.json({
             err: 'Method not allowed',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     const formData = await request.formData()
     const email = formData.get('email')
 
     if (!email || typeof email !== 'string') {
-        return { err: 'Invalid email' } satisfies ConventionalActionResponse
+        return Response.json({
+            err: 'Invalid email',
+        } satisfies ConventionalActionResponse)
     }
 
     try {
@@ -27,21 +29,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             searchParams: { role: user.role },
         })
 
-        return {
+        return Response.json({
             msg: `Success invite ${email}`,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
             if (error.code === 'P2002') {
-                return {
+                return Response.json({
                     err: 'Email already exists',
-                } satisfies ConventionalActionResponse
+                } satisfies ConventionalActionResponse)
             }
         } else {
             console.error('Error creating user:', error)
-            return {
+            return Response.json({
                 err: 'Failed to invite',
-            } satisfies ConventionalActionResponse
+            } satisfies ConventionalActionResponse)
         }
     }
 }

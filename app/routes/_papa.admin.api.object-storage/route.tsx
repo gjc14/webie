@@ -13,9 +13,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     if (!S3) {
-        return {
+        return Response.json({
             err: 'Object storage not configured',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     const { user: admin } = await userIs(request, ['ADMIN'])
@@ -36,15 +36,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 where: { key },
             })
 
-            return {
+            return Response.json({
                 msg: 'Files deleted successfully',
                 options: { preventAlert: true },
-            } satisfies ConventionalActionResponse
+            } satisfies ConventionalActionResponse)
         } catch (error) {
             console.log('Error deleting files', error)
-            return {
+            return Response.json({
                 err: 'Failed to delete files',
-            } satisfies ConventionalActionResponse
+            } satisfies ConventionalActionResponse)
         }
     }
 
@@ -106,15 +106,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             }),
         })
 
-        return {
+        return Response.json({
             msg: 'Presign urls generated successfully',
             data: validatedResponse,
             options: { preventAlert: true },
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.log('Error generating presigned URLs', error)
-        return {
+        return Response.json({
             err: 'Failed to generate presigned URLs',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }

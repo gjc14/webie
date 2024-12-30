@@ -31,9 +31,9 @@ export const SeoUpdateSchmea = z.object({
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'PUT') {
-        return {
+        return Response.json({
             err: 'Method not allowed',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     await userIs(request, ['ADMIN'])
@@ -47,7 +47,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return { err: message } satisfies ConventionalActionResponse
+        return Response.json({
+            err: message,
+        } satisfies ConventionalActionResponse)
     }
 
     try {
@@ -56,14 +58,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             title: zResult.data.title,
             description: zResult.data.description,
         })
-        return {
+        return Response.json({
             msg: `SEO for ${seo.route || seo.title || 'unknown'} updated`,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             err: 'Failed to update SEO',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
 

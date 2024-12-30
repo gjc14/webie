@@ -60,7 +60,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return { err: message } satisfies ConventionalActionResponse
+        return Response.json({
+            err: message,
+        } satisfies ConventionalActionResponse)
     }
 
     try {
@@ -89,9 +91,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         })
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             err: 'Failed to create post',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
 

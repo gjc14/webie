@@ -45,9 +45,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         error,
     } = FileMetaSchema.safeParse(JSON.parse(newFileMetaString))
     if (!success) {
-        return {
+        return Response.json({
             err: 'Invalid file metadata',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     try {
@@ -61,15 +61,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 description: newFileMetaData.description,
             },
         })
-        return {
+        return Response.json({
             msg: 'File updated',
             data: newFileMetaData,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.log('Error updating file', error)
-        return {
+        return Response.json({
             err: 'Failed to update file',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
 

@@ -18,13 +18,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     try {
         const { post } = await deletePost(postId)
-        return {
+        return Response.json({
             msg: `${post.title} deleted successfully`,
-        }
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             err: 'Failed to delete post',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }

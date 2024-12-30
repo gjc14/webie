@@ -44,10 +44,10 @@ export const UserUpdateSchema = z.object({
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'PUT') {
-        return {
+        return Response.json({
             data: null,
             err: 'Invalid method',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     await userIs(request, ['ADMIN'])
@@ -62,10 +62,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return {
+        return Response.json({
             data: zResult.error.issues,
             err: message,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     try {
@@ -79,15 +79,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         })
 
-        return {
+        return Response.json({
             msg: 'Success update ' + (user.name || user.email),
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             data: null,
             err: 'Failed to update user',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
 

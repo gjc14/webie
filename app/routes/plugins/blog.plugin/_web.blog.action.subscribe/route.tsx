@@ -11,9 +11,9 @@ const captchaSchema = z.enum(['turnstile', 'recaptcha', 'hcaptcha'])
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     if (request.method !== 'POST') {
-        return {
+        return Response.json({
             err: 'Method not allowed',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     const formData = await request.formData()
@@ -23,9 +23,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const zCaptchaResult = captchaSchema.safeParse(captcha)
 
     if (!zCaptchaResult.success) {
-        return {
+        return Response.json({
             err: 'Invalid arguments, missing captcha',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     switch (zCaptchaResult.data) {
@@ -34,9 +34,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
             const zTurnstileResult = z.string().safeParse(turnstileResponse)
             if (!zTurnstileResult.success) {
-                return {
+                return Response.json({
                     err: 'Invalid arguments',
-                } satisfies ConventionalActionResponse
+                } satisfies ConventionalActionResponse)
             }
 
             const passed = await TurnstileSiteVerify(
@@ -44,21 +44,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 process.env.TURNSTILE_SECRET_KEY ?? ''
             )
             if (!passed) {
-                return {
+                return Response.json({
                     err: 'CAPTCHA Failed! Please try again',
-                } satisfies ConventionalActionResponse
+                } satisfies ConventionalActionResponse)
             }
             break
         }
         case 'recaptcha': {
-            return {
+            return Response.json({
                 err: 'Recaptcha not implemented',
-            } satisfies ConventionalActionResponse
+            } satisfies ConventionalActionResponse)
         }
         case 'hcaptcha': {
-            return {
+            return Response.json({
                 err: 'Hcaptcha not implemented',
-            } satisfies ConventionalActionResponse
+            } satisfies ConventionalActionResponse)
         }
     }
 
@@ -66,7 +66,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const email = formData.get('email')
     const zResult = z.string().trim().email().safeParse(email)
     if (!zResult.success) {
-        return { err: 'Invalid arguments' } satisfies ConventionalActionResponse
+        return Response.json({
+            err: 'Invalid arguments',
+        } satisfies ConventionalActionResponse)
     }
 
     const { role, status } = {
@@ -76,21 +78,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     try {
         const { user } = await createUser(zResult.data, role, status)
 
-        return {
+        return Response.json({
             msg: `Welcom! Subscribed with ${user.email}!`,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
             if (error.code === 'P2002') {
-                return {
+                return Response.json({
                     err: 'Email already exists',
-                } satisfies ConventionalActionResponse
+                } satisfies ConventionalActionResponse)
             }
         }
         console.error('Error creating user:', error)
-        return {
+        return Response.json({
             err: 'Failed to subscribe',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
 

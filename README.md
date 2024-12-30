@@ -199,6 +199,24 @@ return { msg: 'Action success 🎉' } satisfies ConventionalActionResponse
 return { err: 'Something went wrong 🚨' } satisfies ConventionalActionResponse
 ```
 
+```ts
+import { ActionFunctionArgs } from '@remix-run/node'
+
+import { ConventionalActionResponse } from '~/lib/utils'
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+    if (a) {
+        return Response.json({
+            msg: `Welcome to PAPA!`,
+        } satisfies ConventionalActionResponse)
+    } else {
+        return Response.json({
+            err: 'Method not allowed',
+        } satisfies ConventionalActionResponse)
+    }
+}
+```
+
 ## Global Components
 
 ## Admin Components

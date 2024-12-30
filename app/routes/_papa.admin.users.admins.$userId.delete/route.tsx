@@ -19,13 +19,13 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     try {
         const { user } = await deleteUser({ id: userId })
-        return {
+        return Response.json({
             msg: `${user.email} deleted successfully`,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             err: 'Failed to delete user',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }

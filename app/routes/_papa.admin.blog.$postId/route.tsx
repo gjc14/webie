@@ -57,7 +57,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const message = zResult.error.issues
             .map(issue => `${issue.message} ${issue.path[0]}`)
             .join(' & ')
-        return { err: message } satisfies ConventionalActionResponse
+        return Response.json({
+            err: message,
+        } satisfies ConventionalActionResponse)
     }
 
     try {
@@ -75,15 +77,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         })
 
-        return {
+        return Response.json({
             msg: `Post ${post.title} updated successfully`,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             data: null,
             err: 'Failed to create post',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
 
@@ -129,7 +131,7 @@ export default function AdminPost() {
                                 ? 'Preview'
                                 : 'See'}{' '}
                             post
-                            <ExternalLink size={12} className="ml-1" />
+                            <ExternalLink size={12} />
                         </Button>
                     </Link>
                     <AlertDialog>

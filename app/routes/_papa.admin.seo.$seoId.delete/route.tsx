@@ -6,9 +6,9 @@ import { ConventionalActionResponse } from '~/lib/utils'
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
     if (request.method !== 'DELETE') {
-        return {
+        return Response.json({
             err: 'Method not allowed',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 
     await userIs(request, ['ADMIN'])
@@ -17,18 +17,20 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
     if (!id) {
         console.log('Invalid arguments', id)
-        return { err: `Invalid arguments` } satisfies ConventionalActionResponse
+        return Response.json({
+            err: `Invalid arguments`,
+        } satisfies ConventionalActionResponse)
     }
 
     try {
         const { seo } = await deleteSEO(id)
-        return {
+        return Response.json({
             msg: `SEO for ${seo.route || seo.title || 'unknown'} delete`,
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     } catch (error) {
         console.error(error)
-        return {
+        return Response.json({
             err: 'Failed to delete SEO',
-        } satisfies ConventionalActionResponse
+        } satisfies ConventionalActionResponse)
     }
 }
