@@ -73,35 +73,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-    const url = new URL(request.url)
-
-    const objects = await S3?.send(new ListObjectsV2Command({ Bucket: 'papa' }))
-    if (!objects || !objects.Contents) return { files: [] as FileMeta[] }
-
-    const { Contents } = objects
-
-    const files = await Promise.all(
-        Contents.map(async ({ Key, ETag, StorageClass }) => {
-            if (!Key) return null
-            const fileMetadata = await prisma.objectStorage.findUnique({
-                where: { key: Key },
-            })
-            if (!fileMetadata) return null
-            return {
-                ...fileMetadata,
-                url: url.origin + `/assets/private?key=${Key}`,
-                eTag: ETag,
-                storageClass: StorageClass,
-            }
-        })
-    )
-    const filteredFiles = files.filter(file => file !== null)
-
-    return {
-        files: filteredFiles,
-    }
-}
+import { loader } from '../_papa.admin.assets.resource/route'
+export { loader } from '../_papa.admin.assets.resource/route'
 
 export default function AdminAsset() {
     const submit = useSubmit()
