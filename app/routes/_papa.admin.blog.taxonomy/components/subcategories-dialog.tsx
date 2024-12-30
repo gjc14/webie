@@ -19,7 +19,7 @@ import {
     usePendingSubCategories,
 } from '~/routes/_papa.admin/components/taxonomy'
 
-const actionRoute = '/admin/blog/action/taxonomy'
+const actionRoute = '/admin/blog/taxonomy/resource'
 
 export function SubCategoriesDialog({
     category,

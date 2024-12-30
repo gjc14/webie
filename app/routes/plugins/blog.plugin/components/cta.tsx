@@ -13,7 +13,7 @@ import { Loading } from '~/components/loading'
 import { TurnstileWidget } from '~/components/captchas/turnstile'
 
 export const CTA = ({
-    subscribeRoute = '/blog/action/subscribe',
+    subscribeRoute = '/blog/subscribe/resource',
 }: {
     subscribeRoute?: string
 }) => {

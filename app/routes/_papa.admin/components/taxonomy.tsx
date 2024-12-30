@@ -28,7 +28,7 @@ import {
 } from '~/components/ui/select'
 import { Separator } from '~/components/ui/separator'
 
-const actionRoute = '/admin/blog/action/taxonomy'
+const actionRoute = '/admin/blog/taxonomy/resource'
 
 export const TaxonomyDialog = (props: {
     tags: Tag[] | null

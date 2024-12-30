@@ -30,7 +30,7 @@ export const tagColumns: ColumnDef<
             <div className="w-full flex">
                 <DeleteTaxonomyButton
                     id={row.original.id}
-                    actionRoute={'/admin/blog/action/taxonomy'}
+                    actionRoute={'/admin/blog/taxonomy/resource'}
                     intent={'tag'}
                 />
             </div>
@@ -77,7 +77,7 @@ export const categoryColumns: ColumnDef<
             <div className="w-full flex">
                 <DeleteTaxonomyButton
                     id={row.original.id}
-                    actionRoute={'/admin/blog/action/taxonomy'}
+                    actionRoute={'/admin/blog/taxonomy/resource'}
                     intent={'category'}
                 />
             </div>

@@ -275,7 +275,7 @@ const tagColumns: ColumnDef<TagType>[] = [
             <div className="w-full flex">
                 <DeleteTaxonomyButton
                     id={row.original.id}
-                    actionRoute={'/admin/blog/action/taxonomy'}
+                    actionRoute={'/admin/blog/taxonomy/resource'}
                     intent={'tag'}
                 />
             </div>

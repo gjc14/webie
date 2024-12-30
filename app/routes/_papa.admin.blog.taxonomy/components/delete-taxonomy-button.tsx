@@ -1,7 +1,7 @@
 import { useFetcher } from '@remix-run/react'
 
 import { Button } from '~/components/ui/button'
-import { Intents } from '~/routes/_papa.admin.blog.action.taxonomy/route'
+import { Intents } from '~/routes/_papa.admin.blog.taxonomy.resource/route'
 
 export const DeleteTaxonomyButton = ({
     id,
