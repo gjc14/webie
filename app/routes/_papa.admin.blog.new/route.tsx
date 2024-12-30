@@ -5,11 +5,6 @@ import { useState } from 'react'
 import { z } from 'zod'
 
 import {
-    generatePostSlug,
-    PostContent,
-    PostContentEdit,
-} from '~/components/cms/post-content'
-import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -26,12 +21,18 @@ import { createPost } from '~/lib/db/post.server'
 import { commitFlashSession, getFlashSession } from '~/lib/sessions.server'
 import { ConventionalActionResponse } from '~/lib/utils'
 import {
+    generatePostSlug,
+    PostContent,
+    PostContentEdit,
+} from '~/routes/_papa.admin.blog.$postId/components/post-content'
+import {
     AdminActions,
     AdminHeader,
     AdminSectionWrapper,
     AdminTitle,
 } from '~/routes/_papa.admin/components/admin-wrapper'
 import { PostStatus } from '~/schema/database'
+import { useAdminBlogContext } from '../_papa.admin.blog/route'
 
 const PostCreateSchema = z.object({
     title: z.string(),
@@ -99,6 +100,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AdminPost() {
     const fetcher = useFetcher()
+    const { tags, categories } = useAdminBlogContext()
     const [isDirty, setIsDirty] = useState(false)
     const isSubmitting = fetcher.state === 'submitting'
 
@@ -180,6 +182,8 @@ export default function AdminPost() {
             >
                 <PostContent
                     post={newPost}
+                    tags={tags}
+                    categories={categories}
                     onPostChange={(_, dirty) => setIsDirty(dirty)}
                 />
             </Form>

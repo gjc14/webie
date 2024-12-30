@@ -4,7 +4,6 @@ import { ExternalLink, Loader2, Save, Trash } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { z } from 'zod'
 
-import { PostContent } from '~/components/cms/post-content'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,6 +19,7 @@ import { Button } from '~/components/ui/button'
 import { userIs } from '~/lib/db/auth.server'
 import { updatePost } from '~/lib/db/post.server'
 import { ConventionalActionResponse } from '~/lib/utils'
+import { PostContent } from '~/routes/_papa.admin.blog.$postId/components/post-content'
 import {
     AdminActions,
     AdminHeader,
@@ -93,7 +93,7 @@ export default function AdminPost() {
     const fetcher = useFetcher()
     const params = useParams()
     const postId = params.postId
-    const { posts } = useAdminBlogContext()
+    const { posts, tags, categories } = useAdminBlogContext()
     const post = posts.find(p => p.id === postId)
 
     if (!post) {
@@ -189,6 +189,8 @@ export default function AdminPost() {
                 <input hidden name="id" defaultValue={post.id} />
                 <PostContent
                     post={postContent}
+                    tags={tags}
+                    categories={categories}
                     onPostChange={(_, dirty) => setIsDirty(dirty)}
                 />
             </Form>

@@ -24,6 +24,7 @@ import {
 } from '~/components/ui/select'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
+import { type getCategories, type getTags } from '~/lib/db/blog-taxonomy.server'
 import { PostStatus } from '~/schema/database'
 
 export type PostContentEdit = Post & {
@@ -36,6 +37,8 @@ export type PostContentEdit = Post & {
 interface PostContentProps {
     post: PostContentEdit
     onPostChange?: (post: PostContentEdit, dirty: boolean) => void
+    tags: Awaited<ReturnType<typeof getTags>>['tags']
+    categories: Awaited<ReturnType<typeof getCategories>>['categories']
 }
 
 export const generatePostSlug = (title: string) => {
@@ -49,7 +52,12 @@ export const generatePostSlug = (title: string) => {
 
 // TODO: Add featured image; tags, categories, subcategories selection; edit author; publish schedule
 // TODO: Editor upload image; link setting popup
-export const PostContent = ({ post, onPostChange }: PostContentProps) => {
+export const PostContent = ({
+    post,
+    onPostChange,
+    tags,
+    categories,
+}: PostContentProps) => {
     const editorRef = useRef<EditorRef | null>(null)
     const contentWrapperRef = useRef<HTMLDivElement>(null)
     const localStorageContent = useRef<string | null>(null)
@@ -91,7 +99,7 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
         const postChanged = JSON.stringify(postState)
         const isDirty = postChanged !== JSON.stringify(post)
         onPostChange?.(postState, isDirty)
-
+        // TODO: Didnt remove if it redirect from new page
         if (isDirty && window) {
             window.localStorage.setItem(postKey, postChanged)
         } else if (!isDirty && window && initRecoverUnsaved) {
@@ -99,8 +107,6 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
             window.localStorage.removeItem(postKey)
         }
     }, [postState])
-
-    const editorSectionMaxWidth = 'calc(65ch+1.5rem)'
 
     return (
         <div className="w-full flex flex-col md:flex-row gap-5">
@@ -144,9 +150,7 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
                 </AlertDialogContent>
             </AlertDialog>
 
-            <section
-                className={`w-[${editorSectionMaxWidth}] flex flex-col gap-5`}
-            >
+            <section className={`w-[calc(65ch+1.5rem)] flex flex-col gap-5`}>
                 <div>
                     <Label htmlFor="title">Title</Label>
                     <Input
@@ -172,7 +176,6 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
                     <div
                         ref={contentWrapperRef}
                         className="p-3 border border-border rounded-md"
-                        style={{ maxWidth: editorSectionMaxWidth }}
                     >
                         <input
                             id="content"
@@ -208,7 +211,7 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
                 </div>
             </section>
 
-            <section className="grow flex flex-col gap-5">
+            <section className="flex flex-col gap-5">
                 <div>
                     <Label htmlFor="status">Status</Label>
                     <Select
@@ -316,6 +319,22 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
                 <Separator />
 
                 <div>
+                    <Label htmlFor="categories">Categories</Label>
+                    <div className="flex items-center gap-1.5">
+                        {/* {JSON.stringify(categories)} */}
+                    </div>
+                </div>
+
+                <div>
+                    <Label htmlFor="tags">Tags</Label>
+                    <div className="flex items-center gap-1.5">
+                        {/* {JSON.stringify(tags)} */}
+                    </div>
+                </div>
+
+                <Separator />
+
+                <div>
                     <Label htmlFor="seo-title">SEO Title</Label>
                     <div className="flex items-center gap-1.5">
                         <Input
@@ -357,6 +376,7 @@ export const PostContent = ({ post, onPostChange }: PostContentProps) => {
                         </Button>
                     </div>
                 </div>
+
                 <div>
                     <Label htmlFor="seo-description">SEO Description</Label>
                     <Textarea
