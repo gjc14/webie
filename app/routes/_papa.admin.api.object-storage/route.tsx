@@ -22,7 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const jsonData = await request.json()
 
-    // Validate delete request data
+    // Validate DELETE request data
     if (request.method === 'DELETE') {
         const { key } = jsonData
         if (!key || typeof key !== 'string') {
@@ -48,7 +48,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }
     }
 
-    // Validate put request data
+    // Validate PUT request data
     const {
         data: fileMetadata,
         success,
@@ -64,28 +64,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         const presignedUrls = await Promise.all(
             fileMetadata.map(async file => {
                 const presignedUrl = await getUploadUrl({
-                    key: file.id,
+                    key: file.key,
                     size: file.size,
                     type: file.type,
                     checksum: file.checksum,
                 })
                 return {
-                    id: file.id,
+                    key: file.key,
                     presignedUrl,
                 }
             })
         )
 
-        const validatedResponse = PresignResponseSchema.parse({
-            urls: presignedUrls,
-        })
-
         // Store file metadata in DB
-        await prisma.$transaction(
+        const objectsInDatabase = await prisma.$transaction(
             fileMetadata.map(file =>
                 prisma.objectStorage.create({
                     data: {
-                        key: file.id,
+                        key: file.key,
                         name: file.name,
                         description: file.description,
                         userId: admin.id,
@@ -95,6 +91,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                 })
             )
         )
+
+        const validatedResponse = PresignResponseSchema.parse({
+            urls: presignedUrls.map(url => {
+                const objectInDatabase = objectsInDatabase.find(
+                    object => object.key === url.key
+                )
+                if (!objectInDatabase) throw new Error('Object not found')
+                return {
+                    id: objectInDatabase.id,
+                    updatedAt: objectInDatabase.updatedAt.toISOString(),
+                    ...url,
+                }
+            }),
+        })
 
         return {
             msg: 'Presign urls generated successfully',

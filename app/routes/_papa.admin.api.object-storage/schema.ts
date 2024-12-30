@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const FileMetaSchema = z
     .object({
         id: z.string(),
+        key: z.string(),
         url: z.string(),
         type: z.string(),
         name: z.string(),
@@ -17,7 +18,7 @@ export type FileMetaWithFile = {
 
 // Request schemas
 export const FilePresignArgsSchema = z.object({
-    id: z.string(),
+    key: z.string(),
     name: z.string(),
     type: z.string(),
     size: z.number(),
@@ -29,7 +30,9 @@ export type PresignRequest = z.infer<typeof PresignRequestSchema>
 
 // Response schemas
 export const PresignedUrlSchema = z.object({
-    id: z.string(),
+    id: z.string(), // From database
+    updatedAt: z.string(), // From database
+    key: z.string(),
     presignedUrl: z.string().url(),
 })
 export const PresignResponseSchema = z.object({

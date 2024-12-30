@@ -29,7 +29,7 @@ import {
     FileMetaWithFile,
 } from '~/routes/_papa.admin.api.object-storage/schema'
 import {
-    deleteFile,
+    deleteFileFetch,
     fetchPresignedPutUrls,
     generateStorageKey,
     useFileUpload,
@@ -73,6 +73,7 @@ export const FileGrid = (props: FileGridProps) => {
     }
 }
 
+// TODO: Fix: the old, deleted file will show when new file is uploaded
 const FileGridMain = ({
     files,
     onFileSelect,
@@ -112,6 +113,7 @@ const FileGridMain = ({
             const newFiles: FileMetaWithFile[] = acceptedFiles.map(file => ({
                 file,
                 id: generateStorageKey(file, 'private'),
+                key: generateStorageKey(file, 'private'),
                 url: URL.createObjectURL(file),
                 type: file.type,
                 name: file.name,
@@ -124,7 +126,22 @@ const FileGridMain = ({
 
     const uploadFiles = async (newFiles: FileMetaWithFile[]) => {
         try {
-            const presignedFiles = await fetchPresignedPutUrls(newFiles) // With key and presignedUrl
+            // Return key and presignedUrl; id, updatedAt from database created
+            const presignedFiles = await fetchPresignedPutUrls(newFiles)
+            presignedFiles.forEach(presignedFile => {
+                setFileUploading(prev => {
+                    const newFiles = prev.map(file =>
+                        file.key === presignedFile.key
+                            ? {
+                                  ...file,
+                                  id: presignedFile.id,
+                                  updatedAt: presignedFile.updatedAt,
+                              }
+                            : file
+                    )
+                    return newFiles
+                })
+            })
             await uploadToPresignedUrl(presignedFiles)
         } catch (error) {
             console.error('Error uploading files', error)
@@ -159,7 +176,7 @@ const FileGridMain = ({
         })
 
         try {
-            deleteFile(file.id)
+            deleteFileFetch(file.key)
         } catch (error) {
             console.error('Error deleting file', error)
         }
@@ -173,11 +190,11 @@ const FileGridMain = ({
         )
         const fileUploaded = uploadComplete
             .map(upload => {
-                return fileUploading.find(file => file.id === upload.id)
+                return fileUploading.find(file => file.key === upload.key)
             })
             .filter(file => !!file)
             .map(file => {
-                const updatedFileUrl = `/assets/private?key=${file.id}`
+                const updatedFileUrl = `/assets/private?key=${file.key}`
                 return {
                     ...file,
                     url: window.location.origin + updatedFileUrl,
@@ -196,7 +213,7 @@ const FileGridMain = ({
         new Set()
     )
     const visibleUploadProgress = Object.values(uploadProgress).filter(
-        ({ id }) => !hiddenProgressCards.has(id)
+        ({ key }) => !hiddenProgressCards.has(key)
     )
 
     return (
@@ -253,7 +270,10 @@ const FileGridMain = ({
             )}
 
             {visibleUploadProgress.length > 0 && (
-                <Collapsible className="absolute right-3 bottom-3 w-[350px] space-y-2">
+                <Collapsible
+                    className="absolute right-3 bottom-3 w-[350px] space-y-2"
+                    defaultOpen
+                >
                     {/* Upload progress card */}
                     <CollapsibleTrigger asChild>
                         <Button
@@ -267,7 +287,7 @@ const FileGridMain = ({
                                 {visibleUploadProgress.length > 1
                                     ? 'files'
                                     : 'file'}{' '}
-                                added
+                                created
                             </h4>
                             <ChevronsUpDown className="h-4 w-4" />
                             <span className="sr-only">Toggle</span>
@@ -275,15 +295,15 @@ const FileGridMain = ({
                     </CollapsibleTrigger>
                     <CollapsibleContent className="space-y-2">
                         {visibleUploadProgress.map(
-                            ({ id, progress, status, error }) => {
+                            ({ key, progress, status, error }) => {
                                 const file = fileUploading.find(
-                                    f => f.id === id
+                                    f => f.key === key
                                 )
                                 if (!file) return null
 
                                 return (
                                     <div
-                                        key={id}
+                                        key={key}
                                         className="flex items-center px-5 py-3.5 border rounded-md bg-muted"
                                     >
                                         <div className="flex-grow max-w-[calc(100%-2rem)] gap-0.5">
@@ -322,7 +342,7 @@ const FileGridMain = ({
                                                                     new Set(
                                                                         prev
                                                                     )
-                                                                newSet.add(id)
+                                                                newSet.add(key)
                                                                 return newSet
                                                             }
                                                         )
@@ -349,7 +369,7 @@ const FileGridMain = ({
                                                                     new Set(
                                                                         prev
                                                                     )
-                                                                newSet.add(id)
+                                                                newSet.add(key)
                                                                 return newSet
                                                             }
                                                         )

@@ -37,18 +37,24 @@ async function generateChecksum(file: File): Promise<string> {
 const objectStorageAPI = '/admin/api/object-storage'
 
 /**
- * Fetch the api to get presigned Put URLs for the files
+ * Fetch the api to get presigned PUT URLs, and new metadata for the files
  * @param files
- * @returns files with presigned Put URLs and key as new id
+ * @returns files with presigned PUT URLs from storage, and id, updatedAt from database
  */
 export const fetchPresignedPutUrls = async (
     files: FileMetaWithFile[]
-): Promise<(FileMetaWithFile & { presignedUrl: string })[]> => {
+): Promise<
+    (FileMetaWithFile & {
+        id: string
+        updatedAt: string
+        presignedUrl: string
+    })[]
+> => {
     try {
         const fileDataPromise = files.map(async file => {
             const fileChecksum = await generateChecksum(file.file)
             const fileData: PresignRequest[number] = {
-                id: file.id,
+                key: file.key,
                 name: file.name,
                 type: file.file.type,
                 size: file.file.size,
@@ -60,7 +66,7 @@ export const fetchPresignedPutUrls = async (
 
         const fileData: PresignRequest = await Promise.all(fileDataPromise)
 
-        const putPresignedUrlsres = await fetch(objectStorageAPI, {
+        const resPUTPresignedUrls = await fetch(objectStorageAPI, {
             method: 'PUT',
             body: JSON.stringify(fileData),
             headers: {
@@ -68,11 +74,11 @@ export const fetchPresignedPutUrls = async (
             },
         })
 
-        if (!putPresignedUrlsres.ok) {
-            throw new Error(`HTTP error! status: ${putPresignedUrlsres.status}`)
+        if (!resPUTPresignedUrls.ok) {
+            throw new Error(`HTTP error! status: ${resPUTPresignedUrls.status}`)
         }
 
-        const responsePayload = await putPresignedUrlsres.json()
+        const responsePayload = await resPUTPresignedUrls.json()
 
         if (isConventionalError(responsePayload)) {
             throw new Error(responsePayload.err)
@@ -80,14 +86,16 @@ export const fetchPresignedPutUrls = async (
 
         const validatedData = PresignResponseSchema.parse(responsePayload.data)
 
-        // Update files with presigned URLs
+        // Update files with presigned URLs, and new id, updatedAt
         const updatedFiles = files.map(file => {
             const presignData = validatedData.urls.find(
-                url => url.id === file.id
+                url => url.key === file.key
             )
-            if (!presignData) throw new Error('Presigned URL not found')
+            if (!presignData) throw new Error('Presign data not found')
             return {
                 ...file,
+                id: presignData.id,
+                updatedAt: presignData.updatedAt,
                 presignedUrl: presignData.presignedUrl,
             }
         })
@@ -98,11 +106,11 @@ export const fetchPresignedPutUrls = async (
 }
 
 /**
- * Delete file from object storage
+ * Fetch object storage api to delete file
  * @param key
  * @returns void
  */
-export const deleteFile = async (key: string) => {
+export const deleteFileFetch = async (key: string) => {
     try {
         const res = await fetch(objectStorageAPI, {
             method: 'DELETE',
@@ -122,7 +130,7 @@ export const deleteFile = async (key: string) => {
 
 // Types for upload progress tracking
 type UploadProgress = {
-    id: string
+    key: string
     progress: number
     status: 'pending' | 'uploading' | 'completed' | 'error'
     error?: string
@@ -149,8 +157,8 @@ export const useFileUpload = () => {
                     )
                     setUploadProgress(prev => ({
                         ...prev,
-                        [file.id]: {
-                            ...prev[file.id],
+                        [file.key]: {
+                            ...prev[file.key],
                             progress,
                             status: 'uploading',
                         },
@@ -163,8 +171,8 @@ export const useFileUpload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     setUploadProgress(prev => ({
                         ...prev,
-                        [file.id]: {
-                            ...prev[file.id],
+                        [file.key]: {
+                            ...prev[file.key],
                             progress: 100,
                             status: 'completed',
                         },
@@ -174,13 +182,13 @@ export const useFileUpload = () => {
                     const error = `Upload failed with status ${xhr.status}`
                     setUploadProgress(prev => ({
                         ...prev,
-                        [file.id]: {
-                            ...prev[file.id],
+                        [file.key]: {
+                            ...prev[file.key],
                             status: 'error',
                             error,
                         },
                     }))
-                    deleteFile(file.id)
+                    deleteFileFetch(file.key)
                     reject(new Error(error))
                 }
             }
@@ -190,13 +198,13 @@ export const useFileUpload = () => {
                 const error = 'Network error occurred'
                 setUploadProgress(prev => ({
                     ...prev,
-                    [file.id]: {
-                        ...prev[file.id],
+                    [file.key]: {
+                        ...prev[file.key],
                         status: 'error',
                         error,
                     },
                 }))
-                deleteFile(file.id)
+                deleteFileFetch(file.key)
                 reject(new Error(error))
             }
 
@@ -240,8 +248,8 @@ export const useFileUpload = () => {
             const initial = files.reduce(
                 (acc, file) => ({
                     ...acc,
-                    [file.id]: {
-                        id: file.id,
+                    [file.key]: {
+                        key: file.key,
                         progress: 0,
                         status: 'pending' as const,
                     },
