@@ -24,6 +24,9 @@ export const getCategories = async (): Promise<{
     })
     return { categories }
 }
+export type CategoriesFromDB = Awaited<
+    ReturnType<typeof getCategories>
+>['categories']
 
 export const deleteCategory = async (
     id: string
@@ -84,6 +87,7 @@ export const getTags = async (): Promise<{ tags: typeof tags }> => {
     const tags = await prisma.tag.findMany()
     return { tags }
 }
+export type TagsFromDB = Awaited<ReturnType<typeof getTags>>['tags']
 
 export const deleteTag = async (id: string): Promise<{ tag: typeof tag }> => {
     const tag = await prisma.tag.delete({

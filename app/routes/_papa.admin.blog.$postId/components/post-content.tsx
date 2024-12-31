@@ -1,7 +1,9 @@
-import { Post, Seo } from '@prisma/client'
+import { Category, Post, Seo, Tag } from '@prisma/client'
+import { ObjectId } from 'bson'
 import { useEffect, useRef, useState } from 'react'
 
 import DefaultTipTap, { EditorRef } from '~/components/editor/default-tiptap'
+import { MultiSelect } from '~/components/multi-select'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,7 +26,7 @@ import {
 } from '~/components/ui/select'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
-import { type getCategories, type getTags } from '~/lib/db/blog-taxonomy.server'
+import { CategoriesFromDB, TagsFromDB } from '~/lib/db/blog-taxonomy.server'
 import { PostStatus } from '~/schema/database'
 
 export type PostContentEdit = Post & {
@@ -37,8 +39,8 @@ export type PostContentEdit = Post & {
 interface PostContentProps {
     post: PostContentEdit
     onPostChange?: (post: PostContentEdit, dirty: boolean) => void
-    tags: Awaited<ReturnType<typeof getTags>>['tags']
-    categories: Awaited<ReturnType<typeof getCategories>>['categories']
+    tags: TagsFromDB
+    categories: CategoriesFromDB
 }
 
 export const generatePostSlug = (title: string) => {
@@ -150,7 +152,9 @@ export const PostContent = ({
                 </AlertDialogContent>
             </AlertDialog>
 
-            <section className={`w-[calc(65ch+1.5rem)] flex flex-col gap-5`}>
+            <section
+                className={`w-[calc(65ch+1.5rem)] flex flex-col gap-5 shrink-0`}
+            >
                 <div>
                     <Label htmlFor="title">Title</Label>
                     <Input
@@ -211,7 +215,7 @@ export const PostContent = ({
                 </div>
             </section>
 
-            <section className="flex flex-col gap-5">
+            <section className="grow flex flex-col gap-5">
                 <div>
                     <Label htmlFor="status">Status</Label>
                     <Select
@@ -321,14 +325,94 @@ export const PostContent = ({
                 <div>
                     <Label htmlFor="categories">Categories</Label>
                     <div className="flex items-center gap-1.5">
-                        {/* {JSON.stringify(categories)} */}
+                        <MultiSelect
+                            options={categories.map(c => ({
+                                value: c.id,
+                                label: c.name,
+                            }))}
+                            defaultSelected={postState.categoryIDs
+                                .map(categoryId => {
+                                    const category = categories.find(
+                                        c => c.id === categoryId
+                                    )
+                                    return category
+                                        ? {
+                                              value: category.id,
+                                              label: category.name,
+                                          }
+                                        : null
+                                })
+                                .filter(c => !!c)}
+                            onSelectedChange={selected => {
+                                setPostState(prev => {
+                                    const cIdArray = selected.map(s => s.value)
+                                    return {
+                                        ...prev,
+                                        categoryIDs: cIdArray,
+                                    }
+                                })
+                            }}
+                            onEnterNewValue={v => {
+                                setPostState(prev => {
+                                    const newCategory: Category = {
+                                        id: new ObjectId().toJSON(),
+                                        name: v,
+                                        postIDs: [],
+                                    }
+                                    return {
+                                        ...prev,
+                                        categoryIDs: [
+                                            ...prev.categoryIDs,
+                                            newCategory.id,
+                                        ],
+                                    }
+                                })
+                            }}
+                            placeholder="Search categories..."
+                        />
                     </div>
                 </div>
 
                 <div>
                     <Label htmlFor="tags">Tags</Label>
                     <div className="flex items-center gap-1.5">
-                        {/* {JSON.stringify(tags)} */}
+                        <MultiSelect
+                            options={tags.map(t => ({
+                                value: t.id,
+                                label: t.name,
+                            }))}
+                            defaultSelected={postState.tagIDs
+                                .map(tagId => {
+                                    const tag = tags.find(t => t.id === tagId)
+                                    return tag
+                                        ? { value: tag.id, label: tag.name }
+                                        : null
+                                })
+                                .filter(t => !!t)}
+                            onSelectedChange={selected => {
+                                setPostState(prev => {
+                                    const tIdArray = selected.map(s => s.value)
+                                    return {
+                                        ...prev,
+                                        tagIDs: tIdArray,
+                                    }
+                                })
+                            }}
+                            onEnterNewValue={v => {
+                                setPostState(prev => {
+                                    const newTag: Tag = {
+                                        id: new ObjectId().toJSON(),
+                                        name: v,
+                                        postIDs: [],
+                                    }
+                                    return {
+                                        ...prev,
+                                        tagIDs: [...prev.tagIDs, newTag.id],
+                                    }
+                                })
+                            }}
+                            placeholder="Search tags..."
+                        />
                     </div>
                 </div>
 
