@@ -13,11 +13,11 @@ import {
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { BlogLoaderType } from '~/routes/_papa.admin.blog/route'
 import {
     SubcategoryItem,
     usePendingSubCategories,
-} from '~/routes/_papa.admin/components/taxonomy'
+} from '~/routes/_papa.admin.blog.taxonomy/components/taxonomy/sub-category-part'
+import { BlogLoaderType } from '~/routes/_papa.admin.blog/route'
 
 const actionRoute = '/admin/blog/taxonomy/resource'
 

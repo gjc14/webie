@@ -3,6 +3,7 @@ import { PlusCircle } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Separator } from '~/components/ui/separator'
+import { TaxonomyDialog } from '~/routes/_papa.admin.blog.taxonomy/components/taxonomy'
 import {
     AdminActions,
     AdminHeader,
@@ -10,7 +11,6 @@ import {
     AdminTitle,
 } from '~/routes/_papa.admin/components/admin-wrapper'
 import { DataTable } from '~/routes/_papa.admin/components/data-table'
-import { TaxonomyDialog } from '~/routes/_papa.admin/components/taxonomy'
 import { useAdminBlogContext } from '../_papa.admin.blog/route'
 import { categoryColumns, tagColumns } from './components/columns'
 

@@ -5,6 +5,7 @@ import { ArrowUpDown, PlusCircle } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
+import { TaxonomyDialog } from '~/routes/_papa.admin.blog.taxonomy/components/taxonomy'
 import {
     AdminActions,
     AdminHeader,
@@ -15,7 +16,6 @@ import {
     AdminDataTableMoreMenu,
     DataTable,
 } from '~/routes/_papa.admin/components/data-table'
-import { TaxonomyDialog } from '~/routes/_papa.admin/components/taxonomy'
 import {
     useAdminBlogContext,
     type BlogLoaderType,
